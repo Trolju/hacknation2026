@@ -70,6 +70,8 @@ export const TEXT = {
   exportAnonymized: "Wersja zanonimizowana",
   exportAnonymizedHint: "Usuwa dane osobowe z treści i z listy cytowań.",
   exportSuccess: "Plik gotowy",
+  exportNothingToHide: "Brak danych osobowych w projekcie",
+  exportNothingToHideHint: "Plik jest identyczny z wersją bez anonimizacji.",
   exportFailed: "Nie udało się wyeksportować projektu",
   exportMissing: "Najpierw wygeneruj projekt.",
   updatedAt: "Ostatnia zmiana",

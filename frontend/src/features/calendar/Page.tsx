@@ -44,7 +44,7 @@ export default function CalendarPage() {
   const [year, setYear] = useState<string>("all");
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("deadline_asc");
+  const [sort, setSort] = useState("inflow_asc");
   const [monthOverride, setMonthOverride] = useState<Date | null>(null);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 

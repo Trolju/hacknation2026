@@ -118,8 +118,8 @@ def test_validate_initials_rejects_wrong_length(value: str) -> None:
 
 def test_normalize_sort_falls_back_to_default() -> None:
     assert normalize_sort("inflow_desc") == "inflow_desc"
-    assert normalize_sort("cokolwiek") == "deadline_asc"
-    assert normalize_sort(None) == "deadline_asc"
+    assert normalize_sort("cokolwiek") == "inflow_asc"
+    assert normalize_sort(None) == "inflow_asc"
 
 
 # ───────────────────────────────── serwis ───────────────────────────────────

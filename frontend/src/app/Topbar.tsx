@@ -18,6 +18,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { RemindersBell } from "@/features/reminders/RemindersBell";
+import { UserMenu } from "@/features/auth/UserMenu";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -111,6 +112,8 @@ export function Topbar({ onOpenPalette, onOpenHelp }: TopbarProps) {
       </Button>
 
       <RemindersBell />
+
+      <UserMenu />
 
       <ThemeToggle />
 

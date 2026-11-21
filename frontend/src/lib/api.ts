@@ -27,14 +27,36 @@ export class ApiError extends Error {
 
 const BASE = import.meta.env.VITE_API_BASE ?? "/api";
 
+const TOKEN_KEY = "asystent.token";
+
+/** Token sesji — `localStorage` bywa niedostępny (tryb prywatny, brak zgody). */
+export function getToken(): string | null {
+  try {
+    return globalThis.localStorage?.getItem(TOKEN_KEY) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function setToken(token: string | null): void {
+  try {
+    if (token) globalThis.localStorage?.setItem(TOKEN_KEY, token);
+    else globalThis.localStorage?.removeItem(TOKEN_KEY);
+  } catch {
+    /* brak dostępu do magazynu — sesja zostaje tylko w pamięci Reacta */
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${BASE}${path}`, {
-    headers:
-      init?.body instanceof FormData
-        ? undefined
-        : { "Content-Type": "application/json", ...(init?.headers ?? {}) },
-    ...init,
-  });
+  const headers = new Headers(init?.headers);
+  if (!(init?.body instanceof FormData) && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+  const token = getToken();
+  if (token && !headers.has("Authorization")) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+  const response = await fetch(`${BASE}${path}`, { ...init, headers });
 
   if (!response.ok) {
     let body: ApiErrorBody = {

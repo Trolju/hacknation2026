@@ -1,0 +1,1 @@
+"""Testy modułu uwierzytelniania."""

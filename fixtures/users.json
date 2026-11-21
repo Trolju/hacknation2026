@@ -1,0 +1,37 @@
+[
+  {
+    "initials": "JK",
+    "name": "Jan Kowalski",
+    "role": "referent",
+    "department_id": "wok",
+    "pin": "1234"
+  },
+  {
+    "initials": "AN",
+    "name": "Anna Nowak",
+    "role": "kierownik",
+    "department_id": "wok",
+    "pin": "1234"
+  },
+  {
+    "initials": "PW",
+    "name": "Piotr Wiśniewski",
+    "role": "referent",
+    "department_id": "wgk",
+    "pin": "1234"
+  },
+  {
+    "initials": "MZ",
+    "name": "Maria Zielińska",
+    "role": "naczelnik",
+    "department_id": "waiu",
+    "pin": "1234"
+  },
+  {
+    "initials": "TL",
+    "name": "Tomasz Lewandowski",
+    "role": "referent",
+    "department_id": "wfin",
+    "pin": "1234"
+  }
+]

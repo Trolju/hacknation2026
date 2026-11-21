@@ -56,10 +56,16 @@ function renderScreen(Page: () => JSX.Element): string {
 
 describe("ekrany aplikacji", () => {
   for (const [name, load] of SCREENS) {
-    it(`renderuje ekran: ${name}`, async () => {
-      const module = await load();
-      const html = renderScreen(module.default);
-      expect(html.length).toBeGreaterThan(50);
-    });
+    // Renderowanie serwerowe całego ekranu trwa ~2 s; w pełnym przebiegu
+    // równoległe pliki testowe wydłużają to ponad domyślne 5 s.
+    it(
+      `renderuje ekran: ${name}`,
+      async () => {
+        const module = await load();
+        const html = renderScreen(module.default);
+        expect(html.length).toBeGreaterThan(50);
+      },
+      20_000,
+    );
   }
 });

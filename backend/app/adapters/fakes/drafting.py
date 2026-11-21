@@ -168,6 +168,8 @@ class FakeDrafting:
         draft = self._drafts.get(draft_id)
         if draft is None:
             raise NotFound("Nie znaleziono projektu odpowiedzi.")
+        if anonymized:
+            draft = self._anonymized_copy(draft)
         suffix = "anon" if anonymized else "projekt"
         stem = f"odpowiedz-{draft.case_id.hex[:8]}-{suffix}"
         if fmt == "docx":
@@ -177,6 +179,44 @@ class FakeDrafting:
         if fmt in ("md", "markdown"):
             return draft.body.encode("utf-8"), f"{stem}.md"
         raise NotFound(f"Nieobsługiwany format eksportu: {fmt}.")
+
+    def redactions(self, draft_id: UUID) -> int:
+        """Ile fragmentów usunęłaby anonimizacja — 0, gdy nie ma czego ukrywać."""
+        draft = self._drafts.get(draft_id)
+        if draft is None:
+            raise NotFound("Nie znaleziono projektu odpowiedzi.")
+        total = self._anonymize(draft.title)[1] + self._anonymize(draft.body)[1]
+        for citation in draft.citations:
+            total += self._anonymize(citation.label)[1]
+            total += self._anonymize(citation.excerpt)[1]
+        return total
+
+    def _anonymize(self, text: str) -> tuple[str, int]:
+        """Przepuszcza tekst przez anonimizator; zwraca (tekst, liczba trafień)."""
+        if not text.strip():
+            return text, 0
+        from app.contracts import ApplyRequest, DetectRequest
+        from app.core import container
+
+        anonymizer = container.get_anonymizer()
+        spans = anonymizer.detect(DetectRequest(text=text))
+        if not spans:
+            return text, 0
+        return anonymizer.apply(ApplyRequest(text=text, spans=spans)).text, len(spans)
+
+    def _anonymized_copy(self, draft: Draft) -> Draft:
+        title, _ = self._anonymize(draft.title)
+        body, _ = self._anonymize(draft.body)
+        citations = []
+        for citation in draft.citations:
+            label, _ = self._anonymize(citation.label)
+            excerpt, _ = self._anonymize(citation.excerpt)
+            citations.append(
+                citation.model_copy(update={"label": label, "excerpt": excerpt})
+            )
+        return draft.model_copy(
+            update={"title": title, "body": body, "citations": citations}
+        )
 
 
 def _docx(draft: Draft) -> bytes:

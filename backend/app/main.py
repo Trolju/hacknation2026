@@ -13,17 +13,23 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 import structlog
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.contracts import AppMeta, Health
 from app.core.errors import AppError, app_error_handler
 from app.core.logging import configure_logging
 from app.core.settings import settings
+from app.modules.auth.deps import current_user
 
 log = structlog.get_logger(__name__)
 
 MODULES_PACKAGE = "app.modules"
+
+#: Moduły dostępne bez logowania. `auth` musi być publiczny, żeby dało się
+#: zalogować; `system` to `/health` i `/meta`, po które sięga pasek nagłówka
+#: jeszcze przed zalogowaniem.
+PUBLIC_MODULES = frozenset({"auth", "system"})
 
 
 def discover_routers() -> list[tuple[str, APIRouter]]:
@@ -75,6 +81,7 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        expose_headers=["X-Redactions"],
     )
     app.add_exception_handler(AppError, app_error_handler)
 
@@ -101,7 +108,11 @@ def create_app() -> FastAPI:
     app.include_router(system, prefix="/api")
 
     for name, router in discover_routers():
-        app.include_router(router, prefix=f"/api/{name}")
+        # Bramka na całym module: bez tokenu nie odpowiada nawet odczyt.
+        # `current_user` zwraca pierwszego użytkownika przy `AUTH_ENABLED=false`,
+        # więc demo i testy działają bez logowania.
+        gate = [] if name in PUBLIC_MODULES else [Depends(current_user)]
+        app.include_router(router, prefix=f"/api/{name}", dependencies=gate)
         log.info("router_mounted", module=name, prefix=f"/api/{name}")
 
     return app

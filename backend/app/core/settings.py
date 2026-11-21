@@ -104,6 +104,15 @@ class Settings(BaseSettings):
         default_factory=lambda: ["http://localhost:5173", "http://127.0.0.1:5173"]
     )
 
+    # ── uwierzytelnianie ──
+    #: Klucz do podpisywania tokenów sesji. Pusty = losowy przy starcie, więc
+    #: po restarcie wszyscy muszą zalogować się ponownie. W demo wygodniej
+    #: wpisać stały klucz w `.env`.
+    auth_secret: str = ""
+    auth_session_hours: int = 8
+    #: Wyłącznik — testy i pokazy bez logowania działają z `AUTH_ENABLED=false`.
+    auth_enabled: bool = True
+
     def module_mode(self, name: str) -> ModuleMode:
         key = f"MODULE_MODE_{name.upper()}"
         # Zmienna środowiskowa wygrywa nad plikiem — tak samo jak w pydantic.

@@ -37,7 +37,7 @@ SORT_OPTIONS: tuple[str, ...] = (
     "inflow_asc",
     "inflow_desc",
 )
-DEFAULT_SORT = "deadline_asc"
+DEFAULT_SORT = "inflow_asc"
 
 
 # ────────────────────────────── maszyna stanów ──────────────────────────────

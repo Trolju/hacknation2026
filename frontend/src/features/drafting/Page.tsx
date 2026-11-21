@@ -190,8 +190,14 @@ export default function DraftingPage() {
       exportDraft.mutate(
         { draftId, format, anonymized },
         {
-          onSuccess: ({ blob, filename }) => {
+          onSuccess: ({ blob, filename, redactions }) => {
             downloadBlob(blob, filename);
+            if (anonymized && redactions === 0) {
+              toast.info(TEXT.exportNothingToHide, {
+                description: TEXT.exportNothingToHideHint,
+              });
+              return;
+            }
             toast.success(TEXT.exportSuccess, { description: filename });
           },
           onError: (error) => {

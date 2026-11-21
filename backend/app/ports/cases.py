@@ -23,7 +23,7 @@ class CaseRepositoryPort(Protocol):
         year: int | None = None,
         status: CaseStatus | None = None,
         q: str | None = None,
-        sort: str = "deadline_asc",
+        sort: str = "inflow_asc",
     ) -> builtins.list[Case]: ...
 
     def years(self) -> builtins.list[int]: ...

@@ -211,7 +211,7 @@ class SqlCaseRepository:
         year: int | None = None,
         status: CaseStatus | None = None,
         q: str | None = None,
-        sort: str = "deadline_asc",
+        sort: str = "inflow_asc",
     ) -> list[Case]:
         with self._session() as session:
             stmt = select(CaseRow)

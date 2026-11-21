@@ -145,6 +145,14 @@ export const TEXT = {
   spansEmpty: "Brak wykrytych fragmentów. Wklej tekst i uruchom wykrywanie.",
   spansStale: "Tekst zmienił się — uruchom wykrywanie ponownie.",
   remove: "Usuń",
+  accept: "Akceptuj",
+  unaccept: "Cofnij akceptację",
+  acceptAll: "Akceptuj wszystkie",
+  rejectAll: "Odrzuć wszystkie",
+  pendingHint:
+    "Szare fragmenty nie zostaną usunięte, dopóki ich nie zaakceptujesz.",
+  acceptedSummary: "zaakceptowanych",
+  nothingAccepted: "Zaakceptuj przynajmniej jeden fragment.",
   addSelection: "Dodaj zaznaczenie",
   addSelectionHint:
     "Zaznacz fragment w polu tekstowym, wybierz kategorię i dodaj go do listy.",

@@ -23,6 +23,8 @@ export type ExportInput = {
 export type ExportResult = {
   blob: Blob;
   filename: string;
+  /** Ile fragmentów usunęła anonimizacja — 0, gdy nie było czego ukrywać. */
+  redactions: number;
 };
 
 const BASE = import.meta.env.VITE_API_BASE ?? "/api";
@@ -72,6 +74,12 @@ function parseFilename(header: string | null, format: DraftFormat): string {
   return match?.[1] ?? FALLBACK_NAME[format];
 }
 
+/** Nagłówek `X-Redactions` bywa nieobecny (proxy, stary backend) — wtedy zero. */
+export function parseRedactions(header: string | null): number {
+  const value = Number(header ?? 0);
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
+
 async function fetchExport(input: ExportInput): Promise<ExportResult> {
   const query = queryString({ fmt: input.format, anonymized: input.anonymized });
   const response = await fetch(`${BASE}/drafting/${input.draftId}/export${query}`);
@@ -87,6 +95,7 @@ async function fetchExport(input: ExportInput): Promise<ExportResult> {
   return {
     blob: await response.blob(),
     filename: parseFilename(response.headers.get("Content-Disposition"), input.format),
+    redactions: parseRedactions(response.headers.get("X-Redactions")),
   };
 }
 

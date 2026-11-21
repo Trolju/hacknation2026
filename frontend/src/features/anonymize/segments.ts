@@ -7,7 +7,10 @@
 
 import type { Span } from "@/lib/types";
 
-export type Segment = { text: string; span?: Span };
+export type Segment<S extends Span = Span> = { text: string; span?: S };
+
+/** Span z decyzją urzędnika — wykryte trafienia czekają na akceptację. */
+export type ReviewSpan = Span & { accepted: boolean };
 
 /**
  * Dzieli tekst na fragmenty zwykłe i objęte spanem.
@@ -15,9 +18,12 @@ export type Segment = { text: string; span?: Span };
  * Spany nachodzące na siebie lub wychodzące poza tekst są pomijane — po
  * edycji tekstu offsety mogą być nieaktualne i nie wolno nimi ciąć tekstu.
  */
-export function buildSegments(text: string, spans: Span[]): Segment[] {
+export function buildSegments<S extends Span>(
+  text: string,
+  spans: S[],
+): Segment<S>[] {
   const ordered = [...spans].sort((a, b) => a.start - b.start);
-  const segments: Segment[] = [];
+  const segments: Segment<S>[] = [];
   let cursor = 0;
   for (const span of ordered) {
     if (span.start < cursor || span.end > text.length || span.start >= span.end) {
@@ -36,7 +42,7 @@ export function buildSegments(text: string, spans: Span[]): Segment[] {
 }
 
 /** Dokłada span, usuwając wcześniejsze nakładające się zaznaczenia. */
-export function withSpan(spans: Span[], next: Span): Span[] {
+export function withSpan<S extends Span>(spans: S[], next: S): S[] {
   const kept = spans.filter(
     (span) => span.end <= next.start || next.end <= span.start,
   );
@@ -44,7 +50,7 @@ export function withSpan(spans: Span[], next: Span): Span[] {
 }
 
 /** Usuwa span wskazany przez pozycję i kategorię. */
-export function withoutSpan(spans: Span[], target: Span): Span[] {
+export function withoutSpan<S extends Span>(spans: S[], target: Span): S[] {
   return spans.filter(
     (span) =>
       !(
@@ -53,4 +59,23 @@ export function withoutSpan(spans: Span[], target: Span): Span[] {
         span.category === target.category
       ),
   );
+}
+
+/** Odwraca decyzję o jednym spanie — reszta zostaje bez zmian. */
+export function toggleAcceptance(
+  spans: ReviewSpan[],
+  target: Span,
+): ReviewSpan[] {
+  return spans.map((span) =>
+    span.start === target.start &&
+    span.end === target.end &&
+    span.category === target.category
+      ? { ...span, accepted: !span.accepted }
+      : span,
+  );
+}
+
+/** Spany, które urzędnik zaakceptował — tylko one trafiają do anonimizacji. */
+export function acceptedOnly(spans: ReviewSpan[]): Span[] {
+  return spans.filter((span) => span.accepted);
 }

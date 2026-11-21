@@ -265,17 +265,16 @@ class LlmDrafting:
         body = draft.body
         citations = list(draft.citations)
         if anonymized:
-            title = self._anonymize(title)
-            body = self._anonymize(body)
-            citations = [
-                citation.model_copy(
-                    update={
-                        "label": self._anonymize(citation.label),
-                        "excerpt": self._anonymize(citation.excerpt),
-                    }
+            title, _ = self._anonymize(title)
+            body, _ = self._anonymize(body)
+            cleaned: list[Citation] = []
+            for citation in citations:
+                label, _ = self._anonymize(citation.label)
+                excerpt, _ = self._anonymize(citation.excerpt)
+                cleaned.append(
+                    citation.model_copy(update={"label": label, "excerpt": excerpt})
                 )
-                for citation in citations
-            ]
+            citations = cleaned
 
         header = self._header_lines(draft)
         suffix = "anon" if anonymized else "projekt"
@@ -296,6 +295,17 @@ class LlmDrafting:
             return blob, f"{stem}.md"
         raise NotFound(f"Nieobsługiwany format eksportu: {fmt}.")
 
+    def redactions(self, draft_id: UUID) -> int:
+        """Ile fragmentów usunęłaby anonimizacja — 0, gdy nie ma czego ukrywać."""
+        draft = self._repo.get(draft_id)
+        if draft is None:
+            raise NotFound("Nie znaleziono projektu odpowiedzi.")
+        total = self._anonymize(draft.title)[1] + self._anonymize(draft.body)[1]
+        for citation in draft.citations:
+            total += self._anonymize(citation.label)[1]
+            total += self._anonymize(citation.excerpt)[1]
+        return total
+
     def _header_lines(self, draft: Draft) -> list[str]:
         """Nagłówek pisma urzędowego: miejsce, data i znak sprawy."""
         try:
@@ -307,12 +317,12 @@ class LlmDrafting:
             f"Znak sprawy: {case.case_number}",
         ]
 
-    def _anonymize(self, text: str) -> str:
-        """Przepuszcza tekst przez anonimizator (detekcja + zamiana)."""
+    def _anonymize(self, text: str) -> tuple[str, int]:
+        """Przepuszcza tekst przez anonimizator; zwraca (tekst, liczba trafień)."""
         if not text.strip():
-            return text
+            return text, 0
         anonymizer = self._anonymizer_port
         spans = anonymizer.detect(DetectRequest(text=text))
         if not spans:
-            return text
-        return anonymizer.apply(ApplyRequest(text=text, spans=spans)).text
+            return text, 0
+        return anonymizer.apply(ApplyRequest(text=text, spans=spans)).text, len(spans)

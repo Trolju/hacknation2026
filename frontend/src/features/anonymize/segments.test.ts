@@ -2,7 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import type { Span } from "@/lib/types";
 
-import { buildSegments, withSpan, withoutSpan } from "./segments";
+import {
+  acceptedOnly,
+  buildSegments,
+  toggleAcceptance,
+  withSpan,
+  withoutSpan,
+  type ReviewSpan,
+} from "./segments";
 
 function span(start: number, end: number, category = "pesel"): Span {
   return {
@@ -13,6 +20,15 @@ function span(start: number, end: number, category = "pesel"): Span {
     confidence: 0.9,
     source: "regex",
   };
+}
+
+function review(
+  start: number,
+  end: number,
+  accepted: boolean,
+  category = "pesel",
+): ReviewSpan {
+  return { ...span(start, end, category), accepted };
 }
 
 describe("buildSegments", () => {
@@ -76,5 +92,41 @@ describe("withoutSpan", () => {
   it("nie usuwa spanu o innej kategorii na tej samej pozycji", () => {
     const spans = [span(0, 5, "pesel")];
     expect(withoutSpan(spans, span(0, 5, "nip"))).toHaveLength(1);
+  });
+});
+
+describe("toggleAcceptance", () => {
+  it("odwraca decyzję o wskazanym spanie", () => {
+    const spans = [review(0, 5, false), review(10, 15, true, "email")];
+    const result = toggleAcceptance(spans, spans[0]);
+    expect(result[0].accepted).toBe(true);
+    expect(result[1].accepted).toBe(true);
+  });
+
+  it("nie rusza spanu o innej kategorii na tej samej pozycji", () => {
+    const spans = [review(0, 5, false, "pesel")];
+    const result = toggleAcceptance(spans, span(0, 5, "nip"));
+    expect(result[0].accepted).toBe(false);
+  });
+
+  it("nie zmienia oryginalnej tablicy", () => {
+    const spans = [review(0, 5, false)];
+    toggleAcceptance(spans, spans[0]);
+    expect(spans[0].accepted).toBe(false);
+  });
+});
+
+describe("acceptedOnly", () => {
+  it("zwraca tylko zaakceptowane spany", () => {
+    const spans = [
+      review(0, 5, true),
+      review(10, 15, false),
+      review(20, 25, true),
+    ];
+    expect(acceptedOnly(spans).map((item) => item.start)).toEqual([0, 20]);
+  });
+
+  it("zwraca pustą listę, gdy nic nie zaakceptowano", () => {
+    expect(acceptedOnly([review(0, 5, false)])).toEqual([]);
   });
 });

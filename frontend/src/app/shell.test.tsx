@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import { Layout } from "@/app/Layout";
 import { ThemeProvider } from "@/app/ThemeProvider";
+import { AuthProvider } from "@/features/auth/context";
 
 /**
  * Test dymny powłoki: renderuje układ w całości i sprawdza, że szkielet
@@ -31,11 +32,13 @@ function renderShell(path: string): string {
   try {
     return renderToString(
       <QueryClientProvider client={client}>
-        <ThemeProvider>
-          <MemoryRouter initialEntries={[path]}>
-            <Layout />
-          </MemoryRouter>
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider>
+            <MemoryRouter initialEntries={[path]}>
+              <Layout />
+            </MemoryRouter>
+          </ThemeProvider>
+        </AuthProvider>
       </QueryClientProvider>,
     );
   } finally {

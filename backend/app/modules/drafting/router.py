@@ -80,16 +80,25 @@ def export_draft(
     audit: AuditRecorder = Depends(audit_recorder),
 ) -> Response:
     blob, filename = service.export(draft_id, fmt=fmt, anonymized=anonymized)
+    redactions = service.redactions(draft_id) if anonymized else 0
     # Port nie zna odczytu po `draft_id`, więc wpis nie niesie `case_id` —
     # identyfikator projektu i nazwa pliku wystarczą, żeby odnaleźć zdarzenie.
     audit.record(
         action=AuditAction.DRAFT_EXPORTED,
         entity_type=AuditEntity.DRAFT,
         entity_id=draft_id,
-        payload={"format": fmt, "anonymized": anonymized, "filename": filename},
+        payload={
+            "format": fmt,
+            "anonymized": anonymized,
+            "filename": filename,
+            "redactions": redactions,
+        },
     )
     return Response(
         content=blob,
         media_type=_MEDIA.get(fmt, "application/octet-stream"),
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="{filename}"',
+            "X-Redactions": str(redactions),
+        },
     )

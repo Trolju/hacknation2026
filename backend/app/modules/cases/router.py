@@ -28,6 +28,8 @@ from app.modules.audit.service import (
     audit_recorder,
     changed_fields,
 )
+from app.modules.auth.deps import current_user
+from app.modules.auth.models import User
 from app.modules.cases.service import CaseService
 from app.ports.cases import CaseRepositoryPort
 
@@ -39,7 +41,7 @@ def list_cases(
     year: int | None = None,
     status: CaseStatus | None = None,
     q: str | None = None,
-    sort: str = Query("deadline_asc", pattern="^(deadline|inflow)_(asc|desc)$"),
+    sort: str = Query("inflow_asc", pattern="^(deadline|inflow)_(asc|desc)$"),
     repo: CaseRepositoryPort = Depends(container.get_cases),
 ) -> list[Case]:
     return CaseService(repo).list(year=year, status=status, q=q, sort=sort)
@@ -55,8 +57,13 @@ def create_case(
     data: CaseCreate,
     repo: CaseRepositoryPort = Depends(container.get_cases),
     audit: AuditRecorder = Depends(audit_recorder),
+    user: User = Depends(current_user),
 ) -> Case:
-    case = CaseService(repo).create(data)
+    # Inicjały pochodzą z tożsamości, nie z formularza — pola nie da się
+    # podmienić, podszywając się pod innego urzędnika.
+    case = CaseService(repo).create(
+        data.model_copy(update={"handler_initials": user.initials})
+    )
     audit.record(
         action=AuditAction.CASE_CREATED,
         entity_type=AuditEntity.CASE,
@@ -102,9 +109,12 @@ def transition_case(
     body: TransitionRequest,
     repo: CaseRepositoryPort = Depends(container.get_cases),
     audit: AuditRecorder = Depends(audit_recorder),
+    user: User = Depends(current_user),
 ) -> Case:
     service = CaseService(repo)
     before = service.get(case_id)
+    # Autora przejścia bierzemy z sesji — `actor` z żądania jest ignorowany.
+    body = body.model_copy(update={"actor": user.name})
     case = service.transition(case_id, body)
     audit.record(
         action=AuditAction.CASE_TRANSITIONED,

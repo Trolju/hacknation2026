@@ -18,3 +18,7 @@ class DraftingPort(Protocol):
     def export(self, draft_id: UUID, *, fmt: str, anonymized: bool) -> tuple[bytes, str]:
         """Zwraca (bajty, nazwa pliku)."""
         ...
+
+    def redactions(self, draft_id: UUID) -> int:
+        """Ile fragmentów usunęłaby anonimizacja — 0, gdy nie ma czego ukrywać."""
+        ...

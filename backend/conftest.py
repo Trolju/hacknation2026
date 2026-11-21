@@ -15,3 +15,8 @@ import os
 
 # Pusty `ENV_FILE` wyłącza czytanie pliku — patrz `app.core.settings`.
 os.environ["ENV_FILE"] = ""
+
+# Testy wołają API bez logowania. `current_user` zwraca wtedy pierwszego
+# użytkownika z `fixtures/users.json`, więc `handler_initials` nadal pochodzi
+# z tożsamości. Testy samego logowania włączają auth przez `monkeypatch`.
+os.environ["AUTH_ENABLED"] = "false"

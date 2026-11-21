@@ -78,7 +78,7 @@ class FakeCaseRepository:
         year: int | None = None,
         status: CaseStatus | None = None,
         q: str | None = None,
-        sort: str = "deadline_asc",
+        sort: str = "inflow_asc",
     ) -> builtins.list[Case]:
         rows = [_to_case(r) for r in self._rows.values()]
         if year is not None:
@@ -98,7 +98,7 @@ class FakeCaseRepository:
             "inflow_asc": lambda c: (c.inflow_date, c.ordinal),
             "inflow_desc": lambda c: (-c.inflow_date.toordinal(), c.ordinal),
         }
-        return sorted(rows, key=keys.get(sort, keys["deadline_asc"]))
+        return sorted(rows, key=keys.get(sort, keys["inflow_asc"]))
 
     def years(self) -> builtins.list[int]:
         return sorted({int(r["inflow_date"][:4]) for r in self._rows.values()}, reverse=True)

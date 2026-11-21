@@ -1,4 +1,15 @@
-import { Copy, Eraser, Plus, ScanSearch, ShieldCheck, Trash2 } from "lucide-react";
+import {
+  Check,
+  CheckCheck,
+  Copy,
+  Eraser,
+  Plus,
+  ScanSearch,
+  ShieldCheck,
+  Trash2,
+  Undo2,
+  X,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -34,7 +45,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import type { Span } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import {
@@ -50,7 +60,14 @@ import {
   categoryLabel,
   categoryStyle,
 } from "./i18n";
-import { buildSegments, withSpan, withoutSpan } from "./segments";
+import {
+  acceptedOnly,
+  buildSegments,
+  toggleAcceptance,
+  withSpan,
+  withoutSpan,
+  type ReviewSpan,
+} from "./segments";
 
 function percent(value: number): string {
   return `${Math.round(value * 100)}%`;
@@ -68,7 +85,7 @@ function MetricTile({ label, value }: { label: string; value: number }) {
 
 export default function AnonymizePage() {
   const [text, setText] = useState("");
-  const [spans, setSpans] = useState<Span[]>([]);
+  const [spans, setSpans] = useState<ReviewSpan[]>([]);
   const [placeholder, setPlaceholder] = useState("[USUNIĘTO]");
   const [result, setResult] = useState<string | null>(null);
   const [manualCategory, setManualCategory] = useState("imie_nazwisko");
@@ -81,6 +98,7 @@ export default function AnonymizePage() {
   const metrics = useAnonymizerMetrics();
 
   const segments = useMemo(() => buildSegments(text, spans), [text, spans]);
+  const acceptedCount = useMemo(() => acceptedOnly(spans).length, [spans]);
 
   // Pole rośnie z treścią, więc nigdy nie pojawia się w nim pasek przewijania —
   // dzięki temu warstwa podświetleń pokrywa się z tekstem co do piksela.
@@ -109,7 +127,7 @@ export default function AnonymizePage() {
       { text },
       {
         onSuccess: (found) => {
-          setSpans(found);
+          setSpans(found.map((span) => ({ ...span, accepted: false })));
           setResult(null);
           setStale(false);
         },
@@ -127,8 +145,13 @@ export default function AnonymizePage() {
       toast.error(TEXT.emptyText);
       return;
     }
+    const accepted = acceptedOnly(spans);
+    if (accepted.length === 0) {
+      toast.error(TEXT.nothingAccepted);
+      return;
+    }
     apply.mutate(
-      { text, spans, placeholder },
+      { text, spans: accepted, placeholder },
       {
         onSuccess: (data) => {
           setResult(data.text);
@@ -160,14 +183,32 @@ export default function AnonymizePage() {
         category: manualCategory,
         confidence: 1,
         source: "llm",
+        accepted: true,
       }),
     );
     setResult(null);
     setStale(false);
   };
 
-  const handleRemove = (span: Span) => {
+  const handleRemove = (span: ReviewSpan) => {
     setSpans((previous) => withoutSpan(previous, span));
+    setResult(null);
+  };
+
+  const handleToggleAccept = (span: ReviewSpan) => {
+    setSpans((previous) => toggleAcceptance(previous, span));
+    setResult(null);
+  };
+
+  const handleAcceptAll = () => {
+    setSpans((previous) =>
+      previous.map((item) => ({ ...item, accepted: true })),
+    );
+    setResult(null);
+  };
+
+  const handleRejectAll = () => {
+    setSpans([]);
     setResult(null);
   };
 
@@ -242,7 +283,9 @@ export default function AnonymizePage() {
                         key={index}
                         className={cn(
                           "rounded-sm text-transparent",
-                          categoryStyle(segment.span.category).mark,
+                          segment.span.accepted
+                            ? categoryStyle(segment.span.category).mark
+                            : "bg-slate-400/25",
                         )}
                       >
                         {segment.text}
@@ -309,7 +352,7 @@ export default function AnonymizePage() {
                 </div>
                 <Button
                   onClick={handleApply}
-                  disabled={apply.isPending || spans.length === 0}
+                  disabled={apply.isPending || acceptedCount === 0}
                 >
                   {apply.isPending ? TEXT.applying : TEXT.apply}
                 </Button>
@@ -317,6 +360,11 @@ export default function AnonymizePage() {
               <p className="text-xs text-muted-foreground">
                 {TEXT.placeholderHint}
               </p>
+              {spans.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {acceptedCount} z {spans.length} {TEXT.acceptedSummary}
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -353,14 +401,37 @@ export default function AnonymizePage() {
 
         <div className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>
-                {TEXT.spansTitle}
-                {spans.length > 0 ? ` (${spans.length})` : ""}
-              </CardTitle>
-              <CardDescription>
-                {stale ? TEXT.spansStale : TEXT.addSelectionHint}
-              </CardDescription>
+            <CardHeader className="flex-row items-start justify-between gap-2 space-y-0">
+              <div className="space-y-1">
+                <CardTitle>
+                  {TEXT.spansTitle}
+                  {spans.length > 0 ? ` (${acceptedCount}/${spans.length})` : ""}
+                </CardTitle>
+                <CardDescription>
+                  {stale
+                    ? TEXT.spansStale
+                    : spans.length > 0
+                      ? TEXT.pendingHint
+                      : TEXT.addSelectionHint}
+                </CardDescription>
+              </div>
+              {spans.length > 0 && (
+                <div className="flex shrink-0 gap-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAcceptAll}
+                    disabled={acceptedCount === spans.length}
+                  >
+                    <CheckCheck />
+                    {TEXT.acceptAll}
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleRejectAll}>
+                    <X />
+                    {TEXT.rejectAll}
+                  </Button>
+                </div>
+              )}
             </CardHeader>
             <CardContent>
               {spans.length === 0 ? (
@@ -370,13 +441,20 @@ export default function AnonymizePage() {
                   {spans.map((span) => (
                     <li
                       key={`${span.start}-${span.end}-${span.category}`}
-                      className="flex items-start justify-between gap-2 rounded-md border p-2"
+                      className={cn(
+                        "flex items-start justify-between gap-2 rounded-md border p-2",
+                        !span.accepted && "border-dashed bg-muted/30",
+                      )}
                     >
                       <div className="min-w-0 space-y-1">
                         <div className="flex flex-wrap items-center gap-1">
                           <Badge
                             variant="outline"
-                            className={categoryStyle(span.category).badge}
+                            className={
+                              span.accepted
+                                ? categoryStyle(span.category).badge
+                                : "border-slate-400/40 bg-slate-400/10 text-slate-600 dark:text-slate-400"
+                            }
                           >
                             {categoryLabel(span.category)}
                           </Badge>
@@ -389,14 +467,27 @@ export default function AnonymizePage() {
                           {span.text}
                         </p>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleRemove(span)}
-                        aria-label={`${TEXT.remove}: ${span.text}`}
-                      >
-                        <Trash2 />
-                      </Button>
+                      <div className="flex shrink-0 items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleToggleAccept(span)}
+                          aria-label={
+                            span.accepted ? TEXT.unaccept : TEXT.accept
+                          }
+                          title={span.accepted ? TEXT.unaccept : TEXT.accept}
+                        >
+                          {span.accepted ? <Undo2 /> : <Check />}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleRemove(span)}
+                          aria-label={`${TEXT.remove}: ${span.text}`}
+                        >
+                          <Trash2 />
+                        </Button>
+                      </div>
                     </li>
                   ))}
                 </ul>

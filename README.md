@@ -29,6 +29,23 @@ te z `fixtures/`. Wgrane ustawy i zarządzenia (rodzaj `ustawa` /
 tytule co plik z `fixtures/statutes/` przykrywa go — tak działa aktualizacja
 ustawy.
 
+**Logowanie i tożsamość.** Wejście wymaga zalogowania się inicjałami i PIN-em
+(`fixtures/users.json`, w demo PIN `1234` dla każdego konta). Inicjały w sprawie
+i autor zmiany stanu pochodzą z sesji, nie z formularza — pola nie da się
+podmienić, podszywając się pod kolegę. Token to podpis HMAC-SHA256 ze
+standardowej biblioteki, bez zewnętrznego JWT. `AUTH_ENABLED=false` wyłącza
+logowanie: tak działają testy i pokazy bez wpisywania PIN-u, a inicjały nadal
+biorą się z pierwszego użytkownika fixtures.
+
+**Eksport mówi, co usunął.** Odpowiedź eksportu niesie nagłówek `X-Redactions`
+z liczbą zanonimizowanych fragmentów. Gdy projekt nie zawiera danych osobowych,
+interfejs wyraźnie to komunikuje zamiast po cichu oddać plik identyczny
+z oryginałem.
+
+**Anonimizacja wymaga decyzji.** Wykryte fragmenty trafiają na listę jako szare
+i nie są usuwane, dopóki urzędnik ich nie zaakceptuje — pojedynczo albo
+przyciskiem „Akceptuj wszystkie”. Kolor pojawia się dopiero po akceptacji.
+
 ## Szybki start
 
 Wymagania: Python 3.12, Node 20+, `uv`.
@@ -41,6 +58,9 @@ make frontend         # http://127.0.0.1:5173
 
 Aplikacja startuje w trybie `fake`: wszystkie moduły odpowiadają na podstawie
 danych z `fixtures/`, bez modeli językowych i bez dostępu do sieci.
+
+Po otwarciu `http://127.0.0.1:5173` wybierz konto z listy i podaj PIN `1234`.
+Chcesz wejść bez logowania? Ustaw `AUTH_ENABLED=false` w `backend/.env`.
 
 ## Demo
 
