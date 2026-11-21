@@ -1,0 +1,35 @@
+# Kontekst builda dockerowego.
+# Bez tego pliku do obrazu trafiłyby .venv, node_modules i lokalna baza.
+
+.git
+.gitignore
+.run
+data
+
+# Python
+**/__pycache__
+**/*.py[cod]
+backend/.venv
+backend/.pytest_cache
+backend/.mypy_cache
+backend/.ruff_cache
+backend/data
+
+# Node
+frontend/node_modules
+frontend/dist
+frontend/.vite
+
+# Konfiguracja lokalna i sekrety
+.env
+.env.local
+deploy/.env
+
+# Bazy lokalne
+*.db
+*.sqlite3
+
+# Materiały, których nie potrzebują obrazy
+docs
+assets
+*.md

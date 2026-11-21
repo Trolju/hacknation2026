@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Dane lokalne
+data/
+*.db
+*.sqlite3
+
+# Skrypty uruchomieniowe
+.run/
+
+# Środowisko
+.env
+.env.local
+
+# Edytory
+.vscode/
+.idea/
+.DS_Store

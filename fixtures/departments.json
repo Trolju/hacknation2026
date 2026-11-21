@@ -1,0 +1,381 @@
+[
+  {
+    "id": "waiu",
+    "name": "Wydział Architektury i Urbanistyki",
+    "kind": "wydzial",
+    "keywords": [
+      "warunki zabudowy",
+      "pozwolenie na budowę",
+      "plan miejscowy",
+      "zagospodarowanie przestrzenne",
+      "architektura",
+      "urbanistyka",
+      "inwestycja budowlana"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wbiu",
+    "name": "Wydział Budżetu i Księgowości",
+    "kind": "wydzial",
+    "keywords": [
+      "budżet",
+      "księgowość",
+      "wydatki",
+      "dochody",
+      "zadłużenie",
+      "reprezentacja",
+      "faktury",
+      "płatności"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wedu",
+    "name": "Wydział Edukacji",
+    "kind": "wydzial",
+    "keywords": [
+      "szkoła",
+      "przedszkole",
+      "uczniowie",
+      "nauczyciele",
+      "oświata",
+      "edukacja",
+      "placówka oświatowa"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wfin",
+    "name": "Wydział Finansów",
+    "kind": "wydzial",
+    "keywords": [
+      "finanse",
+      "podatki lokalne",
+      "opłaty",
+      "windykacja",
+      "budżet miasta"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wgik",
+    "name": "Wydział Geodezji i Katastru",
+    "kind": "wydzial",
+    "keywords": [
+      "geodezja",
+      "kataster",
+      "działka",
+      "ewidencja gruntów",
+      "mapa",
+      "granice nieruchomości"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wgk",
+    "name": "Wydział Gospodarki Komunalnej",
+    "kind": "wydzial",
+    "keywords": [
+      "odpady",
+      "zielen",
+      "park",
+      "utrzymanie miasta",
+      "komunalny",
+      "woda",
+      "kanalizacja",
+      "czystość"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wgn",
+    "name": "Wydział Gospodarki Nieruchomościami",
+    "kind": "wydzial",
+    "keywords": [
+      "lokal komunalny",
+      "najem",
+      "czynsz",
+      "nieruchomość",
+      "sprzedaż działki",
+      "dzierżawa",
+      "zasób komunalny"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "winf",
+    "name": "Wydział Informatyki",
+    "kind": "wydzial",
+    "keywords": [
+      "informatyka",
+      "system",
+      "monitoring",
+      "sieć",
+      "oprogramowanie",
+      "dane",
+      "cyfryzacja"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "winw",
+    "name": "Wydział Inwestycji",
+    "kind": "wydzial",
+    "keywords": [
+      "inwestycja",
+      "remont",
+      "budowa",
+      "modernizacja",
+      "termomodernizacja",
+      "przetarg inwestycyjny"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wks",
+    "name": "Wydział Kultury i Sportu",
+    "kind": "wydzial",
+    "keywords": [
+      "kultura",
+      "sport",
+      "impreza",
+      "festiwal",
+      "klub sportowy",
+      "wydarzenie kulturalne",
+      "dotacja kulturalna"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wos",
+    "name": "Wydział Ochrony Środowiska",
+    "kind": "wydzial",
+    "keywords": [
+      "środowisko",
+      "wycinka",
+      "drzewo",
+      "powietrze",
+      "smog",
+      "ekologia",
+      "zwierzęta",
+      "hałas"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wok",
+    "name": "Wydział Organizacji i Kadr",
+    "kind": "wydzial",
+    "keywords": [
+      "wynagrodzenie",
+      "zatrudnienie",
+      "etat",
+      "kadry",
+      "nabór",
+      "umowa cywilnoprawna",
+      "nagroda",
+      "premia"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wps",
+    "name": "Wydział Polityki Społecznej",
+    "kind": "wydzial",
+    "keywords": [
+      "pomoc społeczna",
+      "zasiłek",
+      "świadczenie",
+      "organizacja pozarządowa",
+      "dotacja",
+      "senior",
+      "niepełnosprawność"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wpm",
+    "name": "Wydział Promocji Miasta",
+    "kind": "wydzial",
+    "keywords": [
+      "promocja",
+      "reklama",
+      "kampania",
+      "media społecznościowe",
+      "marketing",
+      "wizerunek",
+      "upominek"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wrm",
+    "name": "Wydział Rozwoju Miasta",
+    "kind": "wydzial",
+    "keywords": [
+      "rozwój",
+      "strategia",
+      "projekt unijny",
+      "fundusze europejskie",
+      "rewitalizacja"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wso",
+    "name": "Wydział Spraw Obywatelskich",
+    "kind": "wydzial",
+    "keywords": [
+      "ewidencja ludności",
+      "dowód osobisty",
+      "meldunek",
+      "akt stanu cywilnego",
+      "obywatelstwo"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wtd",
+    "name": "Wydział Transportu i Dróg",
+    "kind": "wydzial",
+    "keywords": [
+      "droga",
+      "transport",
+      "komunikacja publiczna",
+      "chodnik",
+      "ścieżka rowerowa",
+      "parkowanie",
+      "most"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wzp",
+    "name": "Wydział Zamówień Publicznych",
+    "kind": "wydzial",
+    "keywords": [
+      "zamówienie publiczne",
+      "przetarg",
+      "wolna ręka",
+      "specyfikacja",
+      "oferta",
+      "umowa ramowa"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "bks",
+    "name": "Biuro Komunikacji Społecznej",
+    "kind": "biuro",
+    "keywords": [
+      "komunikacja",
+      "rzecznik",
+      "informacja publiczna",
+      "wniosek UDIP",
+      "kontakt z mediami"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "brm",
+    "name": "Biuro Rady Miasta",
+    "kind": "biuro",
+    "keywords": [
+      "rada miasta",
+      "radny",
+      "sesja",
+      "dieta",
+      "uchwała",
+      "protokół sesji",
+      "komisja"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "bpra",
+    "name": "Biuro Prawne",
+    "kind": "biuro",
+    "keywords": [
+      "opinia prawna",
+      "decyzja",
+      "odmowa",
+      "skarga",
+      "sąd",
+      "postępowanie administracyjne"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "bzk",
+    "name": "Biuro Zarządzania Kryzysowego",
+    "kind": "biuro",
+    "keywords": [
+      "kryzys",
+      "zagrożenie",
+      "powódź",
+      "ewakuacja",
+      "alarm",
+      "bezpieczeństwo"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "sm",
+    "name": "Straż Miejska",
+    "kind": "biuro",
+    "keywords": [
+      "straż miejska",
+      "interwencja",
+      "mandat",
+      "kontrola",
+      "monitoring",
+      "patrol",
+      "wykroczenie"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "zdm",
+    "name": "Zarząd Dróg Miejskich i Komunikacji Publicznej",
+    "kind": "biuro",
+    "keywords": [
+      "droga",
+      "remont drogi",
+      "most",
+      "wiadukt",
+      "transport publiczny",
+      "tramwaj",
+      "autobus",
+      "przystanek"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wadm",
+    "name": "Wydział Administracyjny",
+    "kind": "wydzial",
+    "keywords": [
+      "administracja",
+      "budynek urzędu",
+      "pojazd służbowy",
+      "flota",
+      "dostawa",
+      "majątek"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  },
+  {
+    "id": "wzd",
+    "name": "Wydział Zdrowia",
+    "kind": "wydzial",
+    "keywords": [
+      "zdrowie",
+      "przychodnia",
+      "profilaktyka",
+      "szczepienie",
+      "placówka medyczna"
+    ],
+    "url": "https://bip.um.bydgoszcz.pl/artykuly/198/wydzialy"
+  }
+]

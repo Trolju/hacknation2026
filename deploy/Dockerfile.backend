@@ -1,0 +1,60 @@
+# syntax=docker/dockerfile:1
+# Backend: FastAPI + uvicorn na Pythonie 3.12 slim.
+#
+# Budowanie z katalogu głównego repozytorium (tam jest `pyproject.toml` i `fixtures/`):
+#   docker build -f deploy/Dockerfile.backend -t asystent-backend .
+#
+# Obraz nie zawiera sekretów ani plików `.env` — konfiguracja wchodzi przez
+# zmienne środowiskowe (patrz deploy/docker-compose.yml i deploy/.env.example).
+
+# ── etap 1: zależności ────────────────────────────────────────────────────
+FROM python:3.12-slim AS builder
+
+ENV PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /build
+
+# Projekt nie jest paczką instalowalną (`tool.uv.package = false` w pyproject.toml),
+# więc `pip install .` nie zadziała. Zależności wyciągamy wprost z pyproject.toml.
+COPY backend/pyproject.toml ./pyproject.toml
+RUN python -c "import tomllib; print('\n'.join(tomllib.load(open('pyproject.toml', 'rb'))['project']['dependencies']))" > requirements.txt \
+    && python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# ── etap 2: obraz docelowy ────────────────────────────────────────────────
+FROM python:3.12-slim AS runtime
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/opt/venv/bin:$PATH" \
+    MODULE_MODE_DEFAULT=fake \
+    DATABASE_URL=sqlite:////srv/data/app.db \
+    FIXTURES_DIR=/srv/fixtures
+
+# curl jest potrzebny do HEALTHCHECK; użytkownik nietrootowy do uruchomienia aplikacji.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --gid 10001 app \
+    && useradd --uid 10001 --gid app --no-create-home --shell /usr/sbin/nologin app
+
+# Układ katalogów odwzorowuje repozytorium: `app/core/settings.py` liczy katalog
+# główny jako parents[3], czyli /srv — dlatego fixtures leżą w /srv/fixtures.
+WORKDIR /srv/backend
+
+COPY --from=builder /opt/venv /opt/venv
+COPY backend/app ./app
+COPY fixtures /srv/fixtures
+
+RUN mkdir -p /srv/data && chown -R app:app /srv/data
+
+USER app
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://127.0.0.1:8000/api/health || exit 1
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

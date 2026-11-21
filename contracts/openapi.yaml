@@ -1,0 +1,966 @@
+openapi: 3.1.0
+info:
+  title: Inteligentny asystent urzędnika — API
+  version: 1.0.0
+  description: |
+    Kontrakt API prototypu. **ZAMROŻONY po Fali 0.**
+    Zmiana wymaga PR-a `contract: <opis>` + wpisu w `contracts/CHANGELOG.md`.
+    Wszystkie ścieżki pod prefiksem `/api`.
+
+servers:
+  - url: http://localhost:8000
+    description: Lokalny dev
+
+tags:
+  - name: system
+  - name: cases
+  - name: documents
+  - name: archive
+  - name: routing
+  - name: drafting
+  - name: anonymize
+  - name: inference
+  - name: audit
+
+paths:
+  # ─────────────────────────────── system ───────────────────────────────
+  /api/health:
+    get:
+      tags: [system]
+      operationId: getHealth
+      summary: Stan aplikacji i modułów
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Health' }
+
+  /api/meta:
+    get:
+      tags: [system]
+      operationId: getMeta
+      summary: Metadane aplikacji i tryby modułów
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AppMeta' }
+
+  # ─────────────────────────────── cases ────────────────────────────────
+  /api/cases:
+    get:
+      tags: [cases]
+      operationId: listCases
+      summary: Lista wniosków (kalendarz)
+      parameters:
+        - { name: year, in: query, schema: { type: integer } }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/CaseStatus' } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: sort, in: query, schema: { type: string, enum: [deadline_asc, deadline_desc, inflow_asc, inflow_desc], default: deadline_asc } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Case' }
+    post:
+      tags: [cases]
+      operationId: createCase
+      summary: Utworzenie wniosku
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CaseCreate' }
+      responses:
+        '201':
+          description: Utworzono
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Case' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/cases/years:
+    get:
+      tags: [cases]
+      operationId: listCaseYears
+      summary: Dostępne lata wniosków
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: integer }
+
+  /api/cases/{case_id}:
+    parameters:
+      - { name: case_id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [cases]
+      operationId: getCase
+      summary: Szczegóły wniosku
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CaseDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [cases]
+      operationId: updateCase
+      summary: Aktualizacja pól wniosku
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CasePatch' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Case' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/ValidationError' }
+
+  /api/cases/{case_id}/transition:
+    parameters:
+      - { name: case_id, in: path, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [cases]
+      operationId: transitionCase
+      summary: Zmiana statusu sprawy (maszyna stanów a–e)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/TransitionRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Case' }
+        '409':
+          description: Niedozwolone przejście
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/cases/{case_id}/history:
+    parameters:
+      - { name: case_id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [cases]
+      operationId: getCaseHistory
+      summary: Historia zmian sprawy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/HistoryEntry' }
+
+  # ────────────────────────────── documents ─────────────────────────────
+  /api/documents:
+    get:
+      tags: [documents]
+      operationId: listDocuments
+      summary: Lista dokumentów w bazie wiedzy
+      parameters:
+        - { name: kind, in: query, schema: { $ref: '#/components/schemas/DocumentKind' } }
+        - { name: case_id, in: query, schema: { type: string, format: uuid } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Document' }
+    post:
+      tags: [documents]
+      operationId: uploadDocument
+      summary: Wgranie dokumentu (PDF/DOCX/TXT)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, kind]
+              properties:
+                file: { type: string, format: binary }
+                kind: { $ref: '#/components/schemas/DocumentKind' }
+                case_id: { type: string, format: uuid }
+                title: { type: string }
+      responses:
+        '201':
+          description: Wgrano i przetworzono
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Document' }
+        '413':
+          description: Plik za duży
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '415':
+          description: Nieobsługiwany format
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+
+  /api/documents/{document_id}:
+    parameters:
+      - { name: document_id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [documents]
+      operationId: getDocument
+      summary: Szczegóły dokumentu z tekstem
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DocumentDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [documents]
+      operationId: deleteDocument
+      summary: Usunięcie dokumentu i jego indeksu
+      responses:
+        '204': { description: Usunięto }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/documents/{document_id}/chunks:
+    parameters:
+      - { name: document_id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [documents]
+      operationId: listDocumentChunks
+      summary: Chunki dokumentu (podgląd indeksu)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Chunk' }
+
+  /api/documents/{document_id}/reindex:
+    parameters:
+      - { name: document_id, in: path, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [documents]
+      operationId: reindexDocument
+      summary: Ponowne zbudowanie indeksu dokumentu
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Document' }
+
+  # ─────────────────────────────── archive ──────────────────────────────
+  /api/archive/similar:
+    post:
+      tags: [archive]
+      operationId: findSimilarCases
+      summary: Podobne sprawy z archiwum
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SimilarRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/SimilarCase' }
+
+  /api/archive/{archive_id}:
+    parameters:
+      - { name: archive_id, in: path, required: true, schema: { type: string } }
+    get:
+      tags: [archive]
+      operationId: getArchiveCase
+      summary: Szczegóły sprawy archiwalnej
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ArchiveCase' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ─────────────────────────────── routing ──────────────────────────────
+  /api/routing/departments:
+    get:
+      tags: [routing]
+      operationId: listDepartments
+      summary: Taksonomia wydziałów i biur UMB
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Department' }
+
+  /api/routing/suggest:
+    post:
+      tags: [routing]
+      operationId: suggestDepartments
+      summary: Sugestia wydziałów dla treści wniosku
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SuggestRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/DepartmentSuggestion' }
+
+  /api/routing/inquiry:
+    post:
+      tags: [routing]
+      operationId: generateInquiry
+      summary: Projekt zapytania do wydziałów (tylko projekt — nic nie wysyłamy)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InquiryRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/GeneratedLetter' }
+
+  # ────────────────────────────── drafting ──────────────────────────────
+  /api/drafting/draft:
+    post:
+      tags: [drafting]
+      operationId: createDraft
+      summary: Wygenerowanie projektu odpowiedzi
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DraftRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Draft' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/drafting/{case_id}:
+    parameters:
+      - { name: case_id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [drafting]
+      operationId: getDraft
+      summary: Aktualny projekt odpowiedzi dla sprawy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Draft' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/drafting/{draft_id}:
+    parameters:
+      - { name: draft_id, in: path, required: true, schema: { type: string, format: uuid } }
+    patch:
+      tags: [drafting]
+      operationId: updateDraft
+      summary: Zapis edycji projektu (treść po korekcie urzędnika)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DraftPatch' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Draft' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/drafting/{draft_id}/export:
+    parameters:
+      - { name: draft_id, in: path, required: true, schema: { type: string, format: uuid } }
+    get:
+      tags: [drafting]
+      operationId: exportDraft
+      summary: Eksport projektu do DOCX lub TXT
+      parameters:
+        - { name: format, in: query, schema: { type: string, enum: [docx, txt], default: docx } }
+        - { name: anonymized, in: query, schema: { type: boolean, default: false } }
+      responses:
+        '200':
+          description: Plik
+          content:
+            application/octet-stream:
+              schema: { type: string, format: binary }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ────────────────────────────── anonymize ─────────────────────────────
+  /api/anonymize/detect:
+    post:
+      tags: [anonymize]
+      operationId: detectSpans
+      summary: Wykrycie danych do anonimizacji
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DetectRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Span' }
+
+  /api/anonymize/apply:
+    post:
+      tags: [anonymize]
+      operationId: applyAnonymization
+      summary: Zastosowanie zaakceptowanych spanów
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApplyRequest' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ApplyResult' }
+
+  /api/anonymize/evaluate:
+    get:
+      tags: [anonymize]
+      operationId: evaluateAnonymizer
+      summary: Ocena na zbiorze etykietowanym (dev/CI)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AnonymizerMetrics' }
+
+  # ────────────────────────────── inference ─────────────────────────────
+  /api/inference/health:
+    get:
+      tags: [inference]
+      operationId: getInferenceHealth
+      summary: Stan warstwy modeli
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InferenceHealth' }
+
+  /api/inference/models:
+    get:
+      tags: [inference]
+      operationId: listModels
+      summary: Dostępne modele
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ModelInfo' }
+
+  /api/inference/test:
+    post:
+      tags: [inference]
+      operationId: testInference
+      summary: Test połączenia z modelem
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InferenceTestResult' }
+
+  # ──────────────────────────────── audit ───────────────────────────────
+  /api/audit:
+    get:
+      tags: [audit]
+      operationId: listAudit
+      summary: Dziennik audytu
+      parameters:
+        - { name: case_id, in: query, schema: { type: string, format: uuid } }
+        - { name: limit, in: query, schema: { type: integer, default: 100, maximum: 500 } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AuditEntry' }
+
+components:
+  responses:
+    NotFound:
+      description: Nie znaleziono
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    ValidationError:
+      description: Błąd walidacji
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    # ── wspólne ──
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code: { type: string, examples: [not_found] }
+        message: { type: string, examples: ['Nie znaleziono wniosku'] }
+        details: { type: object, additionalProperties: true }
+
+    Health:
+      type: object
+      required: [status, version, modules]
+      properties:
+        status: { type: string, enum: [ok, degraded] }
+        version: { type: string }
+        modules:
+          type: object
+          additionalProperties: { type: string, enum: [fake, real, error] }
+
+    AppMeta:
+      type: object
+      required: [name, version, offline, module_modes]
+      properties:
+        name: { type: string }
+        version: { type: string }
+        offline: { type: boolean }
+        module_modes:
+          type: object
+          additionalProperties: { type: string, enum: [fake, real] }
+
+    # ── cases ──
+    CaseStatus:
+      type: string
+      enum: [nowy, zapytania_wyslane, kwerenda, przygotowana_odpowiedz, odpowiedz_wyslana]
+      description: |
+        Maszyna stanów a–e:
+        a=nowy, b=zapytania_wyslane, c=kwerenda, d=przygotowana_odpowiedz, e=odpowiedz_wyslana
+
+    Urgency:
+      type: string
+      enum: [overdue, today, tomorrow, soon, normal, closed]
+      description: |
+        overdue = po terminie, today = termin dziś, tomorrow = termin jutro,
+        soon = ≤ 3 dni, normal = pozostałe, closed = odpowiedź wysłana
+
+    Case:
+      type: object
+      required: [id, case_number, ordinal, subject, inflow_date, deadline, status, year, days_remaining, urgency, handler_initials]
+      properties:
+        id: { type: string, format: uuid }
+        case_number: { type: string, examples: ['UDIP.1435.12.2026'] }
+        ordinal: { type: integer, description: Liczba porządkowa }
+        subject: { type: string, description: Skrócony opis tematu wniosku }
+        inflow_date: { type: string, format: date }
+        deadline: { type: string, format: date }
+        response_date: { type: [string, 'null'], format: date }
+        handler_initials: { type: string, examples: ['JK'] }
+        status: { $ref: '#/components/schemas/CaseStatus' }
+        year: { type: integer }
+        days_remaining: { type: integer, description: 'Dni do terminu; ujemne = po terminie' }
+        urgency: { $ref: '#/components/schemas/Urgency' }
+        applicant_type:
+          type: string
+          enum: [osoba_fizyczna, organizacja, media, inne]
+        source_document_id: { type: [string, 'null'], format: uuid }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    CaseDetail:
+      allOf:
+        - $ref: '#/components/schemas/Case'
+        - type: object
+          properties:
+            notes: { type: [string, 'null'] }
+            department_ids:
+              type: array
+              items: { type: string }
+            document_ids:
+              type: array
+              items: { type: string, format: uuid }
+
+    CaseCreate:
+      type: object
+      required: [case_number, subject, inflow_date]
+      properties:
+        case_number: { type: string }
+        subject: { type: string }
+        inflow_date: { type: string, format: date }
+        deadline: { type: [string, 'null'], format: date, description: 'Puste = wyliczone z polityki terminów' }
+        handler_initials: { type: string, default: '' }
+        applicant_type:
+          type: string
+          enum: [osoba_fizyczna, organizacja, media, inne]
+          default: inne
+        source_document_id: { type: [string, 'null'], format: uuid }
+
+    CasePatch:
+      type: object
+      properties:
+        subject: { type: string }
+        deadline: { type: string, format: date }
+        response_date: { type: [string, 'null'], format: date }
+        handler_initials: { type: string }
+        applicant_type:
+          type: string
+          enum: [osoba_fizyczna, organizacja, media, inne]
+        notes: { type: [string, 'null'] }
+        department_ids:
+          type: array
+          items: { type: string }
+
+    TransitionRequest:
+      type: object
+      required: [to]
+      properties:
+        to: { $ref: '#/components/schemas/CaseStatus' }
+        actor: { type: string, default: 'urzędnik' }
+        note: { type: [string, 'null'] }
+
+    HistoryEntry:
+      type: object
+      required: [id, case_id, at, actor, action]
+      properties:
+        id: { type: string, format: uuid }
+        case_id: { type: string, format: uuid }
+        at: { type: string, format: date-time }
+        actor: { type: string }
+        action: { type: string, examples: [status_change, field_update, created] }
+        from_value: { type: [string, 'null'] }
+        to_value: { type: [string, 'null'] }
+        note: { type: [string, 'null'] }
+
+    # ── documents ──
+    DocumentKind:
+      type: string
+      enum: [wniosek, odpowiedz_wydzialu, archiwum, ustawa, zarzadzenie, inne]
+
+    Document:
+      type: object
+      required: [id, kind, filename, mime, size_bytes, status, created_at]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { $ref: '#/components/schemas/DocumentKind' }
+        filename: { type: string }
+        title: { type: [string, 'null'] }
+        mime: { type: string }
+        size_bytes: { type: integer }
+        status: { type: string, enum: [pending, parsed, indexed, failed] }
+        error: { type: [string, 'null'] }
+        case_id: { type: [string, 'null'], format: uuid }
+        chunk_count: { type: integer, default: 0 }
+        created_at: { type: string, format: date-time }
+
+    DocumentDetail:
+      allOf:
+        - $ref: '#/components/schemas/Document'
+        - type: object
+          properties:
+            text: { type: string }
+            page_count: { type: integer }
+
+    Chunk:
+      type: object
+      required: [id, document_id, index, text]
+      properties:
+        id: { type: string }
+        document_id: { type: string, format: uuid }
+        index: { type: integer }
+        text: { type: string }
+        page: { type: [integer, 'null'] }
+        section: { type: [string, 'null'] }
+
+    # ── archive ──
+    SimilarRequest:
+      type: object
+      required: [text]
+      properties:
+        text: { type: string }
+        k: { type: integer, default: 5, maximum: 20 }
+        year_from: { type: [integer, 'null'] }
+        exclude_case_id: { type: [string, 'null'], format: uuid }
+
+    SimilarCase:
+      type: object
+      required: [archive_id, case_number, subject, score]
+      properties:
+        archive_id: { type: string }
+        case_number: { type: string }
+        subject: { type: string }
+        year: { type: integer }
+        score: { type: number, minimum: 0, maximum: 1 }
+        snippet: { type: string }
+        matched_terms:
+          type: array
+          items: { type: string }
+        response_excerpt: { type: string }
+
+    ArchiveCase:
+      type: object
+      required: [archive_id, case_number, subject, year, request_text, response_text]
+      properties:
+        archive_id: { type: string }
+        case_number: { type: string }
+        subject: { type: string }
+        year: { type: integer }
+        request_text: { type: string }
+        response_text: { type: string }
+        departments:
+          type: array
+          items: { type: string }
+
+    # ── routing ──
+    Department:
+      type: object
+      required: [id, name, kind]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        kind: { type: string, enum: [wydzial, biuro, referat] }
+        keywords:
+          type: array
+          items: { type: string }
+        url: { type: [string, 'null'] }
+
+    SuggestRequest:
+      type: object
+      required: [text]
+      properties:
+        text: { type: string }
+        k: { type: integer, default: 3, maximum: 10 }
+
+    DepartmentSuggestion:
+      type: object
+      required: [department_id, name, confidence, rationale]
+      properties:
+        department_id: { type: string }
+        name: { type: string }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        rationale: { type: string }
+        matched_terms:
+          type: array
+          items: { type: string }
+
+    InquiryRequest:
+      type: object
+      required: [case_id, department_ids]
+      properties:
+        case_id: { type: string, format: uuid }
+        department_ids:
+          type: array
+          items: { type: string }
+
+    GeneratedLetter:
+      type: object
+      required: [title, body, addressees]
+      properties:
+        title: { type: string }
+        body: { type: string }
+        addressees:
+          type: array
+          items: { type: string }
+
+    # ── drafting ──
+    DraftRequest:
+      type: object
+      required: [case_id]
+      properties:
+        case_id: { type: string, format: uuid }
+        department_reply_ids:
+          type: array
+          items: { type: string, format: uuid }
+        use_archive: { type: boolean, default: true }
+        use_statutes: { type: boolean, default: true }
+        tone: { type: string, enum: [formalny, uprzejmy], default: formalny }
+
+    Draft:
+      type: object
+      required: [id, case_id, title, body, citations, unsupported, created_at]
+      properties:
+        id: { type: string, format: uuid }
+        case_id: { type: string, format: uuid }
+        title: { type: string }
+        body: { type: string, description: 'Markdown z odnośnikami [^n]' }
+        citations:
+          type: array
+          items: { $ref: '#/components/schemas/Citation' }
+        unsupported:
+          type: array
+          description: Zdania bez pokrycia w źródłach
+          items: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: [string, 'null'], format: date-time }
+
+    Citation:
+      type: object
+      required: [ref, source_type, source_id, label]
+      properties:
+        ref: { type: integer }
+        source_type: { type: string, enum: [document, archive, statute, department_reply] }
+        source_id: { type: string }
+        label: { type: string }
+        excerpt: { type: string }
+
+    DraftPatch:
+      type: object
+      required: [body]
+      properties:
+        body: { type: string }
+        title: { type: string }
+
+    # ── anonymize ──
+    SpanCategory:
+      type: string
+      enum: [pesel, nip, regon, dowod, paszport, telefon, email, iban, adres, imie_nazwisko, data_urodzenia, podpis, inne]
+
+    Span:
+      type: object
+      required: [start, end, text, category, confidence, source]
+      properties:
+        start: { type: integer }
+        end: { type: integer }
+        text: { type: string }
+        category: { $ref: '#/components/schemas/SpanCategory' }
+        confidence: { type: number, minimum: 0, maximum: 1 }
+        source: { type: string, enum: [regex, ner, llm] }
+
+    DetectRequest:
+      type: object
+      required: [text]
+      properties:
+        text: { type: string }
+        categories:
+          type: array
+          items: { $ref: '#/components/schemas/SpanCategory' }
+
+    ApplyRequest:
+      type: object
+      required: [text, spans]
+      properties:
+        text: { type: string }
+        spans:
+          type: array
+          items: { $ref: '#/components/schemas/Span' }
+        placeholder: { type: string, default: '[USUNIĘTO]' }
+
+    ApplyResult:
+      type: object
+      required: [text, removed_count]
+      properties:
+        text: { type: string }
+        removed_count: { type: integer }
+
+    AnonymizerMetrics:
+      type: object
+      required: [precision, recall, f1, per_category]
+      properties:
+        precision: { type: number }
+        recall: { type: number }
+        f1: { type: number }
+        per_category:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              precision: { type: number }
+              recall: { type: number }
+              support: { type: integer }
+
+    # ── inference ──
+    InferenceHealth:
+      type: object
+      required: [provider, model, status, offline]
+      properties:
+        provider: { type: string, enum: [fake, openai, llamacpp, ollama] }
+        model: { type: string }
+        status: { type: string, enum: [ok, degraded, down] }
+        offline: { type: boolean }
+        latency_ms: { type: [number, 'null'] }
+        message: { type: [string, 'null'] }
+
+    ModelInfo:
+      type: object
+      required: [id, label, provider, local]
+      properties:
+        id: { type: string }
+        label: { type: string }
+        provider: { type: string }
+        local: { type: boolean }
+        size_gb: { type: [number, 'null'] }
+        recommended: { type: boolean, default: false }
+
+    InferenceTestResult:
+      type: object
+      required: [ok, latency_ms, output]
+      properties:
+        ok: { type: boolean }
+        latency_ms: { type: number }
+        output: { type: string }
+        error: { type: [string, 'null'] }
+
+    # ── audit ──
+    AuditEntry:
+      type: object
+      required: [id, at, actor, action, entity_type, entity_id]
+      properties:
+        id: { type: string, format: uuid }
+        at: { type: string, format: date-time }
+        actor: { type: string }
+        action: { type: string }
+        entity_type: { type: string }
+        entity_id: { type: string }
+        case_id: { type: [string, 'null'], format: uuid }
+        payload: { type: object, additionalProperties: true }

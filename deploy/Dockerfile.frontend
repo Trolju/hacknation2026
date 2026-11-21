@@ -1,0 +1,31 @@
+# syntax=docker/dockerfile:1
+# Frontend: build Vite, serwowanie statyków przez nginx z proxy /api do backendu.
+#
+# Budowanie z katalogu głównego repozytorium:
+#   docker build -f deploy/Dockerfile.frontend -t asystent-frontend .
+
+# ── etap 1: build ─────────────────────────────────────────────────────────
+FROM node:20-alpine AS build
+
+WORKDIR /app
+
+# Najpierw same manifesty — warstwa z node_modules cache'uje się między buildami.
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --no-audit --no-fund
+
+COPY frontend/ ./
+# `npm run build` = `tsc -b && vite build`; wynik trafia do /app/dist.
+RUN npm run build
+
+# ── etap 2: serwowanie ────────────────────────────────────────────────────
+FROM nginx:1.27-alpine AS runtime
+
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD wget -q --spider http://127.0.0.1/ || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]

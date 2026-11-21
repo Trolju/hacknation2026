@@ -1,0 +1,54 @@
+/*
+ * Globalne poprawki spójności. Uzupełniają `index.css` (zmienne motywu),
+ * nie zastępują go — nie ruszamy plików spoza strefy własności.
+ */
+
+/*
+ * Widoczny focus na każdym elemencie interaktywnym. Selektory mają zerową
+ * specyficzność (`:where`), więc klasy Tailwinda nadal mogą nadpisać obramowanie
+ * własnym pierścieniem.
+ */
+:where(a, button, [role="button"], summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Link „Przejdź do treści” — widoczny dopiero po wejściu klawiaturą. */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -4rem;
+  z-index: 100;
+  border-radius: var(--radius);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: top 150ms ease-in;
+}
+
+.skip-link:focus-visible {
+  top: 0.75rem;
+}
+
+/*
+ * Na wąskich ekranach tabele w treści przewijają się poziomo, zamiast ściskać
+ * kolumny do nieczytelnych szerokości. Okna modalne są poza `<main>`, więc
+ * reguła ich nie dotyczy.
+ */
+@media (max-width: 767px) {
+  main table {
+    min-width: 34rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
