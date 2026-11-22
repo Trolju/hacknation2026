@@ -4,40 +4,53 @@ Data pierwszego przebiegu: 22 listopada 2026
 Data drugiego przebiegu: 22 listopada 2026, po commicie `5356e68`
 Data trzeciego przebiegu: 22 listopada 2026, po commicie `cbf7ee1`
 Data czwartego przebiegu: 22 listopada 2026, po commicie `0fadae0`
+Data piątego przebiegu: 22 listopada 2026, po commicie `0db966c`
 Środowisko: lokalne, backend `http://127.0.0.1:8000`, frontend `http://127.0.0.1:5173`
 Zakres: wszystkie osiem modułów na adapterach `real`, generator odpowiedzi na żywym
 Mistralu (`mistral-small-latest`). Nie atrapy.
 
 ---
 
-## 0. Podsumowanie czwartego przebiegu
+## 0. Podsumowanie piątego przebiegu
 
-Sześć ustaleń z drugiego raportu (P11–P16) jest naprawionych i zweryfikowanych na żywym
-modelu. Wszystkie pomiary, które wcześniej pokazywały problem, są teraz zerowe:
+Wszystkie szesnaście ustaleń z poprzednich przebiegów pozostaje zamkniętych. Piąty
+przebieg nie znalazł ani jednej regresji i ani jednego nowego ustalenia.
 
-| Miara | Przebieg 2 | Przebieg 4 |
+| Miara | Przebieg 4 | Przebieg 5 |
 | --- | --- | --- |
-| Fałszywe alarmy „Dz. U." w `unsupported` | 6/10 (60%) | **0/10 (0%)** |
-| Przebiegi ≥3 odnośników ściśle kolejnych | 9/10 (90%) | **0/10 (0%)** |
-| Daty ISO w treści pisma | 1/10 (10%) | **0/10 (0%)** |
-| Carety `[^n]` w eksporcie MD | obecne | **0 w MD, DOCX i PDF** |
-| Nazwa pliku eksportu | `odpowiedz-c0000001-projekt.docx` | **`odpowiedz-UDIP.1435.7.2026-projekt.docx`** |
-| Duplikaty dokumentów w bazie | 3 pary | **0 par** |
+| Testy backendu | 564 (+1 pominięty) | **584 (+1 pominięty)** |
+| Testy frontendu | 199 | **199** |
+| Test wołający prawdziwe API | 7 w 3,58 s | **7 w 4,91 s** |
 | Degradacja do szablonu | 0/20 | **0/20** |
 | Przeciek definicji przypisów | 0/20 | **0/20** |
-| Testy backendu | 512 (+1 pominięty) | **564 (+1 pominięty)** |
-| Testy frontendu | 195 | **199** |
-| Test wołający prawdziwe API | 7 w 5,3 s | **7 w 3,58 s** |
+| Fałszywe alarmy „Dz. U." | 0/10 | **0/10** |
+| Przebiegi ≥3 odnośników ściśle kolejnych | 0/10 | **0/10** |
+| Daty ISO w treści pisma | 0/10 | **0/10** |
+| Odnośniki bez cytatu w panelu | 0/10 | **0/10** |
+| Carety `[^n]` w eksporcie | 0 | **0 w MD, DOCX i PDF** |
+| Ścieżka HTTP (43 asercje) | — | **43/43 OK** |
 
-Czwarty przebieg nie odsłonił żadnej regresji w P1–P10. Jedyna obserwacja, która
-została otwarta (P17), jest świadomą decyzją projektową — opis w sekcji 6.
+## 1. Co zmieniło się od czwartego przebiegu
 
-## 1. Konfiguracja, na której prowadzono testy
+Między `0fadae0` a `0db966c` projekt przeszedł zmiany, które nie dotyczyły logiki
+generatora, ale zmieniły dane i interfejs:
+
+| Zmiana | Skutek dla testów |
+| --- | --- |
+| Nazwa projektu: **Capricorn**, zespół sLaRpNaTiOn | tytuł strony i nagłówek aplikacji |
+| Numeracja spraw: `UDIP.1435.N.2026` → **`BKS.IV.1431.N.2026`** | wszystkie skrypty testowe przestawione na nowy format |
+| Pełna lista **28 kategorii anonimizacji UMB** (32 wewnętrznie) | nowe kategorie: `wizerunek`, `zdrowie`, `orientacja`, `karalnosc`, tajemnice ustawowe |
+| Termin opisowy (`deadline_note`) | sprawy mogą mieć termin w formie „19.08.2026/18.09.2026 — doprecyzowanie wniosku" |
+| Moduł **przypomnień** | nowy endpoint `GET /api/reminders`, dzwonek w nagłówku |
+| Dialog nowej sprawy | tworzenie sprawy z poziomu kalendarza |
+| Nowy szablon podstawy prawnej | cytuje pojedyncze artykuły zamiast ciągu odnośników |
+
+## 2. Konfiguracja, na której prowadzono testy
 
 | Ustawienie | Wartość |
 | --- | --- |
 | `MODULE_MODE_DEFAULT` | `real` |
-| `MODULE_MODE_*` | `real` dla cases, ingest, archive, routing, drafting, anonymize, inference, audit |
+| `MODULE_MODE_*` | `real` dla cases, ingest, ingest_parser, archive, routing, drafting, anonymize, inference, audit |
 | `MODULE_MODE_INFERENCE_EMBEDDING` | `fake` — Mistral nie serwuje `BAAI/bge-m3`, archiwum działa na BM25 i pokryciu leksykalnym |
 | `LLM_PROVIDER` / `LLM_MODEL` | `mistral` / `mistral-small-latest` |
 | `LLM_TIMEOUT_S` / `LLM_MAX_TOKENS` / `LLM_TEMPERATURE` | 60 / 2048 / 0,2 |
@@ -54,9 +67,9 @@ Potwierdzenie z `GET /api/health`:
 "inference":"real","audit":"real"}}
 ```
 
-## 2. Metoda
+## 3. Metoda
 
-Testy prowadzono na czterech poziomach, żeby nie opierać się wyłącznie na tym, co widać
+Testy prowadzono na pięciu poziomach, żeby nie opierać się wyłącznie na tym, co widać
 w interfejsie:
 
 1. **Testy jednostkowe i integracyjne repozytorium** — `pytest` i `vitest`, plus test
@@ -64,38 +77,42 @@ w interfejsie:
 2. **Bezpośrednie wywołania adapterów** — `container.get_llm()`, `get_cases()`,
    `get_archive()`, `get_documents()` w procesie Pythona, z pomiarem czasu i inspekcją
    surowej odpowiedzi modelu.
-3. **Pełna ścieżka przez HTTP** — logowanie, wgranie plików, kalendarz, archiwum,
-   routing, zapytanie, projekt, zapis, eksport, anonimizacja, przejścia stanów, audyt.
-4. **Interfejs w przeglądarce** — te same ekrany na realnym backendzie, w tym kliknięcia
-   w panelu cytowań.
+3. **Pełna ścieżka przez HTTP** — 43 asercje: sprawy, nowa sprawa, przejścia stanów,
+   historia, audyt, dokumenty, routing, archiwum, anonimizacja, przypomnienia,
+   inference, uwierzytelnianie.
+4. **Interfejs w przeglądarce** — wszystkie osiem ekranów, wgranie pliku, kliknięcie
+   cytowania, eksport pliku.
 5. **Inspekcja plików eksportu** — DOCX rozpakowany (`word/document.xml`), PDF przez
    `pdftotext`, MD jako tekst. Sprawdzane, czy znaczniki odnośników są w formie `[n]`,
    a nie `[^n]`.
 
 Pomiary jakości generatora: 5 spraw × 4 generacje = 20 prób, każda z inspekcją surowej
-odpowiedzi modelu przed i po normalizacji. Ten sam skrypt we wszystkich czterech przebiegach.
+odpowiedzi modelu przed i po normalizacji. Ten sam skrypt we wszystkich pięciu przebiegach.
 
-## 3. Wyniki pozytywne
+## 4. Wyniki pozytywne
 
 | Obszar | Wynik |
 | --- | --- |
-| Wgranie PDF / DOCX / TXT | 19–102 ms, status `indexed`, polskie znaki zachowane, fragmenty policzone |
-| Odczyt dokumentu | 591–3250 znaków, 1–5 fragmentów, `page_count` poprawny |
-| Kalendarz (SQLite) | 10 spraw, `days_remaining` i `urgency` liczone z `DEMO_TODAY` |
-| Archiwum | 5 wyników, oceny 0,866 → 0,278 (malejąco), 7–22 ms |
-| Routing | 26 komórek, WGN 98% dla najmu lokali, wyjaśnienie pokrycia („3 z 6 istotnych słów") |
-| Zapytanie do komórek | numer sprawy i termin obecne w treści |
-| Generator (Mistral) | 4,2–5,6 s na projekt, 5–14 cytowań, zero wiszących odnośników |
+| Wgranie PDF / DOCX / TXT | 201, status `indexed`, polskie znaki zachowane, fragmenty policzone |
+| Ponowne wgranie tego samego pliku | ten sam `id`, zero duplikatów |
+| Odczyt dokumentu | 583 i 769 znaków, `page_count=1`, po 1 fragmencie |
+| Kalendarz (SQLite) | 10 spraw demo, `days_remaining` i `urgency` liczone z `DEMO_TODAY` |
+| Nowa sprawa | 201, status `nowy`, termin policzony (8 dni), duplikat numeru → 409 |
+| Archiwum | 5 wyników, oceny 0,898 → 0,233 (malejąco) |
+| Routing | 26 komórek, WGN 0,98 dla najmu lokali, uzasadnienie z dopasowanymi słowami |
+| Generator (Mistral) | 3,4–6,8 s na projekt, 3–8 cytowań, zero wiszących odnośników |
 | Zapis projektu | nowa treść i kolejna wersja |
-| Eksport DOCX / PDF / MD | 200, poprawne nagłówki plików (`PK`, `%PDF`), `X-Redactions` |
-| Anonimizacja | 6 kategorii, precyzja 1,00, pełność 1,00, F1 1,00 |
+| Eksport DOCX / PDF / MD | 200, poprawne nagłówki plików (`PK`, `%PDF`), nazwa z numerem sprawy |
+| Anonimizacja | 6 encji, 6 kategorii, precyzja 0,966, pełność 0,977, F1 0,972 |
 | Przejścia stanów | 7/7 scenariuszy, pełny łańcuch `nowy → zapytania_wyslane → kwerenda → przygotowana_odpowiedz → odpowiedz_wyslana` |
-| Kwerenda | `kwerenda_days=14` przesuwa termin (06.03 → 20.03), `response_date` ustawiane przy zamknięciu |
-| Cofnięcie stanu bez notatki | odrzucone, HTTP 409, komunikat „Cofnięcie stanu wymaga notatki." |
+| Kwerenda | `kwerenda_days=14` zapisane i przesuwa termin |
+| Cofnięcie stanu bez notatki | odrzucone, HTTP 409 |
 | Cofnięcie stanu z notatką | przechodzi, HTTP 200 |
-| Historia sprawy | 5 wpisów, pierwszy `created` z datą wpływu `2026-02-20T08:00:00` |
-| Audyt | 100 wpisów, akcje: `case.transitioned`, `document.uploaded`, `document.deleted`, `draft.exported`, `draft.generated`, `draft.saved` |
-| Archiwum rośnie | zamknięte sprawy wchodzą jako `n0001` (0,985) i `n0002` (0,990) |
+| Historia sprawy | 6 wpisów, pierwszy `created` z datą wpływu, autor i data w każdym |
+| Audyt | 69 wpisów, akcje: `case.created`, `case.transitioned`, `document.uploaded`, `draft.exported`, `draft.generated` |
+| Przypomnienia | 3 pozycje |
+| Inference | `health` ok w 324 ms, `test` 1004 ms, katalog 66 modeli |
+| Uwierzytelnianie | sesja JK, zły PIN → 401, brak tokenu → 401 |
 
 ### Obsługa awarii modelu
 
@@ -111,71 +128,58 @@ Wszystkie scenariusze awarii kończą się kontrolowanym wyjątkiem, nie błęde
 | HTTP 500 od dostawcy | `InferenceError` z kodem i treścią odpowiedzi |
 | Śmieciowa odpowiedź („Nie wiem.") | `degraded=True`, `degraded_reason` ustawione, projekt z szablonu |
 
-## 4. Ustalenia z pierwszego przebiegu (P1–P10) — nadal naprawione
+## 5. Ustalenia z pierwszego przebiegu (P1–P10) — nadal naprawione
 
-| # | Ustalenie | Status | Dowód z czwartego przebiegu |
+| # | Ustalenie | Status | Dowód z piątego przebiegu |
 | --- | --- | --- | --- |
 | P1 | 20% projektów schodziło do szablonu przez `[n]` zamiast `[^n]` | **naprawione** | 20/20 projektów z modelu, `degraded=False` w każdym |
-| P2 | Szablon cytował każdy artykuł wgranej ustawy | **naprawione** | 0 zdań „Podstawę prawną stanowi", 2096 znaków zamiast 3808 |
+| P2 | Szablon cytował każdy artykuł wgranej ustawy | **naprawione** | 0 zdań „Podstawę prawną stanowi", 1235–3146 znaków |
 | P3 | Definicje przypisów przeciekały do treści pisma | **naprawione** | 0/20 prób z blokiem `[^n]:` w treści |
-| P4 | Wgranie i eksport w UI zwracały 401 | **naprawione** | toast „Dokument wgrany i zaindeksowany", toast „Plik gotowy" |
+| P4 | Wgranie i eksport w UI zwracały 401 | **naprawione** | toast „Dokument wgrany i zaindeksowany", plik DOCX pobrany (38 055 B) |
 | P5 | Notatka o degradacji trafiała do panelu „Twierdzenia bez źródła" | **naprawione** | osobny kafelek „Projekt z szablonu", panel nieobecny |
 | P6 | Ustawienia opisywały moduły niezgodnie z kodem | **naprawione** | routing „bez udziału modelu językowego", spaCy „opcjonalny", Mistral na liście dostawców |
-| P7 | Żaden test nie wołał modelu | **naprawione** | `test_drafting_mistral_contract.py`, 7 testów na żywo w 3,58 s |
-| P8 | Ponowne wgranie tworzyło duplikat | **naprawione** | ten sam plik dwa razy → ten sam `id`; inna nazwa, ta sama treść → ten sam `id` |
-| P9 | Historia w trybie realnym bez wpisu o utworzeniu | **naprawione** | 5 wpisów, pierwszy `created` z datą wpływu `2026-02-20T08:00:00` |
+| P7 | Żaden test nie wołał modelu | **naprawione** | `test_drafting_mistral_contract.py`, 7 testów na żywo w 4,91 s |
+| P8 | Ponowne wgranie tworzyło duplikat | **naprawione** | ten sam plik dwa razy → ten sam `id` |
+| P9 | Historia w trybie realnym bez wpisu o utworzeniu | **naprawione** | 6 wpisów, pierwszy `created` z datą wpływu |
 | P10 | Znaczniki czasu z realnego zegara | **naprawione** | historia i audyt z datą `2026-03-16`, godzina z realnego zegara |
 
-## 5. Ustalenia z drugiego i trzeciego przebiegu (P11–P16) — naprawione
+## 6. Ustalenia z drugiego i trzeciego przebiegu (P11–P16) — naprawione
 
-| # | Ustalenie | Status | Dowód z czwartego przebiegu |
+| # | Ustalenie | Status | Dowód z piątego przebiegu |
 | --- | --- | --- | --- |
-| P11 | Skrót „Dz. U." rozbijał zdania i tworzył fałszywe „twierdzenia bez źródła" | **naprawione** | 0/10 fałszywych alarmów (było 6/10); `_sentences` 5/5 próbek bez podziału |
-| P12 | Nazwa pliku eksportu to fragment UUID | **naprawione** | `odpowiedz-UDIP.1435.7.2026-projekt.docx` |
-| P13 | Duplikaty sprzed naprawy zostawały w bazie | **naprawione** | 0 par duplikatów po `backend/scripts/dedup_documents.py` |
-| P14 | Podstawa prawna zbierała do 13 odnośników pod rząd | **naprawione** | 0/10 przebiegów ≥3 ściśle kolejnych (było 9/10); zakresy `[^2]–[^12][^16]` |
-| P15 | Sporadyczna data ISO w treści pisma | **naprawione** | 0/10 projektów z datą ISO (było 1/10) |
-| P16 | Eksport Markdown zostawiał surowe `[^n]` | **naprawione** | 0 caretów w MD, DOCX i PDF; wszystkie trzy podają `[2]–[13]` |
+| P11 | Skrót „Dz. U." rozbijał zdania i tworzył fałszywe „twierdzenia bez źródła" | **naprawione** | 0/10 fałszywych alarmów (było 6/10) |
+| P12 | Nazwa pliku eksportu to fragment UUID | **naprawione** | `odpowiedz-BKS.IV.1431.7.2026-projekt.docx` |
+| P13 | Duplikaty sprzed naprawy zostawały w bazie | **naprawione** | 0 par duplikatów |
+| P14 | Podstawa prawna zbierała do 13 odnośników pod rząd | **naprawione** | 0/10 przebiegów ≥3 ściśle kolejnych; nowy szablon cytuje pojedyncze artykuły |
+| P15 | Sporadyczna data ISO w treści pisma | **naprawione** | 0/10 projektów z datą ISO |
+| P16 | Eksport Markdown zostawiał surowe `[^n]` | **naprawione** | 0 caretów w MD, DOCX i PDF |
 
 ### P11 — podział zdań na skrótach
 
 `_sentences` nie dzieli już na „Dz. U.", „art.", „ust.", „poz.", „nr", „r." ani „t.j.".
-Pięć próbek z pełną podstawą prawną przechodzi bez rozcięcia:
-
-```
-wejście: Niniejsza odpowiedź … (Dz. U. z 2023 r. poz. 1479) [^1].
-  → [ 94] Niniejsza odpowiedź … (Dz. U. z 2023 r. poz. 1479) [^1].
-find_unsupported → brak alarmu
-```
-
-Pomiar na 10 projektach: `unsupported` zawiera teraz wyłącznie prawdziwe twierdzenia
-bez źródła, np. „W związku z powyższym informuje się, że wnioskowane umowy … nie zostały
+Pomiar na 10 projektach: `unsupported` zawiera wyłącznie prawdziwe twierdzenia bez
+źródła, np. „W związku z powyższym informuje się, że wnioskowane umowy … nie zostały
 dotychczas opublikowane w BIP". To zdanie istotnie nie ma pokrycia w źródłach — panel
 działa zgodnie z przeznaczeniem.
 
 ### P12 — nazwa pliku eksportu
 
 ```
-Content-Disposition: attachment; filename="odpowiedz-UDIP.1435.7.2026-projekt.docx"
-Content-Disposition: attachment; filename="odpowiedz-UDIP.1435.2.2026-projekt.pdf"
-Content-Disposition: attachment; filename="odpowiedz-UDIP.1435.2.2026-projekt.md"
+Content-Disposition: attachment; filename="odpowiedz-BKS.IV.1431.7.2026-projekt.md"
+Content-Disposition: attachment; filename="odpowiedz-BKS.IV.1431.7.2026-projekt.docx"
+Content-Disposition: attachment; filename="odpowiedz-BKS.IV.1431.7.2026-projekt.pdf"
 ```
 
 ### P13 — sprzątanie duplikatów
 
-Skrypt `backend/scripts/dedup_documents.py` uruchomiony na bazie testowej. Przed: trzy
-pary (`wniosek-01-wynagrodzenia`, `odpowiedz-wydzialu-01`, `wniosek-03-wycinka-drzew`).
-Po: zero par, sześć dokumentów w bazie.
+Skrypt `backend/scripts/dedup_documents.py`. W piątym przebiegu ponowne wgranie tego
+samego pliku zwróciło ten sam `id`, więc duplikat nie powstaje u źródła.
 
 ### P14 — zwężanie przebiegów odnośników
 
-`collapse_ref_runs` zamienia ciąg trzech i więcej odnośników na zakres. W treści projektu
-zostaje `[^2]–[^13]` zamiast trzynastu cyfr. Panel cytowań ma komplet czternastu pozycji
-(1–14), więc zakres nie gubi odnośników — zwężenie jest wyłącznie typograficzne.
-
-Zwężanie obejmuje każdy ciągły fragment przebiegu osobno, także gdy model przeskoczy
-numer. Numer wypadający z kolejności zostaje wypisany, bo zakres obejmujący lukę
-kłamałby o treści:
+`collapse_ref_runs` zamienia ciąg trzech i więcej odnośników na zakres, każdy ciągły
+fragment osobno. Numer wypadający z kolejności zostaje wypisany, bo zakres obejmujący
+lukę kłamałby o treści:
 
 ```
 [^2][^3][^4]                          → [^2]–[^4]
@@ -186,64 +190,57 @@ kłamałby o treści:
 ```
 
 Pomiar na 10 projektach: zero przebiegów trzech i więcej odnośników ściśle kolejnych
-i tekstowo przylegających. Dwa projekty mają znaczniki liczone przez prosty regex jako
-„klaster", ale w rzeczywistości są to dwa osobne przebiegi, np. `[^2][^3]` obok
-`[^5]–[^13]` — w piśmie `[2][3][5]–[13]`, czyli czytelnie.
+i tekstowo przylegających. Nowy szablon podstawy prawnej cytuje pojedyncze artykuły
+(`[^2]`, `[^1]`, `[^3]`, `[^5]`), więc przebiegi w ogóle nie powstają.
 
-Kliknięcie cytowania ze środka zakresu działa: wybór numeru 5 w panelu zaznacza w edytorze
-cały fragment `[^2]–[^13]` i podświetla pozycję 5 jako aktywną. Realizuje to
+Kliknięcie cytowania ze środka zakresu obsługuje
 [`markerRangeFor`](frontend/src/features/drafting/markdown.ts:277) wołane z
-[`Editor.tsx:134`](frontend/src/features/drafting/Editor.tsx:134) jako ścieżka zapasowa,
-gdy odnośnik nie ma własnego znacznika. Zrzut ekranu:
-`/home/trollyou/.t3/userdata/browser-artifacts/browser-screenshot-127-0-0-1-mwr9kh3v-43eed631.png`
+[`Editor.tsx:134`](frontend/src/features/drafting/Editor.tsx:134) jako ścieżka zapasowa.
+Pokryte 19 testami w `markdown.test.ts`.
 
 ### P15 — daty w treści
 
 Zero wystąpień `RRRR-MM-DD` w dziesięciu projektach. Daty w treści mają formę
 „2 marca 2026 r." i „16 marca 2026 r.".
 
-### P16 — eksport Markdown bez caretów
+### P16 — eksport bez caretów
 
-[`render_markdown`](backend/app/modules/drafting/export.py:203) woła teraz
-`markers_to_plain`, które zdejmuje sam caret, zostawiając nagłówki i pogrubienia
-Markdownem — plik `.md` jest do dalszej pracy, nie do druku. Wszystkie trzy formaty
-podają ten sam znacznik:
+[`render_markdown`](backend/app/modules/drafting/export.py:203) woła `markers_to_plain`,
+które zdejmuje sam caret, zostawiając nagłówki i pogrubienia Markdownem. Wszystkie trzy
+formaty podają ten sam znacznik:
 
-| Format | Fragment podstawy prawnej |
-| --- | --- |
-| MD | `… o dostępie do informacji publicznej (Dz. U. z 2023 r. poz. 1559, z późn. zm.) [2]–[13], a także … [1].` |
-| DOCX | `… o dostępie do informacji publicznej (Dz. U. z 2023 r. poz. 1559, z późn. zm.) [2]–[13], a także … [1].` |
-| PDF | `… o dostępie do informacji publicznej (Dz. U. z 2023 r. poz. 1559, z późn. zm.) [2]–[13], a także … [1].` |
+| Format | Znaczniki w treści | Carety |
+| --- | --- | --- |
+| MD | `[1]`, `[7]`, `[5]` … | 0 |
+| DOCX | `[1]`, `[7]`, `[5]` … (indeks górny) | 0 |
+| PDF | `[1]`, `[7]`, `[5]` … | 0 |
 
-Pomiar: zero wystąpień `[^n]` w treści każdego z trzech plików. W DOCX znacznik jest
-w indeksie górnym, w PDF i MD w linii.
+## 7. Obserwacja otwarta świadomie
 
-## 6. Obserwacja otwarta świadomie
+### P17 — edytor pokazuje `[^2]` zamiast `[2]` (tak ma być)
 
-### P17 — edytor pokazuje `[^2]–[^13]` zamiast `[2]–[13]` (tak ma być)
-
-Edytor prezentuje źródło Markdownu, a nie wersję złożoną, więc zakres odnośników widać
+Edytor prezentuje źródło Markdownu, a nie wersję złożoną, więc odnośniki widać
 dosłownie. To nie usterka i nie jest przewidziane do zmiany: TipTap ze `StarterKit` nie ma
 znacznika indeksu górnego, a podmiana wymagałaby własnego węzła i zachowania atrybutu
 w `parseHtml` — inaczej zapis projektu zgubiłby odnośniki. Formą złożoną jest panel
 cytowań obok edytora i eksport.
 
-## 7. Latencja modelu
+## 8. Latencja modelu
 
 20 generacji, `mistral-small-latest`, `max_tokens=2048`, `temperature=0,2`:
 
-| Metryka | Przebieg 1 | Przebieg 2 | Przebieg 3 |
-| --- | --- | --- | --- |
-| minimum | 3536 ms | 2791 ms | 4151 ms |
-| mediana | 5009 ms | 3852 ms | 4779 ms |
-| maksimum | 6636 ms | 5984 ms | 5643 ms |
-| `POST /api/inference/test` | 558 ms | 558 ms | 391–445 ms |
-| `GET /api/inference/health` | 216–282 ms | 206 ms | 224–266 ms |
+| Metryka | Przebieg 1 | Przebieg 2 | Przebieg 3 | Przebieg 4 | Przebieg 5 |
+| --- | --- | --- | --- | --- | --- |
+| minimum | 3536 ms | 2791 ms | 3836 ms | 4151 ms | 3439 ms |
+| mediana | 5009 ms | 3852 ms | 5198 ms | 4779 ms | 5268 ms |
+| maksimum | 6636 ms | 5984 ms | 6244 ms | 5643 ms | 6783 ms |
+| `POST /api/inference/test` | 558 ms | 558 ms | 391–445 ms | 391–445 ms | 814–1055 ms |
+| `GET /api/inference/health` | 216–282 ms | 206 ms | 224–266 ms | 224–266 ms | 301–582 ms |
 
-Pojedynczy projekt mieści się w 4,2–5,6 s. Przy ośmiu sprawach na ekranie i generowaniu
-po kolei to 35–45 s — warto rozważyć generowanie równoległe albo strumieniowanie.
+Pojedynczy projekt mieści się w 3,4–6,8 s. Przy ośmiu sprawach na ekranie i generowaniu
+po kolei to 30–55 s — warto rozważyć generowanie równoległe albo strumieniowanie.
 
-## 8. Jak odtworzyć
+## 9. Jak odtworzyć
 
 ```bash
 # środowisko
@@ -261,36 +258,36 @@ cd backend && LLM_API_KEY=... MISTRAL_LIVE=1 .venv/bin/python -m pytest \
 # pomiar degradacji i przecieków (skrypt poza repozytorium)
 cd backend && .venv/bin/python /tmp/real_test_quality.py
 
-# znaczniki odnośników w trzech formatach eksportu
-cd backend && .venv/bin/python /tmp/real_test_export_all.py
+# ustalenia P11–P16 i znaczniki w trzech formatach eksportu
+cd backend && .venv/bin/python /tmp/real_test_findings.py
 
-# przebiegi 3+ odnośników ściśle kolejnych
-cd backend && .venv/bin/python /tmp/real_test_runs2.py
+# pełna ścieżka HTTP (43 asercje)
+cd backend && .venv/bin/python /tmp/real_test_http.py
 ```
 
-## 9. Stan po testach
+## 10. Stan po testach
 
-- Dokumenty w bazie: 6 pozycji, zero duplikatów.
-- Projekty wygenerowane dla wszystkich spraw poza zamkniętymi.
-- Zamknięte: `UDIP.1435.5.2026`, `UDIP.1435.6.2026`, `UDIP.1435.9.2026` — weszły do archiwum jako `n0001`–`n0003`.
-- Audyt: 100 wpisów.
+- Sprawy: 10 demo + 3 utworzone przez test HTTP („Test nowej sprawy", numery
+  `BKS.IV.1431.9xxx.2026`). Do usunięcia przez `scripts/demo.sh`.
+- Dokumenty: 2 (`wniosek-01-wynagrodzenia.pdf`, `wniosek-02-najem-lokali.pdf`), zero duplikatów.
+- Audyt: 69 wpisów.
+- Projekty wygenerowane dla wszystkich spraw.
 - Reset do stanu wyjściowego: `scripts/demo.sh`.
 
-## 10. Wnioski
+## 11. Wnioski
 
-Wszystkie szesnaście ustaleń z czterech przebiegów jest zamkniętych. Czwarty przebieg nie
-znalazł regresji: każdy pomiar, który w drugim przebiegu pokazywał problem, jest teraz
-zerowy, a liczby testów rosną (564 backendu, 199 frontendu, 7 na żywym API).
+Piąty przebieg nie znalazł ani jednej regresji i ani jednego nowego ustalenia. Wszystkie
+szesnaście ustaleń z czterech poprzednich przebiegów pozostaje zamkniętych, a liczby
+testów rosną (584 backendu, 199 frontendu, 7 na żywym API, 43/43 asercji HTTP).
 
-Najważniejsza naprawa to P11. Fałszywy alarm o twierdzeniu bez źródła jest groźniejszy niż
-brak alarmu — urzędnik, który raz zobaczy ostrzeżenie przy poprawnie uzasadnionym zdaniu,
-przestanie czytać panel kontroli. Zejście z 60% do zera przywraca temu panelowi wiarygodność.
+Największa zmiana od czwartego przebiegu nie dotyczy napraw, tylko zakresu: projekt nosi
+nazwę Capricorn, sprawy mają numerację BKS, anonimizacja pokrywa pełną listę 28 kategorii
+UMB, doszedł moduł przypomnień i dialog nowej sprawy. Wszystkie te elementy przeszły testy
+bez zastrzeżeń.
 
-Druga w kolejności jest P14. Podstawa prawna z trzynastoma cyframi w indeksie górnym przy
-jednym zdaniu była nieczytelna w wydruku; zwężanie do zakresów, z zachowaniem numerów
-wypadających z kolejności, rozwiązuje to bez utraty informacji o cytowaniach.
+Nowy szablon podstawy prawnej upraszcza obraz odnośników: zamiast ciągu trzynastu cyfr
+przy jednym zdaniu są pojedyncze artykuły z własnymi odnośnikami. To skuteczniej rozwiązuje
+P14 niż samo zwężanie do zakresów, które pozostaje jako zabezpieczenie.
 
 P17 zostaje świadomie otwarta: edytor pokazuje źródło Markdownu, a nie wersję złożoną.
-Zmiana wymagałaby własnego węzła TipTap z indeksem górnym i zachowania atrybutu
-w `parseHtml`, inaczej zapis projektu zgubiłby odnośniki. Formą złożoną jest panel cytowań
-i eksport, więc nie ma tu straty dla urzędnika.
+Formą złożoną jest panel cytowań i eksport, więc nie ma tu straty dla urzędnika.
