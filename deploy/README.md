@@ -25,6 +25,21 @@ node --version       # v20.x lub nowszy
 docker compose version
 ```
 
+Jeśli dockera nie ma:
+
+```bash
+# Arch / CachyOS
+sudo pacman -S docker docker-compose docker-buildx
+# Debian / Ubuntu
+sudo apt install docker.io docker-compose-v2
+
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"   # potem wyloguj się i zaloguj ponownie
+```
+
+Bez grupy `docker` każda komenda kończy się `permission denied while trying to
+connect to the docker API`. Dodanie do grupy działa dopiero w nowej sesji.
+
 ---
 
 ## 2. Uruchomienie lokalne (bez dockera)
