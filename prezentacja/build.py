@@ -43,7 +43,7 @@ GREEN = "#10B981"
 VIOLET = "#8B5CF6"
 RED = "#EF4444"
 
-TEAM = ["Imię Nazwisko", "Imię Nazwisko", "Imię Nazwisko"]
+TEAM = ["sLaRpNaTiOn"]
 TOTAL = 10
 
 
@@ -75,7 +75,7 @@ def img(name: str) -> str:
 
 
 def shot(name: str, width: int, *, radius: int = 14) -> str:
-    """Zrzut ekranu w ramce — jasny interfejs na ciemnym tle."""
+    """Zrzut ekranu w ramce: jasny interfejs na ciemnym tle."""
     return (
         f'<div class="shot" style="width:{width}px;border-radius:{radius}px">'
         f'<img src="{img(name)}" alt=""></div>'
@@ -96,7 +96,7 @@ def head(text: str, size: int = 54) -> str:
 def footer(n: int) -> str:
     return (
         '<div class="foot">'
-        '<span>Inteligentny asystent urzędnika · HackNation 2026 · Miasto Bydgoszcz</span>'
+        '<span>Capricorn · HackNation 2026 · Miasto Bydgoszcz</span>'
         f'<span>{n:02d} / {TOTAL:02d}</span>'
         "</div>"
     )
@@ -150,9 +150,9 @@ def s01() -> str:
 <div class="title-grid">
   <div class="title-left">
     {kicker("HACKNATION 2026 · MIASTO BYDGOSZCZ", SKY)}
-    <h1 class="title">Inteligentny<br>asystent urzędnika</h1>
-    <p class="title-sub">Generator odpowiedzi na wnioski o udostępnienie informacji
-    publicznej — z kalendarzem terminów</p>
+    <h1 class="title">Capricorn</h1>
+    <p class="title-sub">Inteligentny asystent urzędnika: generator odpowiedzi
+    na wnioski o udostępnienie informacji publicznej, z kalendarzem terminów</p>
     <div class="title-team">
       <div class="title-team-label">ZESPÓŁ</div>
       <div class="title-team-names">{team}</div>
@@ -183,7 +183,7 @@ def s02() -> str:
         ),
         (
             "Dane osobowe w każdej odpowiedzi",
-            "PESEL, adres, telefon i e-mail wnioskodawcy trzeba wyciąć przed publikacją w BIP — ręcznie, pod presją terminu.",
+            "PESEL, adres, telefon i e-mail wnioskodawcy trzeba wyciąć przed publikacją w BIP, ręcznie, pod presją terminu.",
             GREEN,
         ),
         (
@@ -208,7 +208,7 @@ def s02() -> str:
     dane osobowe.</p>
     <div class="stats">
       {stat("14 dni", "ustawowy termin odpowiedzi, liczony od wpływu wniosku", RED)}
-      {stat("49", "spraw w archiwum demonstracyjnym — tyle przeszukuje się ręcznie", SKY)}
+      {stat("49", "spraw w archiwum demonstracyjnym: tyle przeszukuje się ręcznie", SKY)}
       {stat("26", "komórek organizacyjnych UMB, z których trzeba pozyskać materiały", VIOLET)}
     </div>
   </div>
@@ -229,7 +229,7 @@ def s02() -> str:
 </div>
 <div class="callout" style="margin-top:auto">
   <span class="callout-mark" style="background:{BLUE}"></span>
-  Cel: z kilku dni do kilku minut — bez oddawania decyzji maszynie.
+  Cel: z kilku dni do kilku minut, bez oddawania decyzji maszynie.
 </div>
 """
     return slide(2, body)
@@ -291,7 +291,7 @@ def s03() -> str:
 <div class="callout" style="margin-top:20px">
   <span class="callout-mark" style="background:{SKY}"></span>
   Port i dwa adaptery: deterministyczna atrapa oraz implementacja realna.
-  Moduł przełącza się zmienną środowiskową, bez zmiany kodu — dlatego demo działa
+  Moduł przełącza się zmienną środowiskową, bez zmiany kodu; dlatego demo działa
   bez modelu i bez sieci, a ta sama ścieżka przechodzi test end-to-end na realnych.
 </div>
 """
@@ -316,7 +316,7 @@ def s04() -> str:
   <div class="col" style="width:460px">
     {bullets([
         "Sortowanie po terminie rosnąco, z licznikiem dni do terminu.",
-        "Dni i pilność liczy serwer przy każdym odczycie — nie da się ich rozjechać z kalendarzem.",
+        "Dni i pilność liczy serwer przy każdym odczycie, więc nie da się ich rozjechać z kalendarzem.",
         "Wyróżnienia: po terminie, termin dziś, termin jutro, termin wkrótce.",
         "Stan sprawy zmieniany przyciskami; cofnięcie wymaga notatki i zostaje w historii.",
         "Filtr roku, filtra stanu, wyszukiwanie po numerze i przedmiocie, widok miesiąca.",
@@ -346,7 +346,7 @@ def s05() -> str:
     {bullets([
         "49 spraw archiwalnych; wyszukiwanie hybrydowe BM25 + wektory, filtr roku.",
         "Ocena podobieństwa i dopasowane terminy widoczne przy każdym wyniku.",
-        "Zamknięcie sprawy dopisuje ją do archiwum — baza rośnie z pracą urzędu.",
+        "Zamknięcie sprawy dopisuje ją do archiwum, więc baza rośnie z pracą urzędu.",
     ], SKY, 19)}
     </div>
   </div>
@@ -356,7 +356,7 @@ def s05() -> str:
     <div style="margin-top:26px">
     {bullets([
         "26 komórek organizacyjnych UMB, pewność dopasowania przy każdej sugestii.",
-        "Zapytanie z numerem sprawy, datą wpływu i terminem — gotowe do wysłania własnym kanałem.",
+        "Zapytanie z numerem sprawy, datą wpływu i terminem: gotowe do wysłania własnym kanałem.",
         "Nic nie jest wysyłane automatycznie: to projekt pisma, nie wysyłka.",
     ], VIOLET, 19)}
     </div>
@@ -366,11 +366,11 @@ def s05() -> str:
     ("5", "wyników w demo, oceny od 0,866 do 0,278", SKY),
     ("7–22 ms", "czas wyszukiwania hybrydowego", BLUE),
     ("95%", "pewność dla Wydziału Organizacji i Kadr", VIOLET),
-    ("48%", "pewność dla drugiej sugestii — próg odcina ogon", AMBER),
+    ("48%", "pewność dla drugiej sugestii; próg odcina ogon", AMBER),
 ])}
 <div class="callout" style="margin-top:20px">
   <span class="callout-mark" style="background:{SKY}"></span>
-  Wyszukiwanie hybrydowe działa na indeksie w SQLite — bez zewnętrznej wyszukiwarki
+  Wyszukiwanie hybrydowe działa na indeksie w SQLite. Bez zewnętrznej wyszukiwarki
   i bez wysyłania dokumentów poza urząd.
 </div>
 """
@@ -385,7 +385,7 @@ def s06() -> str:
   <div class="col" style="width:520px">
     {bullets([
         "Wejście: wniosek, odpowiedzi z wydziałów, archiwum, wgrane ustawy i zarządzenia.",
-        "Każde twierdzenie dostaje odnośnik do fragmentu źródła. Zdania bez pokrycia trafiają na osobną listę — nie znikają po cichu.",
+        "Każde twierdzenie dostaje odnośnik do fragmentu źródła. Zdania bez pokrycia trafiają na osobną listę: nie znikają po cichu.",
         "Podstawa prawna ze zwężonymi zakresami: [2]–[13], nie trzynaście cyfr pod rząd.",
         "Eksport DOCX, PDF i Markdown; nazwa pliku z numerem sprawy.",
         "Na żywym modelu: 4,2–5,6 s na projekt, 5–14 cytowań, zero wiszących odnośników.",
@@ -398,7 +398,7 @@ def s06() -> str:
 {metrics([
     ("4,2–5,6 s", "na projekt pisma, na żywym modelu", AMBER),
     ("5–14", "cytatów źródłowych w jednym projekcie", SKY),
-    ("0", "wiszących odnośników — każde zdanie ma pokrycie", GREEN),
+    ("0", "wiszących odnośników; każde zdanie ma źródło", GREEN),
     ("3", "formaty eksportu: DOCX, PDF, Markdown", VIOLET),
 ])}
 """
@@ -414,7 +414,7 @@ def s07() -> str:
     {bullets([
         "13 kategorii: PESEL, NIP, REGON, dowód, paszport, telefon, e-mail, IBAN, adres, imię i nazwisko, data urodzenia, podpis.",
         "Kolejność detektorów: reguły regex → NER spaCy → przebieg kontekstowy modelu. Regex ma pierwszeństwo na numerach.",
-        "Wykryte fragmenty nie są usuwane, dopóki urzędnik ich nie zaakceptuje — pojedynczo albo wszystkie.",
+        "Wykryte fragmenty nie są usuwane, dopóki urzędnik ich nie zaakceptuje: pojedynczo albo wszystkie.",
         "Na zbiorze etykietowanym: precyzja 1,00, pełność 1,00, F1 1,00. Zero fałszywych trafień na numerach spraw.",
         "Eksport podaje liczbę usuniętych fragmentów w nagłówku X-Redactions.",
     ], GREEN)}
@@ -447,7 +447,7 @@ def s08() -> str:
     )
     roadmap = [
         ("Pilotaż", "Jedna komórka, trzy miesiące, pomiar czasu odpowiedzi przed i po.", BLUE),
-        ("Wydział", "Archiwum rośnie o każdą zamkniętą sprawę — narzędzie uczy się z pracy urzędu.", SKY),
+        ("Wydział", "Archiwum rośnie o każdą zamkniętą sprawę, więc narzędzie uczy się z pracy urzędu.", SKY),
         ("Cały urząd", "Jedna instancja w serwerowni, model lokalny, zero ruchu na zewnątrz.", VIOLET),
         ("Inne JST", "Ta sama aplikacja, inna taksonomia komórek i inny zestaw ustaw.", GREEN),
     ]
@@ -478,11 +478,11 @@ def s08() -> str:
     ("4", "grupy użytkowników w jednym urzędzie", BLUE),
     ("4", "etapy wdrożenia: pilotaż, wydział, cały urząd, inne JST", SKY),
     ("1", "instancja na urząd, w serwerowni miasta", VIOLET),
-    ("0", "integracji z SIDAS — nic nie wychodzi poza urząd", GREEN),
+    ("0", "integracji z SIDAS; nic nie wychodzi poza urząd", GREEN),
 ])}
 <div class="callout" style="margin-top:20px">
   <span class="callout-mark" style="background:{AMBER}"></span>
-  Nie zastępuje urzędnika — zdejmuje przepisywanie. Decyzję zawsze podejmuje człowiek,
+  Nie zastępuje urzędnika; zdejmuje przepisywanie. Decyzję zawsze podejmuje człowiek,
   a narzędzie nie wysyła niczego samodzielnie i nie integruje się z SIDAS.
 </div>
 """
@@ -509,7 +509,7 @@ def s09() -> str:
         (
             "Modele",
             AMBER,
-            ["llama.cpp", "Ollama", "protokół OpenAI-compatible", "Mistral API tylko w hackathonie"],
+            ["Mistral API (obecnie)", "llama.cpp", "Ollama", "protokół OpenAI-compatible"],
         ),
         (
             "Wdrożenie i jakość",
@@ -538,13 +538,15 @@ def s09() -> str:
 {metrics([
     ("5", "grup narzędzi: backend, frontend, dokumenty, modele, jakość", AMBER),
     ("2", "języki: Python i TypeScript", BLUE),
-    ("100%", "open source — zero płatnych licencji", GREEN),
+    ("100%", "open source, zero płatnych licencji", GREEN),
     ("0", "zależności od chmury w trybie docelowym", RED),
 ])}
 <div class="callout" style="margin-top:20px">
   <span class="callout-mark" style="background:{GREEN}"></span>
-  Wszystkie biblioteki są open source. Model Bielik 11B v2.3 Instruct to otwarty model
-  polski (Apache-2.0). Rozwiązania zewnętrzne wskazujemy wprost, zgodnie z §11 regulaminu.
+  Zgodnie z §11 regulaminu wskazujemy wprost rozwiązania zewnętrzne: bieżący
+  prototyp biega na modelu Mistral Small przez API Mistrala. W urzędzie ten sam
+  interfejs zasila lokalny, otwarty Bielik 11B v2.3 Instruct (Apache-2.0), a cały
+  stos bibliotek jest open source.
 </div>
 """
     return slide(9, body)
@@ -558,9 +560,9 @@ def s10() -> str:
   <div class="col" style="width:820px">
     {bullets([
         "OFFLINE=1 blokuje każde wyjście do sieci: model i embeddingi rzucają OfflineViolation, health raportuje down bez próby połączenia.",
-        "Model działa na localhost przez llama.cpp albo Ollamę — protokół OpenAI-compatible, więc podmiana dostawcy to jedna zmienna.",
+        "Prototyp biega dziś na Mistral Small przez API Mistrala; wagi tego modelu są otwarte (Apache 2.0). Ten sam adapter mówi z llama.cpp i Ollamą na localhost, więc podmiana dostawcy to jedna zmienna.",
         "Baza to jeden plik SQLite; dokumenty, fragmenty i wektory zostają na dysku urzędu.",
-        "Brak telemetrii i brak zewnętrznego JWT — token sesji to HMAC-SHA256 ze standardowej biblioteki.",
+        "Brak telemetrii i brak zewnętrznego JWT: token sesji to HMAC-SHA256 ze standardowej biblioteki.",
         "Tryb demo nie potrzebuje żadnego modelu: atrapy z fixtures, deterministyczne.",
     ], GREEN)}
   </div>
@@ -573,7 +575,7 @@ def s10() -> str:
       na jednej maszynie w serwerowni urzędu, bez karty GPU klasy data-center.</div>
     </div>
     <div class="model-alt">
-      <b>Alternatywa lżejsza:</b> Qwen2.5 7B Instruct, Q4_K_M — 4,7 GB.
+      <b>Alternatywa lżejsza:</b> Qwen2.5 7B Instruct, Q4_K_M, 4,7 GB.
     </div>
     {shot("modele.png", 820)}
   </div>
@@ -591,7 +593,7 @@ def s10() -> str:
 </div>
 <div class="closing">
   <span class="closing-text">Odpowiedź w minutach, nie w dniach.</span>
-  <span class="closing-sub">Dziękujemy — zapraszamy do prototypu.</span>
+  <span class="closing-sub">Dziękujemy i zapraszamy do prototypu.</span>
 </div>
 """
     return slide(10, body)
@@ -850,7 +852,7 @@ def build_html() -> str:
     slides = [s01(), s02(), s03(), s04(), s05(), s06(), s07(), s08(), s09(), s10()]
     return (
         "<!doctype html><html lang=\"pl\"><head><meta charset=\"utf-8\">"
-        "<title>Inteligentny asystent urzędnika — HackNation 2026</title>"
+        "<title>Capricorn · inteligentny asystent urzędnika · HackNation 2026</title>"
         f"<style>{css()}</style></head><body>{''.join(slides)}</body></html>"
     )
 

@@ -21,10 +21,10 @@ export const FONT = 'Inter';
 
 export const SIZE = {width: 1920, height: 1080};
 
-/** Skład zespołu — jedyne miejsce do edycji przed renderem. */
-export const TEAM = ['Imię Nazwisko', 'Imię Nazwisko', 'Imię Nazwisko'];
+/** Nazwa zespołu — jedyne miejsce do edycji przed renderem. */
+export const TEAM = ['sLaRpNaTiOn'];
 
-export const PROJECT_NAME = 'Inteligentny asystent urzędnika';
+export const PROJECT_NAME = 'Capricorn';
 export const EVENT = 'HackNation 2026 · Miasto Bydgoszcz';
 
 /** Karta z nagraniem: 1728×972, wyśrodkowana, 96 px marginesu bocznego. */
