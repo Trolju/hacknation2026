@@ -1,12 +1,16 @@
 # Film o projekcie (Revideo)
 
-Trzyminutowy film o *Inteligentnym asystencie urzędnika* zbudowany w
+Film o *Inteligentnym asystencie urzędnika* zbudowany w
 [Revideo](https://re.video) 0.10.4 — otwartoźródłowej (MIT) alternatywie dla
 Remotion. Ten sam model pracy: scena to generator w TypeScripcie, animacje to
 tweeny, render idzie przez przeglądarkę i ffmpeg.
 
 Gotowy plik: [`../docs/asystent-urzednika.mp4`](../docs/asystent-urzednika.mp4)
-(1920×1080, 30 fps, 2:55).
+(1920×1080, 30 fps, 1:46).
+
+Wersja 2 stawia na tempo: 16 scen, prawdziwe nagrania działającej aplikacji z
+przejazdem kamery po interfejsie i typografią kinetyczną zamiast statycznych
+zrzutów.
 
 ## Zanim wyrenderujesz
 
@@ -24,7 +28,7 @@ Ta tablica trafia do planszy tytułowej i do planszy końcowej.
 ```bash
 cd video
 npm install
-npm run render          # → out/asystent.mp4
+npm run render          # → output/out/asystent.mp4
 ```
 
 Jeśli Puppeteer nie znajdzie przeglądarki:
@@ -33,23 +37,31 @@ Jeśli Puppeteer nie znajdzie przeglądarki:
 CHROME_PATH=/sciezka/do/chrome npm run render
 ```
 
+Render trzyma `workers: 2` w `render.mjs`. Przy czterech procesach maszyna z
+15 GB RAM kończy się OOM na ok. 80% klipu.
+
 ## Struktura
 
 | Plik | Czas | Treść |
 | --- | --- | --- |
-| `scenes/01-title.tsx` | 0:00–0:08 | nazwa projektu, zespół, wydarzenie |
-| `scenes/02-problem.tsx` | 0:08–0:24 | problem: kolejka, 14 dni, setki godzin, dane osobowe |
-| `scenes/03-flow.tsx` | 0:24–0:38 | ścieżka: wniosek → archiwum → wydziały → projekt → anonimizacja → wysyłka |
-| `scenes/04-demo.tsx` | 0:38–2:08 | dziewięć zrzutów działającego prototypu, po 10 s |
-| `scenes/05-tech.tsx` | 2:08–2:25 | stos technologiczny i wdrożenie |
-| `scenes/06-future.tsx` | 2:25–2:36 | dla kogo: dziś Bydgoszcz, jutro JST |
-| `scenes/07-offline.tsx` | 2:36–2:47 | praca bez sieci: Bielik 11B v2.3 Instruct Q4_K_M |
-| `scenes/08-outro.tsx` | 2:47–2:55 | nazwa, hasło, zespół |
+| `scenes/01-intro.tsx` | 0:00–0:06 | nazwa projektu, hasło, trzy liczby, zespół |
+| `scenes/02-problem.tsx` | 0:06–0:16 | problem: dziesiątki wniosków, setki godzin, te same pisma → „kilka minut” |
+| `scenes/03-modules.tsx` | 0:16–0:19 | osiem modułów jako kafle |
+| `scenes/04-feature.tsx` | 0:19–1:15 | osiem modułów na żywo, po jednym nagraniu na moduł |
+| `scenes/05-workflow.tsx` | 1:15–1:22 | pięć kroków obsługi wniosku |
+| `scenes/06-stack.tsx` | 1:22–1:28 | stos technologiczny w czterech kolumnach |
+| `scenes/07-offline.tsx` | 1:28–1:34 | bezpieczeństwo i model lokalny (Bielik 11B v2.3) |
+| `scenes/08-audience.tsx` | 1:34–1:39 | dla kogo i co dalej w Bydgoszczy |
+| `scenes/09-outro.tsx` | 1:39–1:46 | nazwa, podziękowanie, zespół |
 
-`src/components.tsx` trzyma wspólne klocki (tło, nagłówek, ramka przeglądarki,
-plakietki, karty statystyk, kropki postępu), `src/theme.ts` — kolory, font i
-nazwy. Zrzuty w `src/assets/shots/` pochodzą z uruchomionej aplikacji w trybie
-demo (`MODULE_MODE_DEFAULT=fake`), nie z makiety.
+`src/components.tsx` trzyma wspólne klocki (tło, kicker, nagłówek, karta z
+nagraniem, podpisy modułów, pasek postępu), `src/theme.ts` — kolory, font i
+nazwy, a `src/features.ts` — osiem modułów: nazwę, korzyść, wynik, akcent i
+klucze kamery.
+
+Nagrania w `src/assets/clips/` pochodzą z uruchomionej aplikacji w trybie demo
+(`scripts/demo.sh --fake`), nie z makiety. Każdy klip to 3200×2000 przy 30 fps,
+zrzucany przez CDP w pętli i sklejany do CFR.
 
 ## Lektor
 
@@ -58,7 +70,7 @@ Film nie ma nagranej narracji. Pełny tekst z timingami jest w
 TTS na ich znacznikach czasu:
 
 ```bash
-mkdir lektor          # tu 01.wav, 02.wav, 03.wav, 04a.wav … 08.wav
+mkdir lektor          # tu 01.wav, 02.wav, 03.wav, 04a.wav … 04h.wav, 05.wav … 09.wav
 ./podloz-lektora.sh   # → ../docs/asystent-urzednika-lektor.mp4
 ```
 

@@ -1,7 +1,8 @@
-# Narracja do filmu
+# Narracja do filmu (wersja 2)
 
-Tekst lektora dopasowany do okien czasowych renderu (2:55, 30 fps). Każdy
-blok mieści się w swoim oknie przy tempie ok. 2,0–2,5 słowa na sekundę.
+Tekst lektora dopasowany do okien czasowych renderu **1:45,97** (30 fps).
+Każdy blok mieści się w swoim oknie przy tempie ok. 2,2–2,6 słowa na sekundę —
+razem 241 słów na 106 sekund.
 
 Nazwiska w pierwszym i ostatnim bloku to zaślepka — podmień je tak samo jak
 `TEAM` w `src/theme.ts`.
@@ -13,67 +14,71 @@ Jeśli generujesz jeden ciągły plik, wklej to bez timestampów:
 ```
 Inteligentny asystent urzędnika. HackNation 2026, Miasto Bydgoszcz. Zespół: [imiona i nazwiska].
 
-Dziesiątki wniosków w kolejce, każdy z własnym terminem. Czternaście dni na odpowiedź, której nikt nie pilnuje poza urzędnikiem. Setki godzin rocznie na przepisywanie tego, co urząd już napisał. A w każdym dokumencie są dane osobowe.
+Jedno pismo, kilka dni pracy. Dziesiątki wniosków dziennie, setki godzin na archiwach, te same pisma od nowa. Skracamy to do kilku minut.
 
-Jedna ścieżka. Wniosek w PDF albo DOCX trafia do bazy wiedzy. System znajduje podobne sprawy w archiwum, wskazuje właściwe komórki i składa projekt pisma z cytatami. Wysyłkę zatwierdza urzędnik.
+Osiem modułów. Jeden dzień pracy.
 
-Dzień zaczyna się od jednego ekranu. Po terminie, na dziś, na jutro — bez szukania w arkuszu.
+Pulpit. Wszystkie wnioski, terminy i ryzyka na jednym ekranie. Cztery kategorie pilności.
 
-Wszystkie wnioski według terminu. Dni i pilność liczy serwer przy każdym odczycie, więc nie da się ich rozjechać.
+Kalendarz wniosków. Terminy ustawowe, statusy, dziś i jutro podświetlone. Dziesięć spraw, jeden widok.
 
-Stan sprawy i pełna historia. Cofnięcie stanu wymaga notatki, więc w sprawie zostaje ślad.
+Baza wiedzy. Wrzucasz PDF albo Worda. Tekst jest rozpoznany, pocięty na fragmenty i zindeksowany.
 
-Wgranie wniosku w PDF albo DOCX. Tekst jest rozpoznany, podzielony na fragmenty i zapisany w bazie wiedzy.
+Przeszukiwanie archiwum. Opisujesz sprawę zamiast wpisywać słowa kluczowe. Najlepsze trafienie: zero przecinek dziewięćdziesiąt.
 
-Podobne sprawy z przeszłości. Wniosek o wynagrodzenia trafia w sprawę z 2025 roku z wynikiem zero przecinek siedemdziesiąt jeden.
+Ścieżka do wydziału. System wskazuje komórkę organizacyjną i podaje uzasadnienie. Pewność: sześćdziesiąt cztery procent.
 
-Które komórki mają odpowiedzieć. Pięć komórek, pewność dziewięćdziesiąt pięć procent dla Wydziału Organizacji i Kadr.
+Projekt odpowiedzi. Pismo z podstawą prawną i sześcioma przypisami do źródeł. Każde twierdzenie ma cytat.
 
-Projekt pisma z cytowaniami. Każde twierdzenie ma źródło, a braki widać przed wysłaniem.
+Anonimizacja. PESEL, NIP, adres, telefon — wykryte i usunięte, zanim tekst trafi do modelu. Na czterdziestu sprawach: sto procent.
 
-Dane osobowe wykryte i usunięte. PESEL, adres, telefon, e-mail. Na zbiorze testowym precyzja, pełność i F1 to sto procent.
+Model i moduły. Każdy z ośmiu modułów przełączasz: chmura albo lokalny Bielik.
 
-Tryb każdego modułu pod kontrolą. Osiem modułów, każdy albo jako atrapa, albo jako implementacja realna.
+Pięć kroków: wniosek, dokumenty, kwerenda, routing, projekt pisma. Każdy krok zostawia ślad.
 
-Backend to Python 3.12, FastAPI, Pydantic i SQLite. Frontend: React, TypeScript, TanStack Query i Vite. Modele lokalne przez llama.cpp albo Ollamę. Wdrożenie: Docker, nginx, Makefile. Domena nie zna HTTP-a, a tryb atrapy działa bez modelu i bez sieci.
+Otwarty stos, bez licencji. Python, FastAPI, React, llama.cpp, Docker. Całość wstaje jedną komendą.
 
-Dla urzędników od wniosków o udostępnienie informacji publicznej. Dziś Bydgoszcz, jutro jedna instancja w serwerowni urzędu. Archiwum rośnie z każdą sprawą. Nie zastępuje urzędnika — zdejmuje przepisywanie.
+Dane nie wychodzą z urzędu. Zero automatycznej wysyłki, brak SIDAS. Bielik 11B działa lokalnie.
 
-Bez internetu, bez chmury i bez wielkiego modelu. Domyślnie Bielik 11B, wersja 2.3, w czterobitowej kwantyzacji, sześć przecinek siedem gigabajta, przez llama.cpp albo Ollamę. Tryb demo nie potrzebuje żadnego modelu.
+Dla urzędników od wniosków UDIP. Dziś prototyp, jutro wdrożenie w Bydgoszczy. Asystent, nie zamiennik decyzji.
 
 Inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy.
 ```
 
 ## Bloki z timingami
 
-| Start | Koniec | Plik | Tekst |
-| --- | --- | --- | --- |
-| 0:00,0 | 0:08,0 | `01` | Inteligentny asystent urzędnika. HackNation 2026, Miasto Bydgoszcz. Zespół: [imiona i nazwiska]. |
-| 0:08,0 | 0:23,5 | `02` | Dziesiątki wniosków w kolejce, każdy z własnym terminem. Czternaście dni na odpowiedź, której nikt nie pilnuje poza urzędnikiem. Setki godzin rocznie na przepisywanie tego, co urząd już napisał. A w każdym dokumencie są dane osobowe. |
-| 0:23,5 | 0:37,8 | `03` | Jedna ścieżka. Wniosek w PDF albo DOCX trafia do bazy wiedzy. System znajduje podobne sprawy w archiwum, wskazuje właściwe komórki i składa projekt pisma z cytatami. Wysyłkę zatwierdza urzędnik. |
-| 0:37,8 | 0:47,8 | `04a` | Dzień zaczyna się od jednego ekranu. Po terminie, na dziś, na jutro — bez szukania w arkuszu. |
-| 0:47,8 | 0:57,8 | `04b` | Wszystkie wnioski według terminu. Dni i pilność liczy serwer przy każdym odczycie, więc nie da się ich rozjechać. |
-| 0:57,8 | 1:07,8 | `04c` | Stan sprawy i pełna historia. Cofnięcie stanu wymaga notatki, więc w sprawie zostaje ślad. |
-| 1:07,8 | 1:17,8 | `04d` | Wgranie wniosku w PDF albo DOCX. Tekst jest rozpoznany, podzielony na fragmenty i zapisany w bazie wiedzy. |
-| 1:17,8 | 1:27,8 | `04e` | Podobne sprawy z przeszłości. Wniosek o wynagrodzenia trafia w sprawę z 2025 roku z wynikiem zero przecinek siedemdziesiąt jeden. |
-| 1:27,8 | 1:37,8 | `04f` | Które komórki mają odpowiedzieć. Pięć komórek, pewność dziewięćdziesiąt pięć procent dla Wydziału Organizacji i Kadr. |
-| 1:37,8 | 1:47,8 | `04g` | Projekt pisma z cytowaniami. Każde twierdzenie ma źródło, a braki widać przed wysłaniem. |
-| 1:47,8 | 1:57,8 | `04h` | Dane osobowe wykryte i usunięte. PESEL, adres, telefon, e-mail. Na zbiorze testowym precyzja, pełność i F1 to sto procent. |
-| 1:57,8 | 2:07,8 | `04i` | Tryb każdego modułu pod kontrolą. Osiem modułów, każdy albo jako atrapa, albo jako implementacja realna. |
-| 2:07,8 | 2:24,8 | `05` | Backend to Python 3.12, FastAPI, Pydantic i SQLite. Frontend: React, TypeScript, TanStack Query i Vite. Modele lokalne przez llama.cpp albo Ollamę. Wdrożenie: Docker, nginx, Makefile. Domena nie zna HTTP-a, a tryb atrapy działa bez modelu i bez sieci. |
-| 2:24,8 | 2:36,3 | `06` | Dla urzędników od wniosków o udostępnienie informacji publicznej. Dziś Bydgoszcz, jutro jedna instancja w serwerowni urzędu. Archiwum rośnie z każdą sprawą. Nie zastępuje urzędnika — zdejmuje przepisywanie. |
-| 2:36,3 | 2:47,5 | `07` | Bez internetu, bez chmury i bez wielkiego modelu. Domyślnie Bielik 11B, wersja 2.3, w czterobitowej kwantyzacji, sześć przecinek siedem gigabajta, przez llama.cpp albo Ollamę. Tryb demo nie potrzebuje żadnego modelu. |
-| 2:47,5 | 2:55,2 | `08` | Inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy. |
+| Start | Koniec | Plik | Słowa | Tekst |
+| --- | --- | --- | --- | --- |
+| 0:00,0 | 0:06,3 | `01` | 13 | Inteligentny asystent urzędnika. HackNation 2026, Miasto Bydgoszcz. Zespół: [imiona i nazwiska]. |
+| 0:06,3 | 0:15,7 | `02` | 24 | Jedno pismo, kilka dni pracy. Dziesiątki wniosków dziennie, setki godzin na archiwach, te same pisma od nowa. Skracamy to do kilku minut. |
+| 0:15,7 | 0:19,0 | `03` | 6 | Osiem modułów. Jeden dzień pracy. |
+| 0:19,0 | 0:25,3 | `04a` | 14 | Pulpit. Wszystkie wnioski, terminy i ryzyka na jednym ekranie. Cztery kategorie pilności. |
+| 0:25,3 | 0:31,1 | `04b` | 15 | Kalendarz wniosków. Terminy ustawowe, statusy, dziś i jutro podświetlone. Dziesięć spraw, jeden widok. |
+| 0:31,1 | 0:37,8 | `04c` | 17 | Baza wiedzy. Wrzucasz PDF albo Worda. Tekst jest rozpoznany, pocięty na fragmenty i zindeksowany. |
+| 0:37,8 | 0:45,8 | `04d` | 18 | Przeszukiwanie archiwum. Opisujesz sprawę zamiast wpisywać słowa kluczowe. Najlepsze trafienie: zero przecinek dziewięćdziesiąt. |
+| 0:45,8 | 0:53,5 | `04e` | 17 | Ścieżka do wydziału. System wskazuje komórkę organizacyjną i podaje uzasadnienie. Pewność: sześćdziesiąt cztery procent. |
+| 0:53,5 | 1:01,4 | `04f` | 17 | Projekt odpowiedzi. Pismo z podstawą prawną i sześcioma przypisami do źródeł. Każde twierdzenie ma cytat. |
+| 1:01,4 | 1:10,3 | `04g` | 21 | Anonimizacja. PESEL, NIP, adres, telefon — wykryte i usunięte, zanim tekst trafi do modelu. Na czterdziestu sprawach: sto procent. |
+| 1:10,3 | 1:15,4 | `04h` | 13 | Model i moduły. Każdy z ośmiu modułów przełączasz: chmura albo lokalny Bielik. |
+| 1:15,4 | 1:21,6 | `05` | 13 | Pięć kroków: wniosek, dokumenty, kwerenda, routing, projekt pisma. Każdy krok zostawia ślad. |
+| 1:21,6 | 1:27,5 | `06` | 14 | Otwarty stos, bez licencji. Python, FastAPI, React, llama.cpp, Docker. Całość wstaje jedną komendą. |
+| 1:27,5 | 1:33,5 | `07` | 13 | Dane nie wychodzą z urzędu. Zero automatycznej wysyłki, brak SIDAS. Bielik 11B działa lokalnie. |
+| 1:33,5 | 1:39,4 | `08` | 15 | Dla urzędników od wniosków UDIP. Dziś prototyp, jutro wdrożenie w Bydgoszczy. Asystent, nie zamiennik decyzji. |
+| 1:39,4 | 1:46,0 | `09` | 11 | Inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy. |
 
 ## Wymowa
 
-Cztery miejsca, w których TTS lubi się potknąć — zapisane fonetycznie w tekście
+Miejsca, w których TTS lubi się potknąć — zapisane fonetycznie w tekście
 powyżej, ale sprawdź je w wygenerowanym audio:
 
-- `Q4_K_M` → w narracji „w czterobitowej kwantyzacji”, żeby nie czytać podkreśleń.
-- `0,71` → „zero przecinek siedemdziesiąt jeden”.
-- `95%` → „dziewięćdziesiąt pięć procent”.
-- `F1` → „ef jeden”.
+- `0,90` → „zero przecinek dziewięćdziesiąt”.
+- `64%` → „sześćdziesiąt cztery procent”.
+- `100%` → „sto procent”.
+- `11B` → „jedenaście be”.
+- `UDIP` → „u-dip” (akronim czytany jako słowo, nie litera po literze).
+- `SIDAS` → „sidas”.
+- `Q4_K_M` → w narracji pominięte; na ekranie w karcie modelu.
+- `llama.cpp` → „lama” (bez kropki i bez „cpp”).
 
 ## Podłożenie pod film
 
@@ -81,7 +86,7 @@ Skrypt `podloz-lektora.sh` kładzie osobne pliki na ich znacznikach czasu:
 
 ```bash
 mkdir lektor
-# wgraj tu 01.wav, 02.wav, 03.wav, 04a.wav … 08.wav
+# wgraj tu 01.wav, 02.wav, 03.wav, 04a.wav … 04h.wav, 05.wav … 09.wav
 ./podloz-lektora.sh
 ```
 
@@ -95,3 +100,6 @@ ffmpeg -i ../docs/asystent-urzednika.mp4 -i narracja.wav \
   -map 0:v -map 1:a -c:v copy -c:a aac -b:a 192k \
   ../docs/asystent-urzednika-lektor.mp4
 ```
+
+Jeśli pojedynczy blok wyjdzie dłuższy niż jego okno, skróć go — nie przesuwaj
+kolejnych znaczników, bo rozjedzie się z obrazem.

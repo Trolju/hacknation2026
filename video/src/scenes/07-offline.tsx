@@ -1,134 +1,175 @@
 import {makeScene2D, Rect, Txt} from '@revideo/2d';
-import {all, createRef, easeOutCubic, waitFor} from '@revideo/core';
-import {Backdrop, Headline, Kicker} from '../components';
+import {all, createRef, delay, easeOutCubic, easeOutExpo, waitFor} from '@revideo/core';
+import {Backdrop, Kicker} from '../components';
 import {COLORS, FONT} from '../theme';
+
+const LEFT = -840;
+
+const RULES = [
+  {t: 'Zero automatycznej wysyłki', d: 'Pismo wychodzi tylko wtedy, gdy urzędnik je zatwierdzi.', c: COLORS.green},
+  {t: 'Brak integracji z SIDAS', d: 'Narzędzie wsparcia obok systemu, nie zamiennik procedury.', c: COLORS.blue},
+  {t: 'Anonimizacja przed przetwarzaniem', d: 'Dane osobowe usuwane, zanim tekst trafi do modelu.', c: COLORS.red},
+];
 
 export default makeScene2D('07-offline', function* (view) {
   const kicker = createRef<Rect>();
   const head = createRef<Txt>();
+  const rows = RULES.map(() => createRef<Rect>());
   const card = createRef<Rect>();
-  const alt = createRef<Rect>();
-  const foot = createRef<Txt>();
 
   view.add(<Backdrop />);
-  view.add(<Kicker ref={kicker} text={'WARUNKI BRZEGOWE'} x={-620} y={-430} />);
+  view.add(<Kicker ref={kicker} text={'BEZPIECZEŃSTWO'} x={LEFT - 40} y={-400} color={COLORS.green} />);
   view.add(
-    <Headline
+    <Txt
       ref={head}
-      text={'Bez internetu. Bez chmury. Bez wielkiego LLM-a.'}
-      x={-620}
+      text={'Dane nie wychodzą z urzędu.'}
+      x={LEFT}
       y={-330}
-      size={56}
-      width={1560}
+      offsetX={-1}
+      offsetY={-0.5}
+      width={900}
+      textWrap
+      textAlign={'left'}
+      fill={COLORS.text}
+      fontFamily={FONT}
+      fontSize={66}
+      fontWeight={700}
+      lineHeight={78}
+      letterSpacing={-1.4}
+      opacity={0}
     />,
+  );
+
+  view.add(
+    <Rect layout={false}>
+      {RULES.map((r, i) => (
+        <Rect ref={rows[i]} key={r.t} x={LEFT} y={-30 + i * 176} width={880} layout={false} opacity={0}>
+          <Rect width={4} height={92} radius={2} fill={r.c} x={0} y={0} />
+          <Txt
+            text={r.t}
+            x={28}
+            y={-20}
+            offsetX={-1}
+            offsetY={-0.5}
+            fill={COLORS.text}
+            fontFamily={FONT}
+            fontSize={36}
+            fontWeight={700}
+            letterSpacing={-0.5}
+          />
+          <Txt
+            text={r.d}
+            x={28}
+            y={26}
+            offsetX={-1}
+            offsetY={-0.5}
+            width={820}
+            textWrap
+            textAlign={'left'}
+            fill={COLORS.muted}
+            fontFamily={FONT}
+            fontSize={24}
+            fontWeight={400}
+            lineHeight={33}
+          />
+        </Rect>
+      ))}
+    </Rect>,
   );
 
   view.add(
     <Rect
       ref={card}
-      x={-70}
-      y={30}
-      width={1100}
-      height={250}
-      radius={20}
-      fill={'#0C1524'}
-      stroke={COLORS.green}
+      x={470}
+      y={60}
+      width={820}
+      height={500}
+      radius={22}
+      fill={'#0A1220'}
+      stroke={'#243449'}
       lineWidth={1.5}
       layout={false}
       opacity={0}
+      scale={0.96}
     >
+      <Rect width={720} height={4} radius={2} fill={COLORS.violet} y={-195} />
       <Txt
-        text={'MODEL DOMYŚLNY'}
-        x={-500}
-        y={-78}
+        text={'MODEL LOKALNY'}
+        x={-340}
+        y={-150}
         offsetX={-1}
-        fill={COLORS.green}
+        offsetY={-0.5}
+        fill={COLORS.violet}
         fontFamily={FONT}
         fontSize={17}
         fontWeight={700}
-        letterSpacing={2.6}
+        letterSpacing={3}
       />
       <Txt
-        text={'Bielik-11B-v2.3-Instruct  ·  Q4_K_M'}
-        x={-500}
-        y={-14}
+        text={'Bielik 11B v2.3 Instruct'}
+        x={-340}
+        y={-96}
         offsetX={-1}
         offsetY={-0.5}
         fill={COLORS.text}
         fontFamily={FONT}
         fontSize={40}
         fontWeight={700}
-        letterSpacing={-0.8}
+        letterSpacing={-0.9}
       />
       <Txt
-        text={'6,7 GB  ·  llama.cpp albo Ollama  ·  jeden serwer w urzędzie, zero wywołań na zewnątrz'}
-        x={-500}
-        y={62}
+        text={'Q4_K_M  ·  6,7 GB  ·  llama.cpp / Ollama'}
+        x={-340}
+        y={-44}
         offsetX={-1}
         offsetY={-0.5}
-        width={1000}
-        textWrap
-        textAlign={'left'}
         fill={COLORS.muted}
         fontFamily={FONT}
         fontSize={22}
         fontWeight={400}
-        lineHeight={32}
       />
-    </Rect>,
-  );
-
-  view.add(
-    <Rect
-      ref={alt}
-      x={-70}
-      y={230}
-      width={1100}
-      height={86}
-      radius={16}
-      fill={'#0A1220'}
-      stroke={'#1E2C42'}
-      lineWidth={1.5}
-      layout={false}
-      opacity={0}
-    >
+      <Rect width={680} height={1} fill={'#1E2A3D'} y={-6} />
       <Txt
-        text={'Alternatywa:  Qwen2.5-7B-Instruct  ·  4,7 GB  —  gdy brakuje GPU'}
-        x={-500}
+        text={'Bez internetu. Bez chmury. Bez wysyłki.'}
+        x={-340}
+        y={44}
         offsetX={-1}
-        fill={COLORS.muted}
+        offsetY={-0.5}
+        fill={COLORS.text}
         fontFamily={FONT}
-        fontSize={23}
-        fontWeight={500}
+        fontSize={26}
+        fontWeight={600}
+      />
+      <Txt
+        text={'Model da się podmienić w ustawieniach — chmura na czas testów, lokalny Bielik na produkcję.'}
+        x={-340}
+        y={112}
+        offsetX={-1}
+        offsetY={-0.5}
+        width={680}
+        textWrap
+        textAlign={'left'}
+        fill={COLORS.dim}
+        fontFamily={FONT}
+        fontSize={20}
+        fontWeight={400}
+        lineHeight={29}
       />
     </Rect>,
   );
 
-  view.add(
-    <Txt
-      ref={foot}
-      text={
-        'Tryb demo nie potrzebuje żadnego modelu: MODULE_MODE_DEFAULT=fake działa na danych testowych.'
-      }
-      x={-620}
-      y={370}
-      offsetX={-1}
-      offsetY={-0.5}
-      width={1560}
-      textWrap
-      textAlign={'left'}
-      fill={COLORS.dim}
-      fontFamily={FONT}
-      fontSize={22}
-      fontWeight={400}
-      lineHeight={32}
-      opacity={0}
-    />,
+  yield* all(kicker().opacity(1, 0.4, easeOutCubic), kicker().x(LEFT, 0.5, easeOutCubic));
+  yield* all(head().opacity(1, 0.5, easeOutCubic), head().y(-322, 0.5, easeOutCubic));
+
+  yield* all(
+    ...RULES.map((_, i) =>
+      delay(
+        i * 0.22,
+        all(rows[i]().opacity(1, 0.4, easeOutCubic), rows[i]().x(LEFT + 24, 0.45, easeOutCubic)),
+      ),
+    ),
   );
 
-  yield* all(kicker().opacity(1, 0.4), head().opacity(1, 0.6, easeOutCubic));
-  yield* all(card().opacity(1, 0.5, easeOutCubic), card().y(0, 0.5, easeOutCubic));
-  yield* all(alt().opacity(1, 0.45, easeOutCubic), alt().y(200, 0.45, easeOutCubic));
-  yield* foot().opacity(1, 0.6, easeOutCubic);
-  yield* waitFor(9.0);
+  yield* all(card().opacity(1, 0.5, easeOutCubic), card().scale(1, 0.55, easeOutExpo));
+  yield* waitFor(3.6);
 });
