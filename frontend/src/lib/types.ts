@@ -20,6 +20,8 @@ export type Case = {
   case_number: string;
   ordinal: number;
   subject: string;
+  /** Wnioskodawca w postaci z pisma — nazwisko, nazwa organizacji albo e-mail. */
+  applicant: string;
   inflow_date: string;
   deadline: string;
   response_date: string | null;

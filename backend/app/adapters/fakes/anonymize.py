@@ -124,6 +124,19 @@ PATTERNS: list[tuple[SpanCategory, re.Pattern[str], float]] = [
         0.88,
     ),
     (
+        # Księga wieczysta: czteroznakowy kod sądu, numer i cyfra kontrolna.
+        SpanCategory.KSIEGA_WIECZYSTA,
+        re.compile(r"\b[A-Z]{2}\d[A-Z]/\d{8}/\d\b"),
+        0.92,
+    ),
+    (
+        # Numer działki ewidencyjnej — tylko z jawnym słowem „działka”/„dz.”,
+        # bo sam ułamek liczbowy występuje w każdym piśmie.
+        SpanCategory.DZIALKA,
+        re.compile(r"\b(?:działk[aię]|dz\.)\s*(?:nr\s*)?\d+(?:/\d+)?", re.IGNORECASE),
+        0.8,
+    ),
+    (
         SpanCategory.TELEFON,
         # wymagany separator lub prefiks +48 — inaczej 9 cyfr to REGON
         re.compile(
@@ -163,7 +176,13 @@ PATTERNS: list[tuple[SpanCategory, re.Pattern[str], float]] = [
 ]
 
 # Numery wniosków i sygnatury — muszą pozostać nietknięte.
-CASE_NUMBER = re.compile(r"UDIP\.[\w.]+|ZP\.\d+[\w.]*")
+# Format UMB: `BKS.IV.1431.{nr}.{rok}` (Biuro Komunikacji Społecznej, dziennik 1431).
+# Adresy w domenie miasta to dane instytucji, nie osoby.
+CASE_NUMBER = re.compile(
+    r"\bBKS\.IV\.1431\.[\w.]+"
+    r"|\bZP\.\d+[\w.]*"
+    r"|\b[\w.+-]+@[\w-]*um\.bydgoszcz\.pl\b"
+)
 
 # Data w formacie dd.mm.rrrr jest daną osobową tylko po jednym z tych zwrotów.
 _DATE_MARKER = re.compile(r"(?:ur\.|urodzon[ya]|Data urodzenia:)\s*$")

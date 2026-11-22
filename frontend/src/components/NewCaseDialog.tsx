@@ -29,7 +29,7 @@ import {
 import { api } from "@/lib/api";
 import type { ApplicantType, Case } from "@/lib/types";
 
-const CASE_NUMBER_PATTERN = /^UDIP\.[A-Za-z0-9]+\.\d+\.\d{4}$/;
+const CASE_NUMBER_PATTERN = /^[A-Z]{2,5}\.[A-Z]{1,4}\.[0-9]{1,6}\.[0-9]{1,9}\.[0-9]{4}$/;
 
 const APPLICANT_LABEL: Record<ApplicantType, string> = {
   osoba_fizyczna: "Osoba fizyczna",
@@ -45,13 +45,17 @@ const schema = z.object({
     .min(1, "Numer sprawy jest wymagany.")
     .regex(
       CASE_NUMBER_PATTERN,
-      "Format numeru: UDIP.<komórka>.<numer>.<rok>, np. UDIP.1435.12.2026.",
+      "Format numeru: <komórka>.<dziennik>.<numer>.<rok>, np. BKS.IV.1431.12.2026.",
     ),
   subject: z
     .string()
     .trim()
     .min(1, "Temat wniosku jest wymagany.")
     .max(200, "Temat może mieć najwyżej 200 znaków."),
+  applicant: z
+    .string()
+    .trim()
+    .max(200, "Wnioskodawca może mieć najwyżej 200 znaków."),
   inflow_date: z.string().min(1, "Data wpływu jest wymagana."),
   handler_initials: z
     .string()
@@ -78,6 +82,7 @@ function emptyValues(): FormValues {
   return {
     case_number: "",
     subject: "",
+    applicant: "",
     inflow_date: todayInputValue(),
     handler_initials: "",
     applicant_type: "inne",
@@ -114,6 +119,7 @@ export function NewCaseDialog({ open, onOpenChange }: NewCaseDialogProps) {
       api.post<Case>("/cases", {
         case_number: values.case_number,
         subject: values.subject,
+        applicant: values.applicant,
         inflow_date: values.inflow_date,
         handler_initials: values.handler_initials,
         applicant_type: values.applicant_type,
@@ -153,7 +159,7 @@ export function NewCaseDialog({ open, onOpenChange }: NewCaseDialogProps) {
             <Label htmlFor="new-case-number">Numer sprawy</Label>
             <Input
               id="new-case-number"
-              placeholder="UDIP.1435.12.2026"
+              placeholder="BKS.IV.1431.12.2026"
               autoComplete="off"
               aria-invalid={errors.case_number ? true : undefined}
               aria-describedby={
@@ -183,6 +189,25 @@ export function NewCaseDialog({ open, onOpenChange }: NewCaseDialogProps) {
             {errors.subject ? (
               <p id="new-case-subject-error" className="text-xs text-destructive">
                 {errors.subject.message}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="new-case-applicant-name">Wnioskodawca</Label>
+            <Input
+              id="new-case-applicant-name"
+              placeholder="Nazwisko, nazwa organizacji albo e-mail"
+              autoComplete="off"
+              aria-invalid={errors.applicant ? true : undefined}
+              aria-describedby={
+                errors.applicant ? "new-case-applicant-name-error" : undefined
+              }
+              {...form.register("applicant")}
+            />
+            {errors.applicant ? (
+              <p id="new-case-applicant-name-error" className="text-xs text-destructive">
+                {errors.applicant.message}
               </p>
             ) : null}
           </div>

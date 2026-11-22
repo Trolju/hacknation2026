@@ -27,7 +27,7 @@ from app.core import container
 from app.modules.archive.service import ArchiveIndexer, archive_entry
 
 
-def _entry(case_number: str = "UDIP.1435.900.2026", **overrides: object) -> ArchiveCase:
+def _entry(case_number: str = "BKS.IV.1431.900.2026", **overrides: object) -> ArchiveCase:
     payload: dict[str, object] = {
         "archive_id": "",
         "case_number": case_number,
@@ -47,7 +47,7 @@ def _case(status: CaseStatus, **overrides: object) -> CaseDetail:
     now = datetime(2026, 3, 16, 12, 0, 0)
     payload: dict[str, object] = {
         "id": uuid4(),
-        "case_number": "UDIP.1435.901.2026",
+        "case_number": "BKS.IV.1431.901.2026",
         "ordinal": 901,
         "subject": "Wynagrodzenia pracowników Urzędu Miasta",
         "inflow_date": date(2026, 3, 2),
@@ -74,7 +74,7 @@ def test_fake_add_powiększa_archiwum() -> None:
 
     assert archive.size() == before + 1
     assert archive_id.startswith("n")
-    assert archive.get(archive_id).case_number == "UDIP.1435.900.2026"
+    assert archive.get(archive_id).case_number == "BKS.IV.1431.900.2026"
 
 
 def test_fake_add_jest_idempotentne_względem_numeru_sprawy() -> None:
@@ -98,7 +98,7 @@ def test_dopisana_sprawa_jest_znajdowana_w_wyszukiwaniu() -> None:
     archive = FakeArchiveSearch()
     archive.add(
         _entry(
-            case_number="UDIP.1435.902.2026",
+            case_number="BKS.IV.1431.902.2026",
             subject="Dezynfekcja pomieszczeń biurowych po remoncie",
             request_text="Proszę o informację o środkach do dezynfekcji pomieszczeń.",
         )
@@ -107,7 +107,7 @@ def test_dopisana_sprawa_jest_znajdowana_w_wyszukiwaniu() -> None:
     results = archive.similar(SimilarRequest(text="dezynfekcja pomieszczeń", k=5))
 
     assert results
-    assert results[0].case_number == "UDIP.1435.902.2026"
+    assert results[0].case_number == "BKS.IV.1431.902.2026"
 
 
 # ────────────────────────────── adapter realny ──────────────────────────────
@@ -129,7 +129,7 @@ def test_real_add_przetrwa_restart(real_engine: Engine) -> None:
     second = VectorArchiveSearch(engine=real_engine)
 
     assert second.size() == first.size()
-    assert second.get(archive_id).case_number == "UDIP.1435.900.2026"
+    assert second.get(archive_id).case_number == "BKS.IV.1431.900.2026"
 
 
 def test_real_add_jest_idempotentne(real_engine: Engine) -> None:
@@ -145,7 +145,7 @@ def test_real_dopisana_sprawa_jest_znajdowana(real_engine: Engine) -> None:
     archive = VectorArchiveSearch(engine=real_engine)
     archive.add(
         _entry(
-            case_number="UDIP.1435.903.2026",
+            case_number="BKS.IV.1431.903.2026",
             subject="Dezynfekcja pomieszczeń biurowych po remoncie",
             request_text="Proszę o informację o środkach do dezynfekcji pomieszczeń.",
         )
@@ -154,7 +154,7 @@ def test_real_dopisana_sprawa_jest_znajdowana(real_engine: Engine) -> None:
     results = archive.similar(SimilarRequest(text="dezynfekcja pomieszczeń", k=5))
 
     assert results
-    assert results[0].case_number == "UDIP.1435.903.2026"
+    assert results[0].case_number == "BKS.IV.1431.903.2026"
 
 
 def test_real_nie_dotyka_bazy_gdy_podano_rows(real_engine: Engine) -> None:
@@ -182,7 +182,7 @@ def test_serwis_indeksuje_sprawę_zamkniętą() -> None:
     archive_id = indexer.index(_case(CaseStatus.ODPOWIEDZ_WYSLANA))
 
     assert archive_id is not None
-    assert archive.get(archive_id).case_number == "UDIP.1435.901.2026"
+    assert archive.get(archive_id).case_number == "BKS.IV.1431.901.2026"
 
 
 def test_wpis_bierze_notatki_jako_treść_wniosku() -> None:
@@ -224,7 +224,7 @@ def _zamknij_sprawe(client: TestClient) -> dict[str, object]:
     created = client.post(
         "/api/cases",
         json={
-            "case_number": "UDIP.1435.904.2026",
+            "case_number": "BKS.IV.1431.904.2026",
             "subject": "Dezynfekcja pomieszczeń biurowych po remoncie",
             "inflow_date": "2026-03-02",
             "deadline": "2026-03-16",
@@ -255,7 +255,7 @@ def test_zamkniecie_wniosku_dopisuje_go_do_archiwum(client: TestClient) -> None:
 
     assert len(after) >= len(before)
     assert any(
-        row["case_number"] == "UDIP.1435.904.2026" for row in after
+        row["case_number"] == "BKS.IV.1431.904.2026" for row in after
     ), "zamknięty wniosek nie pojawił się w archiwum"
 
 
@@ -268,7 +268,7 @@ def test_zamkniecie_wniosku_jest_widoczne_przez_get(client: TestClient) -> None:
     archive_id = next(
         row["archive_id"]
         for row in results
-        if row["case_number"] == "UDIP.1435.904.2026"
+        if row["case_number"] == "BKS.IV.1431.904.2026"
     )
 
     detail = client.get(f"/api/archive/{archive_id}")

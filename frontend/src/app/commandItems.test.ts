@@ -35,11 +35,11 @@ const ENTRIES: PaletteEntry[] = [
 
 const CASES = [
   {
-    case_number: "UDIP.1435.1.2026",
+    case_number: "BKS.IV.1431.1.2026",
     subject: "Wynagrodzenia pracowników Urzędu Miasta w 2025 r.",
   },
   {
-    case_number: "UDIP.1435.2.2026",
+    case_number: "BKS.IV.1431.2.2026",
     subject: "Kopie umów najmu lokali komunalnych",
   },
   {
@@ -130,6 +130,6 @@ describe("shouldSearchCases", () => {
 
 describe("caseSearchTerm", () => {
   it("obcina skrajne spacje przed wysłaniem do API", () => {
-    expect(caseSearchTerm("  UDIP.1435  ")).toBe("UDIP.1435");
+    expect(caseSearchTerm("  BKS.IV.1431  ")).toBe("BKS.IV.1431");
   });
 });

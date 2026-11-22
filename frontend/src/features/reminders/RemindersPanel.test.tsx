@@ -13,7 +13,7 @@ import type { Reminder } from "@/features/reminders/types";
 const REMINDERS: Reminder[] = [
   {
     case_id: "c0000001-0000-4000-8000-000000000001",
-    case_number: "UDIP.1435.1.2026",
+    case_number: "BKS.IV.1431.1.2026",
     subject: "Wynagrodzenia pracowników Urzędu Miasta w 2025 r.",
     deadline: "2026-03-06",
     days_remaining: -10,
@@ -24,7 +24,7 @@ const REMINDERS: Reminder[] = [
   },
   {
     case_id: "c0000001-0000-4000-8000-000000000002",
-    case_number: "UDIP.1435.2.2026",
+    case_number: "BKS.IV.1431.2.2026",
     subject: "Kopie umów najmu lokali komunalnych przy ul. Dworcowej",
     deadline: "2026-03-16",
     days_remaining: 0,
@@ -35,7 +35,7 @@ const REMINDERS: Reminder[] = [
   },
   {
     case_id: "c0000001-0000-4000-8000-000000000003",
-    case_number: "UDIP.1435.3.2026",
+    case_number: "BKS.IV.1431.3.2026",
     subject: "Wydatki na promocję miasta w mediach społecznościowych",
     deadline: "2026-03-17",
     days_remaining: 1,
@@ -75,9 +75,9 @@ describe("lista przypomnień", () => {
   it("pokazuje wnioski po terminie, na dziś i na jutro", () => {
     const html = renderPanel(REMINDERS);
 
-    expect(html).toContain("UDIP.1435.1.2026");
-    expect(html).toContain("UDIP.1435.2.2026");
-    expect(html).toContain("UDIP.1435.3.2026");
+    expect(html).toContain("BKS.IV.1431.1.2026");
+    expect(html).toContain("BKS.IV.1431.2.2026");
+    expect(html).toContain("BKS.IV.1431.3.2026");
     expect(html).toContain("Po terminie");
     expect(html).toContain("Termin dziś");
     expect(html).toContain("Termin jutro");
@@ -109,6 +109,6 @@ describe("lista przypomnień", () => {
 
     expect(html).toContain("Brak pilnych terminów");
     expect(html).toContain("0 przypomnień");
-    expect(html).not.toContain("UDIP.1435.1.2026");
+    expect(html).not.toContain("BKS.IV.1431.1.2026");
   });
 });

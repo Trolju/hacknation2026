@@ -1,8 +1,8 @@
 """Przypomnienia o terminach odpowiedzi (W11).
 
 Kotwica czasu: `DEMO_TODAY = 2026-03-16`. Z dziesięciu wniosków z `fixtures/`
-przypomnieniem są trzy: po terminie (UDIP.1435.1.2026), na dziś
-(UDIP.1435.2.2026) i na jutro (UDIP.1435.3.2026).
+przypomnieniem są trzy: po terminie (BKS.IV.1431.1.2026), na dziś
+(BKS.IV.1431.2.2026) i na jutro (BKS.IV.1431.3.2026).
 """
 
 from __future__ import annotations
@@ -18,9 +18,9 @@ from app.core import container
 from app.main import app
 from app.modules.reminders.service import ReminderService, reminder_message
 
-OVERDUE_CASE = "UDIP.1435.1.2026"
-TODAY_CASE = "UDIP.1435.2.2026"
-TOMORROW_CASE = "UDIP.1435.3.2026"
+OVERDUE_CASE = "BKS.IV.1431.1.2026"
+TODAY_CASE = "BKS.IV.1431.2.2026"
+TOMORROW_CASE = "BKS.IV.1431.3.2026"
 
 
 class _NoCasesRepository(FakeCaseRepository):
@@ -85,8 +85,8 @@ def test_reminders_skip_closed_cases(client: TestClient) -> None:
 
     numbers = {row["case_number"] for row in rows}
     # Obie sprawy mają terminy w przeszłości, ale są już zamknięte.
-    assert "UDIP.1435.7.2026" not in numbers
-    assert "UDIP.1435.8.2026" not in numbers
+    assert "BKS.IV.1431.7.2026" not in numbers
+    assert "BKS.IV.1431.8.2026" not in numbers
     assert all(row["status"] != "odpowiedz_wyslana" for row in rows)
 
 
@@ -95,8 +95,8 @@ def test_reminders_skip_cases_with_distant_deadlines(client: TestClient) -> None
 
     numbers = {row["case_number"] for row in rows}
     # Terminy za 3 dni i później nie są jeszcze przypomnieniem.
-    assert "UDIP.1435.4.2026" not in numbers
-    assert "UDIP.1435.5.2026" not in numbers
+    assert "BKS.IV.1431.4.2026" not in numbers
+    assert "BKS.IV.1431.5.2026" not in numbers
     assert len(rows) == 3
 
 
@@ -120,14 +120,14 @@ def test_reminders_carry_polish_message(client: TestClient) -> None:
 def test_reminders_are_computed_on_read(client: TestClient) -> None:
     """Przesunięcie terminu od razu zmienia listę — nie ma stanu w tle."""
     case_id = "c0000001-0000-4000-8000-000000000005"
-    assert "UDIP.1435.5.2026" not in {
+    assert "BKS.IV.1431.5.2026" not in {
         row["case_number"] for row in client.get("/api/reminders").json()
     }
 
     client.patch(f"/api/cases/{case_id}", json={"deadline": "2026-03-16"})
 
     rows = client.get("/api/reminders").json()
-    assert "UDIP.1435.5.2026" in {row["case_number"] for row in rows}
+    assert "BKS.IV.1431.5.2026" in {row["case_number"] for row in rows}
 
 
 def test_reminders_empty_when_no_cases(empty_client: TestClient) -> None:

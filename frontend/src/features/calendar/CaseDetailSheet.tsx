@@ -207,6 +207,9 @@ export function CaseDetailSheet({ caseId, onClose }: CaseDetailSheetProps) {
                 {data.handler_initials || "—"}
               </Field>
               <Field label={t.detail.fields.applicant}>
+                {data.applicant || "—"}
+              </Field>
+              <Field label={t.detail.fields.applicantType}>
                 {t.detail.applicantTypes[data.applicant_type]}
               </Field>
               <Field label={t.detail.fields.departments}>

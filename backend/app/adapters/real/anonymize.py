@@ -10,7 +10,7 @@ Detektory regułowe rozszerzone względem atrapy o:
 - opcjonalny przebieg NER przez spaCy — import w `try/except`, brak modelu
   oznacza cichą degradację do reguł.
 
-Zakaz fałszywych trafień: numery wniosków `UDIP.*` i sygnatury `ZP.*` są
+Zakaz fałszywych trafień: numery wniosków `BKS.IV.1431.*` i sygnatury `ZP.*` są
 wycinane z tekstu przed dopasowaniem wzorców numerycznych, więc nigdy nie
 trafiają do kategorii `nip`, `regon` ani `pesel`.
 
@@ -58,9 +58,12 @@ _TOKEN: Final[re.Pattern[str]] = re.compile(
 # Numery wniosków i sygnatury postępowań: nie są danymi osobowymi i nie wolno
 # klasyfikować ich jako NIP/REGON/PESEL.
 _PROTECTED: Final[re.Pattern[str]] = re.compile(
-    r"\bUDIP\.[0-9A-Za-z.]+"
+    r"\bBKS\.IV\.1431\.[0-9A-Za-z.]+"
     r"|\bZP\.[0-9A-Za-z.]+"
     r"|\bZnak\s+sprawy:?\s*[0-9A-Za-z./-]+"
+    # Adresy instytucji w domenie miasta — nie są danymi osobowymi, a pojawiają
+    # się w cytowanych aktach wewnętrznych (np. bip@um.bydgoszcz.pl).
+    r"|\b[\w.+-]+@[\w-]*um\.bydgoszcz\.pl\b"
 )
 
 # ──────────────────────────── gazetteer imion ──────────────────────────

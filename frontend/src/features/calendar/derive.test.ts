@@ -11,9 +11,10 @@ import type { Case } from "@/lib/types";
 function makeCase(overrides: Partial<Case>): Case {
   return {
     id: "c0000001-0000-4000-8000-000000000001",
-    case_number: "UDIP.1435.1.2026",
+    case_number: "BKS.IV.1431.1.2026",
     ordinal: 1,
     subject: "Wniosek testowy",
+    applicant: "Jan Testowy",
     inflow_date: "2026-03-02",
     deadline: "2026-03-16",
     response_date: null,

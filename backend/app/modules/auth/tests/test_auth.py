@@ -173,7 +173,7 @@ def test_inicjaly_w_sprawie_pochodza_z_tokenu(
     response = client.post(
         "/api/cases",
         json={
-            "case_number": "UDIP.1435.99.2026",
+            "case_number": "BKS.IV.1431.99.2026",
             "subject": "Test tożsamości",
             "inflow_date": "2026-03-16",
             "handler_initials": "XX",
@@ -196,7 +196,7 @@ def test_autor_przejscia_pochodzi_z_tokenu(
     created = client.post(
         "/api/cases",
         json={
-            "case_number": "UDIP.1435.98.2026",
+            "case_number": "BKS.IV.1431.98.2026",
             "subject": "Test autora",
             "inflow_date": "2026-03-16",
         },

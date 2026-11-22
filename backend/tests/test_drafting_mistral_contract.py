@@ -210,7 +210,7 @@ class TestRecordedMistralResponse:
         prompt = json.loads(seen[0].content)["messages"][-1]["content"]
         assert "TWARDE WYMAGANIE" in prompt
         assert "ŹRÓDŁA" in prompt
-        assert "UDIP.1435.1.2026" in prompt
+        assert "BKS.IV.1431.1.2026" in prompt
 
 
 @pytest.mark.skipif(

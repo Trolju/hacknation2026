@@ -9,6 +9,7 @@ parametrów listy mieszkają tutaj. Reguły przejść są wspólne dla atrapy
 from __future__ import annotations
 
 import builtins
+from datetime import date
 from typing import TYPE_CHECKING
 from uuid import UUID
 
@@ -136,6 +137,39 @@ def normalize_sort(sort: str | None) -> str:
     return sort if sort in SORT_OPTIONS else DEFAULT_SORT
 
 
+def validate_dates(
+    *,
+    inflow_date: date,
+    deadline: date | None,
+    response_date: date | None,
+) -> None:
+    """Spójność dat w sprawie.
+
+    Dane z rejestru UMB zawierają rekordy, w których termin albo data
+    odpowiedzi wypadają przed datą wpływu — zwykle to literówka w roku.
+    Taki wniosek trafia do kalendarza z ujemnym „pozostało dni” i wygląda
+    jak sprawa po terminie, więc odrzucamy go przy zapisie.
+    """
+    if deadline is not None and deadline < inflow_date:
+        raise ValidationFailed(
+            "Termin odpowiedzi nie może być wcześniejszy niż data wpływu.",
+            details={
+                "field": "deadline",
+                "inflow_date": inflow_date.isoformat(),
+                "deadline": deadline.isoformat(),
+            },
+        )
+    if response_date is not None and response_date < inflow_date:
+        raise ValidationFailed(
+            "Data odpowiedzi nie może być wcześniejsza niż data wpływu.",
+            details={
+                "field": "response_date",
+                "inflow_date": inflow_date.isoformat(),
+                "response_date": response_date.isoformat(),
+            },
+        )
+
+
 # ───────────────────────────────── serwis ───────────────────────────────────
 class CaseService:
     """Operacje na wnioskach — waliduje wejście i deleguje do repozytorium."""
@@ -166,6 +200,11 @@ class CaseService:
         return self._repo.get(case_id)
 
     def create(self, data: CaseCreate) -> Case:
+        validate_dates(
+            inflow_date=data.inflow_date,
+            deadline=data.deadline,
+            response_date=None,
+        )
         prepared = data.model_copy(
             update={
                 "subject": validate_subject(data.subject),
@@ -180,6 +219,15 @@ class CaseService:
             changes["subject"] = validate_subject(patch.subject)
         if patch.handler_initials is not None:
             changes["handler_initials"] = validate_initials(patch.handler_initials)
+        if patch.deadline is not None or patch.response_date is not None:
+            current = self._repo.get(case_id)
+            validate_dates(
+                inflow_date=current.inflow_date,
+                deadline=patch.deadline if patch.deadline is not None else current.deadline,
+                response_date=patch.response_date
+                if patch.response_date is not None
+                else current.response_date,
+            )
         prepared = patch.model_copy(update=changes) if changes else patch
         return self._repo.update(case_id, prepared)
 

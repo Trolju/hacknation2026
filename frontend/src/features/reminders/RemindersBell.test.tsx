@@ -17,7 +17,7 @@ import type { Reminder } from "@/features/reminders/types";
 const REMINDERS: Reminder[] = [
   {
     case_id: "c0000001-0000-4000-8000-000000000001",
-    case_number: "UDIP.1435.1.2026",
+    case_number: "BKS.IV.1431.1.2026",
     subject: "Wynagrodzenia pracowników Urzędu Miasta w 2025 r.",
     deadline: "2026-03-06",
     days_remaining: -10,
@@ -28,7 +28,7 @@ const REMINDERS: Reminder[] = [
   },
   {
     case_id: "c0000001-0000-4000-8000-000000000002",
-    case_number: "UDIP.1435.2.2026",
+    case_number: "BKS.IV.1431.2.2026",
     subject: "Kopie umów najmu lokali komunalnych przy ul. Dworcowej",
     deadline: "2026-03-16",
     days_remaining: 0,
@@ -39,7 +39,7 @@ const REMINDERS: Reminder[] = [
   },
   {
     case_id: "c0000001-0000-4000-8000-000000000003",
-    case_number: "UDIP.1435.3.2026",
+    case_number: "BKS.IV.1431.3.2026",
     subject: "Wydatki na promocję miasta w mediach społecznościowych",
     deadline: "2026-03-17",
     days_remaining: 1,

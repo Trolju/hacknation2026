@@ -99,7 +99,7 @@ def test_get_returns_case(client: TestClient, real_archive: VectorArchiveSearch)
     assert response.status_code == 200
     payload = response.json()
     assert payload["archive_id"] == "a0001"
-    assert payload["case_number"] == "UDIP.1435.87.2025"
+    assert payload["case_number"] == "BKS.IV.1431.87.2025"
     assert payload["request_text"]
     assert payload["response_text"]
     assert payload["departments"]

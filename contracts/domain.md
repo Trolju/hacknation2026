@@ -135,7 +135,7 @@ Reguły scalania przy nakładaniu:
 
 **Kategorie krytyczne** (jury testuje w punkcie 3): `pesel`, `nip`, `telefon`, `email`, `imie_nazwisko`, `adres`.
 
-**Zakaz fałszywych trafień:** numery wniosków (`UDIP.1435.12.2026`) i sygnatury akt nie mogą być klasyfikowane jako `nip` ani `regon`. To najczęstszy błąd detektorów numerycznych — regex musi mieć negatywny lookbehind na `UDIP.` i kropki.
+**Zakaz fałszywych trafień:** numery wniosków (`BKS.IV.1431.12.2026`) i sygnatury akt nie mogą być klasyfikowane jako `nip` ani `regon`. To najczęstszy błąd detektorów numerycznych — regex musi mieć negatywny lookbehind na `UDIP.` i kropki.
 
 ---
 

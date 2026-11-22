@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 def test_list_returns_fixtures(client: TestClient) -> None:
     rows = client.get("/api/cases").json()
     assert len(rows) == 10
-    assert rows[0]["case_number"].startswith("UDIP.1435.")
+    assert rows[0]["case_number"].startswith("BKS.IV.1431.")
 
 
 def test_urgency_covers_all_states(client: TestClient) -> None:
@@ -68,7 +68,7 @@ def test_create_case(client: TestClient) -> None:
     resp = client.post(
         "/api/cases",
         json={
-            "case_number": "UDIP.1435.99.2026",
+            "case_number": "BKS.IV.1431.99.2026",
             "subject": "Wniosek testowy",
             "inflow_date": "2026-03-16",
         },

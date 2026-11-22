@@ -83,10 +83,26 @@ export default function CalendarPage() {
   const columns = useMemo<ColumnDef<Case, unknown>[]>(
     () => [
       {
+        accessorKey: "ordinal",
+        header: t.table.ordinal,
+        cell: ({ row }) => (
+          <span className="tabular-nums text-muted-foreground">
+            {row.original.ordinal}
+          </span>
+        ),
+      },
+      {
         accessorKey: "case_number",
         header: t.table.caseNumber,
         cell: ({ row }) => (
           <span className="font-mono text-xs">{row.original.case_number}</span>
+        ),
+      },
+      {
+        accessorKey: "applicant",
+        header: t.table.applicant,
+        cell: ({ row }) => (
+          <span className="line-clamp-1 max-w-48">{row.original.applicant || "—"}</span>
         ),
       },
       {
@@ -109,6 +125,18 @@ export default function CalendarPage() {
             {formatShortDate(row.original.deadline)}
           </span>
         ),
+      },
+      {
+        accessorKey: "response_date",
+        header: t.table.response,
+        cell: ({ row }) =>
+          row.original.response_date ? (
+            <span className="whitespace-nowrap">
+              {formatShortDate(row.original.response_date)}
+            </span>
+          ) : (
+            <span className="text-muted-foreground">—</span>
+          ),
       },
       {
         accessorKey: "days_remaining",

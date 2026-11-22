@@ -20,8 +20,8 @@ BODY = (
 CITATION = Citation(
     ref=1,
     source_type="statute",
-    source_id="zarzadzenie-412-2023#§ 4.",
-    label="§ 4 zarządzenia nr 412/2023",
+    source_id="zarzadzenie-536-2024#§ 11.",
+    label="§ 11 zarządzenia nr 536/2024",
     excerpt="",
 )
 
@@ -68,7 +68,7 @@ class TestRenderMarkdown:
         text = render_markdown(title="Projekt", body=BODY, citations=[CITATION]).decode()
 
         assert "## Cytowania" in text
-        assert "- [1] § 4 zarządzenia nr 412/2023" in text
+        assert "- [1] § 11 zarządzenia nr 536/2024" in text
 
     def test_bez_cytowan_nie_dopisuje_sekcji(self) -> None:
         text = render_markdown(title="Projekt", body=BODY, citations=[]).decode()

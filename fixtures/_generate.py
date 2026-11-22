@@ -26,9 +26,10 @@ def d(offset: int) -> str:
 CASES = [
     {
         "id": "c0000001-0000-4000-8000-000000000001",
-        "case_number": "UDIP.1435.1.2026",
+        "case_number": "BKS.IV.1431.1.2026",
         "ordinal": 1,
         "subject": "Wynagrodzenia pracowników Urzędu Miasta w 2025 r.",
+        "applicant": "Redakcja Gazety Pomorskiej",
         "inflow_date": d(-24),
         "deadline": d(-10),
         "response_date": None,
@@ -39,9 +40,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000002",
-        "case_number": "UDIP.1435.2.2026",
+        "case_number": "BKS.IV.1431.2.2026",
         "ordinal": 2,
         "subject": "Kopie umów najmu lokali komunalnych przy ul. Dworcowej",
+        "applicant": "Marta Wiśniewska",
         "inflow_date": d(-14),
         "deadline": d(0),
         "response_date": None,
@@ -52,9 +54,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000003",
-        "case_number": "UDIP.1435.3.2026",
+        "case_number": "BKS.IV.1431.3.2026",
         "ordinal": 3,
         "subject": "Wydatki na promocję miasta w mediach społecznościowych",
+        "applicant": "Stowarzyszenie Obrony Zwierzątek",
         "inflow_date": d(-13),
         "deadline": d(1),
         "response_date": None,
@@ -65,9 +68,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000004",
-        "case_number": "UDIP.1435.4.2026",
+        "case_number": "BKS.IV.1431.4.2026",
         "ordinal": 4,
         "subject": "Protokoły z kontroli Straży Miejskiej w 2025 r.",
+        "applicant": "Portal Bydgoszcz24",
         "inflow_date": d(-11),
         "deadline": d(3),
         "response_date": None,
@@ -78,9 +82,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000005",
-        "case_number": "UDIP.1435.5.2026",
+        "case_number": "BKS.IV.1431.5.2026",
         "ordinal": 5,
         "subject": "Harmonogram remontów dróg gminnych na 2026 r.",
+        "applicant": "Tomasz Grabowski",
         "inflow_date": d(-7),
         "deadline": d(7),
         "response_date": None,
@@ -91,9 +96,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000006",
-        "case_number": "UDIP.1435.6.2026",
+        "case_number": "BKS.IV.1431.6.2026",
         "ordinal": 6,
         "subject": "Decyzje o warunkach zabudowy wydane w IV kwartale 2025 r.",
+        "applicant": "Budowlanka S.A.",
         "inflow_date": d(-6),
         "deadline": d(8),
         "response_date": None,
@@ -104,9 +110,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000007",
-        "case_number": "UDIP.1435.7.2026",
+        "case_number": "BKS.IV.1431.7.2026",
         "ordinal": 7,
         "subject": "Umowy z podmiotami zewnętrznymi na utrzymanie zieleni",
+        "applicant": "Fundacja Zielone Miasto",
         "inflow_date": d(-34),
         "deadline": d(-20),
         "response_date": d(-21),
@@ -117,9 +124,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000008",
-        "case_number": "UDIP.1435.8.2026",
+        "case_number": "BKS.IV.1431.8.2026",
         "ordinal": 8,
         "subject": "Zatrudnienie w jednostkach organizacyjnych miasta",
+        "applicant": "Redakcja TV Bydgoszcz",
         "inflow_date": d(-29),
         "deadline": d(-15),
         "response_date": d(-17),
@@ -130,9 +138,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000009",
-        "case_number": "UDIP.1435.9.2026",
+        "case_number": "BKS.IV.1431.9.2026",
         "ordinal": 9,
         "subject": "Dostęp do nagrań z monitoringu miejskiego",
+        "applicant": "Krzysztof Mazur",
         "inflow_date": d(-5),
         "deadline": d(9),
         "response_date": None,
@@ -143,9 +152,10 @@ CASES = [
     },
     {
         "id": "c0000001-0000-4000-8000-000000000010",
-        "case_number": "UDIP.1435.10.2026",
+        "case_number": "BKS.IV.1431.10.2026",
         "ordinal": 10,
         "subject": "Koszty utrzymania Biura Rady Miasta w 2025 r.",
+        "applicant": "Redakcja Radia PiK",
         "inflow_date": d(-4),
         "deadline": d(10),
         "response_date": None,
@@ -160,7 +170,7 @@ CASES = [
 # (case_number, subject, year, request, response, departments)
 ARCHIVE_RAW = [
     (
-        "UDIP.1435.87.2025",
+        "BKS.IV.1431.87.2025",
         "Wynagrodzenia pracowników Urzędu Miasta w 2024 r.",
         2025,
         "Zwracam się z wnioskiem o udostępnienie informacji publicznej w zakresie wysokości "
@@ -174,7 +184,7 @@ ARCHIVE_RAW = [
         ["Wydział Organizacji i Kadr", "Wydział Budżetu i Księgowości"],
     ),
     (
-        "UDIP.1435.112.2025",
+        "BKS.IV.1431.112.2025",
         "Nagrody i premie dla kierowników jednostek organizacyjnych",
         2025,
         "Proszę o udostępnienie wykazu nagród i premii przyznanych w 2024 roku kierownikom "
@@ -186,7 +196,7 @@ ARCHIVE_RAW = [
         ["Wydział Organizacji i Kadr"],
     ),
     (
-        "UDIP.1435.64.2025",
+        "BKS.IV.1431.64.2025",
         "Zatrudnienie w Urzędzie Miasta w latach 2023-2024",
         2025,
         "Wnoszę o udostępnienie informacji o liczbie etatów w Urzędzie Miasta Bydgoszczy "
@@ -198,7 +208,7 @@ ARCHIVE_RAW = [
         ["Wydział Organizacji i Kadr"],
     ),
     (
-        "UDIP.1435.201.2025",
+        "BKS.IV.1431.201.2025",
         "Umowy najmu lokali komunalnych w Śródmieściu",
         2025,
         "Zwracam się o udostępnienie kopii umów najmu lokali komunalnych położonych "
@@ -210,7 +220,7 @@ ARCHIVE_RAW = [
         ["Wydział Gospodarki Nieruchomościami"],
     ),
     (
-        "UDIP.1435.178.2025",
+        "BKS.IV.1431.178.2025",
         "Zaległości czynszowe w lokalach komunalnych",
         2025,
         "Proszę o podanie łącznej kwoty zaległości czynszowych w lokalach komunalnych "
@@ -221,7 +231,7 @@ ARCHIVE_RAW = [
         ["Wydział Gospodarki Nieruchomościami", "Wydział Budżetu i Księgowości"],
     ),
     (
-        "UDIP.1435.95.2025",
+        "BKS.IV.1431.95.2025",
         "Wykaz lokali socjalnych i ich stan techniczny",
         2025,
         "Wnoszę o udostępnienie wykazu lokali socjalnych będących w zasobie miasta wraz "
@@ -232,7 +242,7 @@ ARCHIVE_RAW = [
         ["Wydział Gospodarki Nieruchomościami", "Wydział Gospodarki Komunalnej"],
     ),
     (
-        "UDIP.1435.33.2025",
+        "BKS.IV.1431.33.2025",
         "Wydatki na promocję miasta w mediach społecznościowych w 2024 r.",
         2025,
         "Proszę o udostępnienie informacji o wydatkach poniesionych przez miasto na "
@@ -245,7 +255,7 @@ ARCHIVE_RAW = [
         ["Wydział Promocji Miasta", "Biuro Komunikacji Społecznej"],
     ),
     (
-        "UDIP.1435.141.2025",
+        "BKS.IV.1431.141.2025",
         "Kampanie reklamowe miasta i ich efekty",
         2025,
         "Zwracam się o udostępnienie informacji o kampaniach reklamowych miasta "
@@ -257,7 +267,7 @@ ARCHIVE_RAW = [
         ["Wydział Promocji Miasta"],
     ),
     (
-        "UDIP.1435.19.2025",
+        "BKS.IV.1431.19.2025",
         "Umowy z agencjami marketingowymi",
         2025,
         "Proszę o wykaz umów zawartych przez miasto z agencjami marketingowymi "
@@ -269,7 +279,7 @@ ARCHIVE_RAW = [
         ["Wydział Promocji Miasta", "Wydział Zamówień Publicznych"],
     ),
     (
-        "UDIP.1435.76.2025",
+        "BKS.IV.1431.76.2025",
         "Protokoły kontroli Straży Miejskiej w 2024 r.",
         2025,
         "Wnoszę o udostępnienie protokołów z kontroli przeprowadzonych przez Straż Miejską "
@@ -281,7 +291,7 @@ ARCHIVE_RAW = [
         ["Straż Miejska"],
     ),
     (
-        "UDIP.1435.158.2025",
+        "BKS.IV.1431.158.2025",
         "Statystyki interwencji Straży Miejskiej",
         2025,
         "Proszę o dane statystyczne dotyczące interwencji Straży Miejskiej w latach "
@@ -292,7 +302,7 @@ ARCHIVE_RAW = [
         ["Straż Miejska"],
     ),
     (
-        "UDIP.1435.44.2025",
+        "BKS.IV.1431.44.2025",
         "Kontrole pojazdów przewożących odpady",
         2025,
         "Zwracam się o informację o liczbie kontroli pojazdów przewożących odpady "
@@ -303,7 +313,7 @@ ARCHIVE_RAW = [
         ["Straż Miejska", "Wydział Gospodarki Komunalnej"],
     ),
     (
-        "UDIP.1435.52.2025",
+        "BKS.IV.1431.52.2025",
         "Harmonogram remontów dróg gminnych na 2025 r.",
         2025,
         "Proszę o udostępnienie harmonogramu remontów dróg gminnych zaplanowanych "
@@ -315,7 +325,7 @@ ARCHIVE_RAW = [
         ["Zarząd Dróg Miejskich i Komunikacji Publicznej", "Wydział Transportu i Dróg"],
     ),
     (
-        "UDIP.1435.133.2025",
+        "BKS.IV.1431.133.2025",
         "Stan techniczny mostów i wiaduktów",
         2025,
         "Wnoszę o udostępnienie informacji o stanie technicznym mostów i wiaduktów "
@@ -326,7 +336,7 @@ ARCHIVE_RAW = [
         ["Zarząd Dróg Miejskich i Komunikacji Publicznej"],
     ),
     (
-        "UDIP.1435.8.2025",
+        "BKS.IV.1431.8.2025",
         "Remonty chodników i ścieżek rowerowych",
         2025,
         "Proszę o wykaz remontów chodników i ścieżek rowerowych zrealizowanych "
@@ -337,7 +347,7 @@ ARCHIVE_RAW = [
         ["Zarząd Dróg Miejskich i Komunikacji Publicznej"],
     ),
     (
-        "UDIP.1435.167.2025",
+        "BKS.IV.1431.167.2025",
         "Decyzje o warunkach zabudowy wydane w III kwartale 2025 r.",
         2025,
         "Zwracam się o udostępnienie wykazu decyzji o warunkach zabudowy wydanych "
@@ -348,7 +358,7 @@ ARCHIVE_RAW = [
         ["Wydział Architektury i Urbanistyki"],
     ),
     (
-        "UDIP.1435.88.2025",
+        "BKS.IV.1431.88.2025",
         "Pozwolenia na budowę wydane w 2024 r.",
         2025,
         "Proszę o dane o liczbie pozwoleń na budowę wydanych w 2024 roku z podziałem "
@@ -359,7 +369,7 @@ ARCHIVE_RAW = [
         ["Wydział Architektury i Urbanistyki"],
     ),
     (
-        "UDIP.1435.23.2025",
+        "BKS.IV.1431.23.2025",
         "Miejscowe plany zagospodarowania przestrzennego",
         2025,
         "Wnoszę o wykaz miejscowych planów zagospodarowania przestrzennego uchwalonych "
@@ -370,7 +380,7 @@ ARCHIVE_RAW = [
         ["Wydział Architektury i Urbanistyki"],
     ),
     (
-        "UDIP.1435.71.2025",
+        "BKS.IV.1431.71.2025",
         "Umowy na utrzymanie zieleni miejskiej",
         2025,
         "Proszę o udostępnienie wykazu umów zawartych na utrzymanie zieleni miejskiej "
@@ -381,7 +391,7 @@ ARCHIVE_RAW = [
         ["Wydział Gospodarki Komunalnej"],
     ),
     (
-        "UDIP.1435.149.2025",
+        "BKS.IV.1431.149.2025",
         "Wycinka drzew w 2024 r. i nasadzenia zastępcze",
         2025,
         "Zwracam się o dane o liczbie wydanych zezwoleń na wycinkę drzew w 2024 roku "
@@ -391,7 +401,7 @@ ARCHIVE_RAW = [
         ["Wydział Ochrony Środowiska"],
     ),
     (
-        "UDIP.1435.12.2025",
+        "BKS.IV.1431.12.2025",
         "Koszty utrzymania parków miejskich",
         2025,
         "Proszę o informację o kosztach utrzymania parków miejskich w 2024 roku.",
@@ -401,7 +411,7 @@ ARCHIVE_RAW = [
         ["Wydział Gospodarki Komunalnej"],
     ),
     (
-        "UDIP.1435.56.2025",
+        "BKS.IV.1431.56.2025",
         "Zatrudnienie w jednostkach organizacyjnych miasta",
         2025,
         "Wnoszę o udostępnienie danych o zatrudnieniu w jednostkach organizacyjnych "
@@ -412,7 +422,7 @@ ARCHIVE_RAW = [
         ["Wydział Organizacji i Kadr", "Wydział Edukacji"],
     ),
     (
-        "UDIP.1435.104.2025",
+        "BKS.IV.1431.104.2025",
         "Wynagrodzenia w jednostkach organizacyjnych",
         2025,
         "Proszę o dane o przeciętnym wynagrodzeniu w jednostkach organizacyjnych "
@@ -423,7 +433,7 @@ ARCHIVE_RAW = [
         ["Wydział Organizacji i Kadr"],
     ),
     (
-        "UDIP.1435.189.2025",
+        "BKS.IV.1431.189.2025",
         "Dostęp do nagrań z monitoringu miejskiego",
         2025,
         "Zwracam się o udostępnienie nagrań z monitoringu miejskiego z rejonu "
@@ -436,7 +446,7 @@ ARCHIVE_RAW = [
         ["Straż Miejska", "Biuro Prawne"],
     ),
     (
-        "UDIP.1435.62.2025",
+        "BKS.IV.1431.62.2025",
         "Lokalizacja kamer monitoringu miejskiego",
         2025,
         "Proszę o wykaz lokalizacji kamer monitoringu miejskiego wraz z ich typem.",
@@ -447,7 +457,7 @@ ARCHIVE_RAW = [
         ["Straż Miejska", "Wydział Informatyki"],
     ),
     (
-        "UDIP.1435.117.2025",
+        "BKS.IV.1431.117.2025",
         "Koszty funkcjonowania monitoringu miejskiego",
         2025,
         "Wnoszę o informację o kosztach funkcjonowania monitoringu miejskiego w 2024 r.",
@@ -457,7 +467,7 @@ ARCHIVE_RAW = [
         ["Straż Miejska", "Wydział Informatyki"],
     ),
     (
-        "UDIP.1435.41.2025",
+        "BKS.IV.1431.41.2025",
         "Koszty utrzymania Biura Rady Miasta",
         2025,
         "Proszę o udostępnienie informacji o kosztach utrzymania Biura Rady Miasta "
@@ -468,7 +478,7 @@ ARCHIVE_RAW = [
         ["Biuro Rady Miasta", "Wydział Budżetu i Księgowości"],
     ),
     (
-        "UDIP.1435.98.2025",
+        "BKS.IV.1431.98.2025",
         "Diety i wydatki radnych",
         2025,
         "Zwracam się o wykaz diet pobranych przez radnych w 2024 roku.",
@@ -478,7 +488,7 @@ ARCHIVE_RAW = [
         ["Biuro Rady Miasta"],
     ),
     (
-        "UDIP.1435.7.2025",
+        "BKS.IV.1431.7.2025",
         "Transmisje i protokoły sesji Rady Miasta",
         2025,
         "Proszę o informację o kosztach transmisji sesji Rady Miasta w 2024 roku.",
@@ -488,7 +498,7 @@ ARCHIVE_RAW = [
         ["Biuro Rady Miasta", "Wydział Informatyki"],
     ),
     (
-        "UDIP.1435.126.2025",
+        "BKS.IV.1431.126.2025",
         "Dotacje dla organizacji pozarządowych",
         2025,
         "Wnoszę o udostępnienie wykazu dotacji udzielonych organizacjom pozarządowym "
@@ -499,7 +509,7 @@ ARCHIVE_RAW = [
         ["Wydział Polityki Społecznej", "Wydział Kultury i Sportu"],
     ),
     (
-        "UDIP.1435.83.2025",
+        "BKS.IV.1431.83.2025",
         "Wydatki na kulturę i imprezy masowe",
         2025,
         "Proszę o informację o wydatkach miasta na imprezy kulturalne w 2024 roku.",
@@ -510,7 +520,7 @@ ARCHIVE_RAW = [
         ["Wydział Kultury i Sportu"],
     ),
     (
-        "UDIP.1435.172.2025",
+        "BKS.IV.1431.172.2025",
         "Wydatki na sport i infrastrukturę sportową",
         2025,
         "Wnoszę o dane o wydatkach na sport w 2024 roku wraz z wykazem inwestycji.",
@@ -520,7 +530,7 @@ ARCHIVE_RAW = [
         ["Wydział Kultury i Sportu"],
     ),
     (
-        "UDIP.1435.29.2025",
+        "BKS.IV.1431.29.2025",
         "Zamówienia publiczne udzielone w trybie z wolnej ręki",
         2025,
         "Proszę o wykaz zamówień publicznych udzielonych w trybie z wolnej ręki "
@@ -531,7 +541,7 @@ ARCHIVE_RAW = [
         ["Wydział Zamówień Publicznych"],
     ),
     (
-        "UDIP.1435.154.2025",
+        "BKS.IV.1431.154.2025",
         "Wartość zamówień publicznych w 2024 r.",
         2025,
         "Zwracam się o łączną wartość zamówień publicznych udzielonych przez miasto "
@@ -542,7 +552,7 @@ ARCHIVE_RAW = [
         ["Wydział Zamówień Publicznych"],
     ),
     (
-        "UDIP.1435.36.2025",
+        "BKS.IV.1431.36.2025",
         "Jakość powietrza i działania antysmogowe",
         2025,
         "Proszę o informację o działaniach miasta na rzecz poprawy jakości powietrza "
@@ -553,7 +563,7 @@ ARCHIVE_RAW = [
         ["Wydział Ochrony Środowiska", "Straż Miejska"],
     ),
     (
-        "UDIP.1435.108.2025",
+        "BKS.IV.1431.108.2025",
         "Gospodarka odpadami komunalnymi",
         2025,
         "Wnoszę o dane o kosztach i efektach gospodarki odpadami komunalnymi w 2024 r.",
@@ -563,7 +573,7 @@ ARCHIVE_RAW = [
         ["Wydział Gospodarki Komunalnej"],
     ),
     (
-        "UDIP.1435.195.2025",
+        "BKS.IV.1431.195.2025",
         "Transport publiczny — koszty i finansowanie",
         2025,
         "Proszę o informację o kosztach funkcjonowania transportu publicznego "
@@ -574,7 +584,7 @@ ARCHIVE_RAW = [
         ["Zarząd Dróg Miejskich i Komunikacji Publicznej", "Wydział Transportu i Dróg"],
     ),
     (
-        "UDIP.1435.14.2025",
+        "BKS.IV.1431.14.2025",
         "Edukacja — liczba uczniów i nauczycieli",
         2025,
         "Zwracam się o dane o liczbie uczniów i nauczycieli w placówkach oświatowych "
@@ -585,7 +595,7 @@ ARCHIVE_RAW = [
         ["Wydział Edukacji"],
     ),
     (
-        "UDIP.1435.47.2025",
+        "BKS.IV.1431.47.2025",
         "Remonty placówek oświatowych",
         2025,
         "Proszę o wykaz remontów zrealizowanych w placówkach oświatowych w 2024 roku.",
@@ -595,7 +605,7 @@ ARCHIVE_RAW = [
         ["Wydział Edukacji", "Wydział Inwestycji"],
     ),
     (
-        "UDIP.1435.181.2025",
+        "BKS.IV.1431.181.2025",
         "Pomoc społeczna — świadczenia i beneficjenci",
         2025,
         "Wnoszę o dane o świadczeniach pomocy społecznej udzielonych w 2024 roku.",
@@ -605,7 +615,7 @@ ARCHIVE_RAW = [
         ["Wydział Polityki Społecznej", "Miejski Ośrodek Pomocy Społecznej"],
     ),
     (
-        "UDIP.1435.3.2025",
+        "BKS.IV.1431.3.2025",
         "Dostępność architektoniczna budynków urzędu",
         2025,
         "Proszę o informację o dostosowaniu budynków urzędu do potrzeb osób "
@@ -616,7 +626,7 @@ ARCHIVE_RAW = [
         ["Wydział Administracyjny", "Wydział Inwestycji"],
     ),
     (
-        "UDIP.1435.91.2025",
+        "BKS.IV.1431.91.2025",
         "Rejestr umów cywilnoprawnych",
         2025,
         "Zwracam się o wykaz umów cywilnoprawnych zawartych przez urząd w 2024 roku.",
@@ -626,7 +636,7 @@ ARCHIVE_RAW = [
         ["Wydział Organizacji i Kadr", "Biuro Prawne"],
     ),
     (
-        "UDIP.1435.68.2025",
+        "BKS.IV.1431.68.2025",
         "Skargi i wnioski obywatelskie w 2024 r.",
         2025,
         "Proszę o dane o liczbie skarg i wniosków złożonych do urzędu w 2024 roku.",
@@ -636,7 +646,7 @@ ARCHIVE_RAW = [
         ["Biuro Rady Miasta", "Wydział Organizacji i Kadr"],
     ),
     (
-        "UDIP.1435.122.2025",
+        "BKS.IV.1431.122.2025",
         "Czas rozpatrywania wniosków UDIP",
         2025,
         "Wnoszę o dane o średnim czasie rozpatrywania wniosków o dostęp do informacji "
@@ -647,7 +657,7 @@ ARCHIVE_RAW = [
         ["Biuro Komunikacji Społecznej", "Biuro Prawne"],
     ),
     (
-        "UDIP.1435.137.2025",
+        "BKS.IV.1431.137.2025",
         "Odmowy udostępnienia informacji publicznej",
         2025,
         "Proszę o wykaz decyzji odmownych wydanych w sprawach UDIP w 2024 roku "
@@ -658,17 +668,17 @@ ARCHIVE_RAW = [
         ["Biuro Prawne"],
     ),
     (
-        "UDIP.1435.58.2025",
+        "BKS.IV.1431.58.2025",
         "Wydatki na reprezentację i spotkania",
         2025,
         "Zwracam się o informację o wydatkach na reprezentację w 2024 roku.",
         "Wydatki na reprezentację w 2024 roku wyniosły 284 200 zł, w tym poczęstunki "
         "na spotkaniach 142 800 zł, upominki promocyjne 98 400 zł, pozostałe 43 000 zł. "
-        "Wydatki poniesiono zgodnie z zarządzeniem nr 412/2023.",
+        "Wydatki poniesiono zgodnie z zarządzeniem nr 536/2024.",
         ["Wydział Budżetu i Księgowości", "Wydział Promocji Miasta"],
     ),
     (
-        "UDIP.1435.164.2025",
+        "BKS.IV.1431.164.2025",
         "Flota samochodowa urzędu",
         2025,
         "Proszę o wykaz pojazdów służbowych będących w dyspozycji urzędu wraz "
@@ -679,7 +689,7 @@ ARCHIVE_RAW = [
         ["Wydział Administracyjny"],
     ),
     (
-        "UDIP.1435.26.2025",
+        "BKS.IV.1431.26.2025",
         "Inwestycje miejskie — stan realizacji",
         2025,
         "Wnoszę o wykaz inwestycji miejskich w realizacji na koniec 2024 roku.",
@@ -689,7 +699,7 @@ ARCHIVE_RAW = [
         ["Wydział Inwestycji"],
     ),
     (
-        "UDIP.1435.199.2025",
+        "BKS.IV.1431.199.2025",
         "Dług publiczny miasta",
         2025,
         "Proszę o informację o zadłużeniu miasta na koniec 2024 roku.",
@@ -905,42 +915,174 @@ lub uchylić, jeżeli wymaga tego interes społeczny lub słuszny interes strony
 """
 
 ZARZADZENIE_TEXT = """\
-ZARZĄDZENIE Nr 412/2023
+ZARZĄDZENIE NR 536/2024
 PREZYDENTA MIASTA BYDGOSZCZY
-z dnia 14 grudnia 2023 r.
-w sprawie zasad obsługi wniosków o udostępnienie informacji publicznej
+z dnia 23 września 2024 r.
+w sprawie zasad i trybu udostępniania informacji publicznej
 
-Na podstawie art. 33 ust. 3 ustawy z dnia 8 marca 1990 r. o samorządzie gminnym
-zarządza się, co następuje.
+Na podstawie art. 33 ust. 1 i 3 ustawy z dnia 8 marca 1990 r. o samorządzie gminnym
+(Dz. U. z 2024 r. poz. 609, 721), art. 4 ust. 1 pkt 4, art. 9 ust. 2 ustawy z dnia
+6 września 2001 r. o dostępie do informacji publicznej (Dz. U. z 2022 r. poz. 902)
+i § 15 ust. 1 rozporządzenia Ministra Spraw Wewnętrznych i Administracji z dnia
+18 stycznia 2007 r. w sprawie Biuletynu Informacji Publicznej (Dz. U. z 2007 r.
+Nr 10, poz. 68) zarządza się, co następuje.
 
-§ 1. Zarządzenie określa zasady przyjmowania, rejestracji i rozpatrywania
-wniosków o udostępnienie informacji publicznej w Urzędzie Miasta Bydgoszczy.
+Rozdział I
+Przepisy ogólne
 
-§ 2. Wnioski o udostępnienie informacji publicznej rejestruje się w centralnym
-rejestrze wniosków UDIP, nadając kolejny numer w formacie
-UDIP.<symbol komórki>.<numer>.<rok>.
+§ 1. Ilekroć w Zarządzeniu jest mowa o:
+1) BIP — należy przez to rozumieć Biuletyn Informacji Publicznej Urzędu Miasta
+   Bydgoszczy www.bip.um.bydgoszcz.pl;
+2) Urzędzie — należy przez to rozumieć Urząd Miasta Bydgoszczy;
+3) Wydziałach — należy przez to rozumieć komórki organizacyjne Urzędu o tej nazwie
+   oraz inne wewnętrzne komórki organizacyjne, wchodzące w skład Urzędu na prawach
+   Wydziału;
+4) Dyrektorze — należy przez to rozumieć Dyrektora Wydziału Urzędu lub kierującego
+   pracą komórki organizacyjnej wchodzącej w skład Urzędu na prawach Wydziału;
+5) Administratorze serwera BIP — należy przez to rozumieć dostawcę technologii
+   serwisu BIP;
+6) AIP — należy przez to rozumieć Administratora Informacji Publicznej, tj. osobę
+   upoważnioną w Urzędzie do udzielania odpowiedzi w sprawie udzielenia informacji
+   publicznej lub decyzji administracyjnych w tym zakresie;
+7) udip — należy przez to rozumieć ustawę z dnia 6 września 2001 r. o dostępie do
+   informacji publicznej;
+8) udcsi — należy przez to rozumieć ustawę z dnia 4 kwietnia 2019 r. o dostępności
+   cyfrowej stron internetowych i aplikacji mobilnych podmiotów publicznych.
 
-§ 3. 1. Wniosek przekazuje się niezwłocznie, nie później niż w terminie 2 dni
-roboczych od rejestracji, do komórki organizacyjnej właściwej ze względu na
-przedmiot wniosku.
-2. W przypadku gdy wniosek dotyczy kilku komórek organizacyjnych, koordynację
-prowadzi komórka wskazana przez Biuro Komunikacji Społecznej.
+Rozdział II
+Biuletyn Informacji Publicznej Urzędu Miasta Bydgoszczy — Redakcja BIP
 
-§ 4. 1. Komórka organizacyjna przygotowuje projekt odpowiedzi w terminie 7 dni
-roboczych od otrzymania wniosku.
-2. Jeżeli przygotowanie odpowiedzi wymaga kwerendy w aktach, komórka informuje
-o tym koordynatora, wskazując przewidywany termin.
+§ 2. 1. Redakcję BIP tworzą:
+1) Zespół Redakcyjny BIP;
+2) Zespół Redaktorów Wydziałowych.
+2. Pracami Redakcji BIP kieruje Redaktor Główny BIP.
 
-§ 5. Projekt odpowiedzi podlega akceptacji kierownika komórki organizacyjnej
-oraz weryfikacji prawnej przez Biuro Prawne w przypadkach, o których mowa w § 6.
+§ 3. 1. Powołuje się Zespół Redakcyjny BIP w składzie:
+1) Redaktor Główny BIP — pracownik Biura Komunikacji Społecznej Urzędu Miasta
+   Bydgoszczy;
+2) Redaktorzy Wydziałowi.
+2. Do zadań Zespołu Redakcyjnego BIP należy:
+1) sprawowanie nadzoru nad aktualizowaniem informacji umieszczanych w BIP;
+2) dostosowywanie BIP do obowiązujących przepisów prawa;
+3) organizowanie spotkań w celu ujednolicenia polityki informacyjnej Urzędu;
+4) w razie potrzeby, zapraszanie na spotkania osób niebędących członkami Zespołu
+   Redakcyjnego BIP.
+3. Pracami Zespołu Redakcyjnego BIP kieruje Redaktor Główny BIP, który w zależności
+   od potrzeb przydziela zadania poszczególnym Redaktorom Wydziałowym.
 
-§ 6. Weryfikacji prawnej podlegają odpowiedzi zawierające odmowę udostępnienia
-informacji, anonimizację danych osobowych oraz informacje przetworzone.
+§ 4. 1. Powołuje się Zespół Redaktorów Wydziałowych.
+2. W jego skład wchodzą pracownicy wyznaczeni przez Dyrektorów Wydziałów Urzędu.
+3. Do zadań Redaktorów Wydziałowych należy:
+1) dostosowywanie informacji z Wydziałów do wymagań redakcyjnych określonych przez
+   Zespół Redakcyjny BIP;
+2) opracowywanie i publikacja informacji zgodnie z wymogami udip, udcsi i Polityki
+   Bezpieczeństwa Informacji Urzędu Miasta Bydgoszczy;
+3) uczestniczenie w spotkaniach organizowanych przez Zespół Redakcyjny BIP, celem
+   ujednolicenia polityki informacyjnej Urzędu;
+4) monitorowanie treści zawartych w BIP, zgłaszanie uwag oraz propozycji zmian
+   Redaktorowi Głównemu BIP.
 
-§ 7. Odpowiedź wysyła się wyłącznie w formie i trybie zatwierdzonym przez
-koordynatora. System teleinformatyczny nie dokonuje wysyłki samodzielnie.
+§ 5. 1. Informacja podlegająca publikacji powinna spełniać wymogi udip, udcsi
+i Polityki Bezpieczeństwa Informacji Urzędu Miasta Bydgoszczy.
+2. W szczególnych przypadkach niemożności opublikowania informacji przez Redaktora
+Wydziałowego, zostaje ona przesłana na adres bip@um.bydgoszcz.pl w celu
+opublikowania jej przez Redaktora Głównego BIP.
+3. Odpowiedzialność za treść przekazywanych i publikowanych informacji ponoszą
+Redaktorzy Wydziałowi.
+4. Informację przekazaną do publikacji zatwierdza Dyrektor danego Wydziału.
+5. Nadzór nad Redaktorem Wydziałowym sprawuje Dyrektor Wydziału.
+6. Nadzór nad zamieszczaniem i publikowaniem w BIP aktów podpisanych przez
+Przewodniczącego Rady Miasta sprawuje Dyrektor Biura Rady Miasta.
 
-§ 8. Zarządzenie wchodzi w życie z dniem podpisania.
+§ 6. Redaktor Główny BIP jest odpowiedzialny za:
+1) publikowanie informacji przekazywanych przez podmioty zewnętrzne;
+2) publikowanie informacji w przypadku niemożności po stronie Redaktora
+   Wydziałowego;
+3) przekazywanie ministrowi właściwemu do spraw informatyzacji informacji
+   niezbędnych do prowadzenia strony głównej BIP, w tym o adresie URL BIP oraz
+   powiadomienie ministra o zmianach w treści tych informacji;
+4) współpracę z Administratorem serwera BIP w zakresie zabezpieczenia treści
+   informacji umieszczonych w BIP;
+5) sprawowanie ogólnego nadzoru nad funkcjonowaniem BIP.
+
+Rozdział III
+Udostępnianie informacji publicznej na wniosek
+
+§ 7. Udostępnianie informacji publicznej na wniosek odbywa się na zasadach
+określonych w udip oraz zgodnie z przyjętą Polityką Bezpieczeństwa Informacji
+Urzędu Miasta Bydgoszczy.
+
+§ 8. 1. Informacja publiczna, która nie została opublikowana w BIP, jest
+udostępniana na wniosek. Jeżeli wnioskowana informacja została opublikowana w BIP,
+wnioskodawcy wskazuje się dokładny adres strony BIP zawierającej informację
+publiczną.
+2. Informacja publiczna niepublikowana w BIP, która może być udostępniona
+niezwłocznie, może być udostępniona bez pisemnego wniosku.
+
+§ 9. 1. AIP koordynuje rozpoznawanie wniosków i przygotowuje odpowiedzi na wnioski
+na podstawie dokumentacji przekazanej przez Wydziały.
+2. Wpływające do Urzędu wnioski przekazywane są AIP i są przez niego rejestrowane.
+3. W przypadku gdy wniosek złożony zostanie bezpośrednio w Wydziale, powinien być
+niezwłocznie przekazany (w tym w formie elektronicznej) AIP.
+
+§ 10. AIP przekazuje niezwłocznie właściwym merytorycznie Wydziałom zakres
+informacji określonych we wniosku o udostępnienie informacji w celu ich
+rozpatrzenia.
+
+§ 11. 1. Wydziały przygotowują projekt odpowiedzi na wniosek w części odpowiadającej
+ich zakresowi działania, udzielają wyjaśnień, a także przygotowują dokumentację
+niezbędną do rozpatrzenia wniosku. Projekt odpowiedzi powinien być przesłany na
+adres bip@um.bydgoszcz.pl w terminie określonym przez AIP.
+2. Udostępnianie informacji publicznej na wniosek następuje w sposób i w formie
+zgodnych z wnioskiem, chyba że środki techniczne, którymi dysponuje Urząd, nie
+umożliwiają udostępnienia informacji w sposób i w formie określonych we wniosku.
+Jeżeli informacja nie może być udostępniona w sposób lub w formie określonych we
+wniosku, Wydział niezwłocznie powiadamia pisemnie AIP o przyczynach braku
+możliwości udostępnienia informacji zgodnie z wnioskiem i wskazuje, w jaki sposób
+lub w jakiej formie informacja może być udostępniona.
+3. Jeżeli po otrzymaniu wniosku Wydział stwierdza, że nie jest w posiadaniu
+wnioskowanej informacji, niezwłocznie informuje o tym AIP i wskazuje, o ile jest
+znana, jednostkę właściwą w zakresie wnioskowanych informacji.
+4. Jeżeli do przygotowania odpowiedzi na wniosek niezbędna jest dokumentacja
+przechowywana w archiwum zakładowym Urzędu, właściwym do przygotowania projektu
+odpowiedzi jest Wydział, który przekazał sprawę do archiwum zakładowego Urzędu lub
+jego następca. Jeżeli wniosek dotyczy Wydziału, który został zlikwidowany, a inny
+Wydział nie przejął jego zadań, właściwym do przygotowania projektu odpowiedzi jest
+Wydział prowadzący archiwum zakładowe.
+5. W przypadku gdy projekt odpowiedzi nie może być przesłany w określonym przez AIP
+terminie, Wydział powiadamia pisemnie AIP o powodach opóźnienia oraz o terminie,
+w jakim projekt odpowiedzi zostanie przekazany.
+6. W przypadku gdy informacja ma zostać udostępniona poprzez wgląd w akta,
+dokumentację przygotowuje oraz udostępnia w swojej siedzibie Wydział będący
+w dyspozycji wnioskowanych materiałów, po czym bez zbędnej zwłoki przesyła do AIP
+potwierdzenie wglądu do dokumentacji.
+7. W przypadku gdy Wydział uzna wnioskowaną informację za informację przetworzoną,
+przesyła do AIP projekt odpowiedzi zawierający uzasadnienie dla uznania
+wnioskowanej informacji za informację przetworzoną.
+8. Informacja przekazywana jest po dokonaniu przez Wydział właściwy do przygotowania
+projektu odpowiedzi koniecznej anonimizacji.
+9. W przypadku gdy wniosek obejmuje udzielenie informacji publicznej chronionej
+prawem, Wydział przygotowuje projekt decyzji administracyjnej o odmowie
+udostępnienia informacji publicznej.
+
+§ 12. 1. Decyzje w sprawach związanych z udostępnianiem informacji publicznej wydaje
+Prezydent lub upoważnieni Zastępcy Prezydenta Miasta, Sekretarz, Skarbnik oraz
+pracownik Biura Komunikacji Społecznej Urzędu Miasta Bydgoszczy.
+2. Kopie odpowiedzi, decyzji, odwołań, skarg i rozstrzygnięć w sprawach
+udostępnienia informacji publicznej podlegają przekazaniu AIP.
+
+Rozdział IV
+Przepisy końcowe
+
+§ 13. Wykonanie zarządzenia powierza się Dyrektorom Wydziałów Urzędu Miasta
+Bydgoszczy.
+
+§ 14. Traci moc Zarządzenie Prezydenta Miasta Bydgoszczy Nr 151/2011 z dnia
+25 lutego 2011 roku w sprawie zasad i trybu udostępniania informacji publicznej,
+zmienione Zarządzeniem Prezydenta Miasta Bydgoszczy Nr 681/2012 z dnia
+5 października 2012 roku.
+
+§ 15. Zarządzenie wchodzi w życie z dniem podpisania.
 """
 
 
@@ -1019,7 +1161,7 @@ ANON_SAMPLES = [
     ),
     (
         "a14",
-        "Sprawa nr UDIP.1435.42.2026 dotyczy {{imie_nazwisko:Grażyny Pawlak}}, "
+        "Sprawa nr BKS.IV.1431.42.2026 dotyczy {{imie_nazwisko:Grażyny Pawlak}}, "
         "zamieszkałej przy {{adres:ul. Nakielska 108/4, 85-391 Bydgoszcz}}.",
     ),
     (
@@ -1190,7 +1332,7 @@ Znak: WOK.1435.1.2026
 Do: Biuro Komunikacji Społecznej
 
 W odpowiedzi na zapytanie z dnia 24 lutego 2026 r. dotyczące wniosku
-UDIP.1435.1.2026 uprzejmie informuję:
+BKS.IV.1431.1.2026 uprzejmie informuję:
 
 1. Przeciętne miesięczne wynagrodzenie brutto na stanowiskach kierowniczych
    w Urzędzie Miasta Bydgoszczy w 2025 roku wyniosło 14 218,40 zł.
@@ -1231,7 +1373,7 @@ Znak: WGN.1435.2.2026
 Do: Biuro Komunikacji Społecznej
 
 W odpowiedzi na zapytanie z dnia 4 marca 2026 r. w sprawie wniosku
-UDIP.1435.2.2026 informuję, że przygotowanie odpowiedzi wymaga kwerendy
+BKS.IV.1431.2.2026 informuję, że przygotowanie odpowiedzi wymaga kwerendy
 w aktach lokalowych.
 
 Gmina Bydgoszcz posiada 2 843 lokale komunalne. W rejonie ul. Dworcowej
@@ -1318,7 +1460,7 @@ def main() -> None:
 
     (ROOT / "statutes" / "udip.txt").write_text(UDIP_TEXT, encoding="utf-8")
     (ROOT / "statutes" / "kpa.txt").write_text(KPA_TEXT, encoding="utf-8")
-    (ROOT / "statutes" / "zarzadzenie-412-2023.txt").write_text(
+    (ROOT / "statutes" / "zarzadzenie-536-2024.txt").write_text(
         ZARZADZENIE_TEXT, encoding="utf-8"
     )
 

@@ -13,7 +13,7 @@ import {
 function result(archiveId: string, score: number): SimilarCase {
   return {
     archive_id: archiveId,
-    case_number: `UDIP.1435.${archiveId}.2025`,
+    case_number: `BKS.IV.1431.${archiveId}.2025`,
     subject: `Sprawa ${archiveId}`,
     year: 2025,
     score,

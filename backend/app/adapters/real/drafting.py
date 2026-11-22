@@ -106,12 +106,15 @@ def _safe_filename(text: str) -> str:
 
 
 def _header_lines(case: CaseDetail | None) -> list[str]:
-    """Nagłówek pisma urzędowego: miejsce, data i znak sprawy."""
+    """Nagłówek pisma urzędowego: instytucja, miejsce, data i znak sprawy."""
     if case is None:
         return []
     return [
-        f"Bydgoszcz, dnia {format_date_pl(today())}",
-        f"Znak sprawy: {case.case_number}",
+        "URZĄD MIASTA BYDGOSZCZY",
+        "Biuro Komunikacji Społecznej",
+        "",
+        f"Bydgoszcz, dnia {format_date_pl(today())} r.",
+        case.case_number,
     ]
 
 

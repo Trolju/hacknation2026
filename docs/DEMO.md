@@ -43,18 +43,18 @@ pochodzą z `fixtures/`, a odpowiedzi są deterministyczne — demo zawsze wygl�
 
 | Numer sprawy | Przedmiot | Termin | Stan | Pilność na 16.03.2026 |
 | --- | --- | --- | --- | --- |
-| UDIP.1435.1.2026 | Wynagrodzenia pracowników Urzędu Miasta w 2025 r. | 06.03.2026 | Zapytania wysłane | **Po terminie** (−10 dni) |
-| UDIP.1435.2.2026 | Kopie umów najmu lokali komunalnych przy ul. Dworcowej | 16.03.2026 | Kwerenda | Termin dziś |
-| UDIP.1435.3.2026 | Wydatki na promocję miasta w mediach społecznościowych | 17.03.2026 | Przygotowana odpowiedź | Termin jutro |
-| UDIP.1435.4.2026 | Protokoły z kontroli Straży Miejskiej w 2025 r. | 19.03.2026 | Zapytania wysłane | Termin wkrótce |
-| UDIP.1435.5.2026 | Harmonogram remontów dróg gminnych na 2026 r. | 23.03.2026 | Nowy | W terminie |
-| UDIP.1435.6.2026 | Decyzje o warunkach zabudowy wydane w IV kwartale 2025 r. | 24.03.2026 | Nowy | W terminie |
-| UDIP.1435.7.2026 | Umowy z podmiotami zewnętrznymi na utrzymanie zieleni | 24.02.2026 | Odpowiedź wysłana | Zamknięta |
-| UDIP.1435.8.2026 | Zatrudnienie w jednostkach organizacyjnych miasta | 01.03.2026 | Odpowiedź wysłana | Zamknięta |
-| UDIP.1435.9.2026 | Dostęp do nagrań z monitoringu miejskiego | 25.03.2026 | Nowy | W terminie |
-| UDIP.1435.10.2026 | Koszty utrzymania Biura Rady Miasta w 2025 r. | 26.03.2026 | Zapytania wysłane | W terminie |
+| BKS.IV.1431.1.2026 | Wynagrodzenia pracowników Urzędu Miasta w 2025 r. | 06.03.2026 | Zapytania wysłane | **Po terminie** (−10 dni) |
+| BKS.IV.1431.2.2026 | Kopie umów najmu lokali komunalnych przy ul. Dworcowej | 16.03.2026 | Kwerenda | Termin dziś |
+| BKS.IV.1431.3.2026 | Wydatki na promocję miasta w mediach społecznościowych | 17.03.2026 | Przygotowana odpowiedź | Termin jutro |
+| BKS.IV.1431.4.2026 | Protokoły z kontroli Straży Miejskiej w 2025 r. | 19.03.2026 | Zapytania wysłane | Termin wkrótce |
+| BKS.IV.1431.5.2026 | Harmonogram remontów dróg gminnych na 2026 r. | 23.03.2026 | Nowy | W terminie |
+| BKS.IV.1431.6.2026 | Decyzje o warunkach zabudowy wydane w IV kwartale 2025 r. | 24.03.2026 | Nowy | W terminie |
+| BKS.IV.1431.7.2026 | Umowy z podmiotami zewnętrznymi na utrzymanie zieleni | 24.02.2026 | Odpowiedź wysłana | Zamknięta |
+| BKS.IV.1431.8.2026 | Zatrudnienie w jednostkach organizacyjnych miasta | 01.03.2026 | Odpowiedź wysłana | Zamknięta |
+| BKS.IV.1431.9.2026 | Dostęp do nagrań z monitoringu miejskiego | 25.03.2026 | Nowy | W terminie |
+| BKS.IV.1431.10.2026 | Koszty utrzymania Biura Rady Miasta w 2025 r. | 26.03.2026 | Zapytania wysłane | W terminie |
 
-**Bohaterka demo: UDIP.1435.1.2026** — po terminie, z zapytaniami już wysłanymi.
+**Bohaterka demo: BKS.IV.1431.1.2026** — po terminie, z zapytaniami już wysłanymi.
 
 ### Komórki organizacyjne — `fixtures/departments.json` (26 pozycji)
 
@@ -81,7 +81,7 @@ pochodzą z `fixtures/`, a odpowiedzi są deterministyczne — demo zawsze wygl�
 
 ### Archiwum — `fixtures/archive/archive.json` (49 spraw)
 
-Najlepsze trafienie dla wniosku o wynagrodzenia: **`a0001`, UDIP.1435.87.2025,
+Najlepsze trafienie dla wniosku o wynagrodzenia: **`a0001`, BKS.IV.1431.87.2025,
 „Wynagrodzenia pracowników Urzędu Miasta w 2024 r.”** (ocena ok. 0,63).
 
 ### Anonimizacja — `fixtures/anonymization/labeled.jsonl` (20 rekordów)
@@ -103,7 +103,7 @@ e-mail `jan.kowalski@example.com`, Anna Nowak.
 - cztery kafelki: **Po terminie 1**, **Termin dziś 1**, **W najbliższych dniach 2**,
   **Zamknięte 2**;
 - wykres „Rozkład pilności” z paskami w kolorach pilności;
-- „Najbliższe terminy” — na górze **UDIP.1435.1.2026** z czerwoną plakietką „Po terminie”;
+- „Najbliższe terminy” — na górze **BKS.IV.1431.1.2026** z czerwoną plakietką „Po terminie”;
 - „Zamknięte w ostatnich 30 dniach” — dwie sprawy z datą odpowiedzi.
 
 **Co powiedzieć:** „Urzędnik zaczyna dzień od jednego ekranu: co jest po terminie,
@@ -115,7 +115,7 @@ ustawowego — 14 dni od wpływu wniosku.”
 **Co kliknąć:**
 
 1. „Kalendarz terminów” w menu.
-2. Kliknij wiersz **UDIP.1435.1.2026**.
+2. Kliknij wiersz **BKS.IV.1431.1.2026**.
 3. W panelu po prawej wskaż sekcję „Zmiana stanu”.
 4. (opcjonalnie, 10 s) Kliknij „Cofnij do: Nowy” bez notatki — pod polem pojawi się
    „Cofnięcie stanu wymaga notatki.” To samo żądanie z pominięciem interfejsu
@@ -146,7 +146,7 @@ Stan sprawy zmienia się przyciskami, a cofnięcie wymaga notatki — to ślad w
 
 1. „Dokumenty” w menu.
 2. W karcie „Wgraj dokument” wybierz `fixtures/documents/wniosek-01-wynagrodzenia.pdf`.
-3. „Rodzaj dokumentu” = **Wniosek**, „Przypisz do sprawy” = **UDIP.1435.1.2026**.
+3. „Rodzaj dokumentu” = **Wniosek**, „Przypisz do sprawy” = **BKS.IV.1431.1.2026**.
 4. Kliknij „Wgraj i przetwórz”.
 5. Po komunikacie kliknij ikonę oka przy nowym wierszu.
 
@@ -173,7 +173,7 @@ odpowiedzi cytuje źródła — bez offsetu nie byłoby czego pokazać urzędnik
 
 **Co powinno być widać:**
 
-- lista „Podobne sprawy” (5 pozycji), pierwsza: **a0001 / UDIP.1435.87.2025 /
+- lista „Podobne sprawy” (5 pozycji), pierwsza: **a0001 / BKS.IV.1431.87.2025 /
   „Wynagrodzenia pracowników Urzędu Miasta w 2024 r.”** z oceną **0,63** i paskiem;
 - przy wyniku: „Dopasowane terminy” (wynagrodzenia, pracowników, urzędu…),
   „Fragment wniosku” i „Fragment odpowiedzi”;
@@ -188,7 +188,7 @@ na miejscu, bez wysyłania danych na zewnątrz.”
 **Co kliknąć:**
 
 1. „Routing wydziałowy” w menu.
-2. „Sprawa z kalendarza” = **UDIP.1435.1.2026** — pole „Treść do analizy” wypełni się
+2. „Sprawa z kalendarza” = **BKS.IV.1431.1.2026** — pole „Treść do analizy” wypełni się
    przedmiotem wniosku, a sugestie pojawią się same.
 3. Zaznacz **Wydział Organizacji i Kadr**.
 4. Spójrz na kartę „Podgląd zapytania”.
@@ -198,7 +198,7 @@ na miejscu, bez wysyłania danych na zewnątrz.”
 - „Sugestie komórek”: **wok — Wydział Organizacji i Kadr 95%**, wadm 48%, wgk 33%,
   przy każdej dopasowane terminy i pasek pewności;
 - „Podgląd zapytania”: nagłówek „Bydgoszcz, 16 marca 2026 r.”, **„Znak sprawy:
-  UDIP.1435.1.2026”**, „Data wpływu wniosku: 20 lutego 2026 r.”,
+  BKS.IV.1431.1.2026”**, „Data wpływu wniosku: 20 lutego 2026 r.”,
   **„Termin odpowiedzi: 6 marca 2026 r.”**, lista adresatów, „Dotyczy: Wynagrodzenia
   pracowników Urzędu Miasta w 2025 r.”, treść prośby o materiały;
 - przyciski „Kopiuj treść”, „Pobierz .txt”, „Przejdź do odpowiedzi”.
@@ -212,7 +212,7 @@ który urzędnik wysyła swoim kanałem.”
 **Co kliknąć:**
 
 1. „Przejdź do odpowiedzi” pod podglądem zapytania (albo „Generator odpowiedzi”
-   i wybór sprawy UDIP.1435.1.2026).
+   i wybór sprawy BKS.IV.1431.1.2026).
 2. Kliknij „Wygeneruj projekt”.
 3. Dopisz w edytorze zdanie, np. `Uzupełniono po konsultacji z Wydziałem Organizacji i Kadr.`
    i odczekaj ~2 sekundy.
@@ -285,8 +285,8 @@ albo o automatyzację.
 ### Dzwonek z przypomnieniami
 
 W górnym pasku, obok przełącznika motywu, jest dzwonek z liczbą **3**.
-Po kliknięciu lista: `UDIP.1435.1.2026` („Termin odpowiedzi minął 10 dni temu”),
-`UDIP.1435.2.2026` („mija dziś”), `UDIP.1435.3.2026` („mija jutro”).
+Po kliknięciu lista: `BKS.IV.1431.1.2026` („Termin odpowiedzi minął 10 dni temu”),
+`BKS.IV.1431.2.2026` („mija dziś”), `BKS.IV.1431.3.2026` („mija jutro”).
 Klik w pozycję otwiera kartę sprawy w kalendarzu.
 
 **Co powiedzieć:** „Lista liczy się przy odczycie, z tych samych pól, co kalendarz —
@@ -294,7 +294,7 @@ nie ma joba w tle, który mógłby się rozjechać z danymi.”
 
 ### Przedłużenie terminu w kwerendzie
 
-W kalendarzu otwórz `UDIP.1435.1.2026` (stan „Zapytania wysłane”). W karcie sprawy
+W kalendarzu otwórz `BKS.IV.1431.1.2026` (stan „Zapytania wysłane”). W karcie sprawy
 pojawi się pole **„Przedłużenie terminu (dni)”**. Wpisz `14` i kliknij
 **„Przejdź do: Kwerenda”**. Termin zmieni się z 06.03.2026 na **20.03.2026**,
 a pod polem pojawi się „Termin przedłużono łącznie o 14 dni”.

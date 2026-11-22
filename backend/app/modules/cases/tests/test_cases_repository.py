@@ -18,7 +18,7 @@ FIXTURE_COUNT = 10
 def test_list_returns_all_fixture_cases(repo: CaseRepositoryPort) -> None:
     rows = repo.list()
     assert len(rows) == FIXTURE_COUNT
-    assert {row.case_number for row in rows} >= {"UDIP.1435.1.2026", "UDIP.1435.10.2026"}
+    assert {row.case_number for row in rows} >= {"BKS.IV.1431.1.2026", "BKS.IV.1431.10.2026"}
 
 
 def test_list_sorted_by_deadline_asc(repo: CaseRepositoryPort) -> None:
@@ -51,9 +51,9 @@ def test_filter_by_status(repo: CaseRepositoryPort) -> None:
 
 def test_search_matches_subject_and_case_number(repo: CaseRepositoryPort) -> None:
     by_subject = repo.list(q="wynagrodze")
-    assert [row.case_number for row in by_subject] == ["UDIP.1435.1.2026"]
-    by_number = repo.list(q="UDIP.1435.7")
-    assert [row.case_number for row in by_number] == ["UDIP.1435.7.2026"]
+    assert [row.case_number for row in by_subject] == ["BKS.IV.1431.1.2026"]
+    by_number = repo.list(q="BKS.IV.1431.7")
+    assert [row.case_number for row in by_number] == ["BKS.IV.1431.7.2026"]
     assert repo.list(q="nie-ma-takiego-wniosku") == []
 
 
@@ -78,7 +78,7 @@ def test_get_missing_raises_not_found(repo: CaseRepositoryPort) -> None:
 def test_create_assigns_ordinal_and_default_deadline(repo: CaseRepositoryPort) -> None:
     created = repo.create(
         CaseCreate(
-            case_number="UDIP.1435.99.2026",
+            case_number="BKS.IV.1431.99.2026",
             subject="Wniosek testowy",
             inflow_date=date(2026, 3, 16),
         )
@@ -94,7 +94,7 @@ def test_create_assigns_ordinal_and_default_deadline(repo: CaseRepositoryPort) -
 def test_create_keeps_explicit_deadline(repo: CaseRepositoryPort) -> None:
     created = repo.create(
         CaseCreate(
-            case_number="UDIP.1435.98.2026",
+            case_number="BKS.IV.1431.98.2026",
             subject="Wniosek z terminem ręcznym",
             inflow_date=date(2026, 3, 10),
             deadline=date(2026, 3, 16),
@@ -108,7 +108,7 @@ def test_create_keeps_explicit_deadline(repo: CaseRepositoryPort) -> None:
 def test_create_writes_history(repo: CaseRepositoryPort) -> None:
     created = repo.create(
         CaseCreate(
-            case_number="UDIP.1435.97.2026",
+            case_number="BKS.IV.1431.97.2026",
             subject="Historia utworzenia",
             inflow_date=date(2026, 3, 16),
         )

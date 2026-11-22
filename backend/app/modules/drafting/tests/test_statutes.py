@@ -230,7 +230,7 @@ def test_aktualizacja_nie_rusza_pozostalych_fixtures(
     sources = statute_sources(documents)
 
     assert any(
-        source.source_id == "zarzadzenie-412-2023#§ 4." for source in sources
+        source.source_id == "zarzadzenie-536-2024#§ 11." for source in sources
     )
 
 
@@ -279,7 +279,7 @@ def test_brak_wgranych_ustaw_nie_zmienia_wyniku(
         "udip#Art. 10.",
         "udip#Art. 5.",
         "udip#Art. 16.",
-        "zarzadzenie-412-2023#§ 4.",
+        "zarzadzenie-536-2024#§ 11.",
     ]
 
 

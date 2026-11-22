@@ -24,6 +24,8 @@ class CaseRow(Base):
     case_number: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     ordinal: Mapped[int] = mapped_column(Integer)
     subject: Mapped[str] = mapped_column(String(200))
+    #: Wnioskodawca w postaci z pisma — nazwisko, nazwa organizacji albo e-mail.
+    applicant: Mapped[str] = mapped_column(String(200), default="")
     inflow_date: Mapped[date] = mapped_column(Date, index=True)
     deadline: Mapped[date] = mapped_column(Date, index=True)
     response_date: Mapped[date | None] = mapped_column(Date, nullable=True)

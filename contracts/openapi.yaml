@@ -680,7 +680,7 @@ components:
       required: [id, case_number, ordinal, subject, inflow_date, deadline, status, year, days_remaining, urgency, handler_initials]
       properties:
         id: { type: string, format: uuid }
-        case_number: { type: string, examples: ['UDIP.1435.12.2026'] }
+        case_number: { type: string, examples: ['BKS.IV.1431.12.2026'] }
         ordinal: { type: integer, description: Liczba porządkowa }
         subject: { type: string, description: Skrócony opis tematu wniosku }
         inflow_date: { type: string, format: date }
@@ -1090,7 +1090,7 @@ components:
       required: [case_id, case_number, subject, deadline, days_remaining, urgency, status, message]
       properties:
         case_id: { type: string, format: uuid }
-        case_number: { type: string, examples: ['UDIP.1435.1.2026'] }
+        case_number: { type: string, examples: ['BKS.IV.1431.1.2026'] }
         subject: { type: string }
         deadline: { type: string, format: date }
         days_remaining: { type: integer, description: 'Dni do terminu; ujemne = po terminie' }

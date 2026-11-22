@@ -126,7 +126,7 @@ def test_normalize_sort_falls_back_to_default() -> None:
 def test_service_create_normalizes_subject(service: CaseService) -> None:
     created = service.create(
         CaseCreate(
-            case_number="UDIP.1435.90.2026",
+            case_number="BKS.IV.1431.90.2026",
             subject="  Wniosek z serwisu  ",
             inflow_date=date(2026, 3, 16),
             handler_initials="JK",
@@ -139,7 +139,7 @@ def test_service_create_rejects_invalid_initials(service: CaseService) -> None:
     with pytest.raises(ValidationFailed):
         service.create(
             CaseCreate(
-                case_number="UDIP.1435.91.2026",
+                case_number="BKS.IV.1431.91.2026",
                 subject="Wniosek",
                 inflow_date=date(2026, 3, 16),
                 handler_initials="X",
@@ -151,6 +151,34 @@ def test_service_update_validates_subject(service: CaseService) -> None:
     case_id = service.list()[0].id
     with pytest.raises(ValidationFailed):
         service.update(case_id, CasePatch(subject="   "))
+
+
+# ──────────────────────────── spójność dat ──────────────────────────────────
+def test_service_create_rejects_deadline_before_inflow(service: CaseService) -> None:
+    """Termin przed wpływem to literówka w roku — nie wpuszczamy jej do kalendarza."""
+    with pytest.raises(ValidationFailed) as excinfo:
+        service.create(
+            CaseCreate(
+                case_number="BKS.IV.1431.92.2026",
+                subject="Wniosek z błędnym terminem",
+                inflow_date=date(2026, 3, 16),
+                deadline=date(2025, 3, 16),
+            )
+        )
+    assert excinfo.value.details["field"] == "deadline"
+
+
+def test_service_update_rejects_response_before_inflow(service: CaseService) -> None:
+    case_id = service.list()[0].id
+    with pytest.raises(ValidationFailed) as excinfo:
+        service.update(case_id, CasePatch(response_date=date(2000, 1, 1)))
+    assert excinfo.value.details["field"] == "response_date"
+
+
+def test_service_update_accepts_response_after_inflow(service: CaseService) -> None:
+    case = service.list()[0]
+    updated = service.update(case.id, CasePatch(response_date=case.inflow_date))
+    assert updated.response_date == case.inflow_date
 
 
 def test_service_transition_requires_note_for_backward(service: CaseService) -> None:
@@ -178,7 +206,7 @@ def test_service_transition_unknown_case_raises_not_found(service: CaseService) 
 
 def test_service_list_strips_query(service: CaseService) -> None:
     assert [row.case_number for row in service.list(q="  wynagrodze  ")] == [
-        "UDIP.1435.1.2026"
+        "BKS.IV.1431.1.2026"
     ]
 
 

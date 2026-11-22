@@ -17,7 +17,21 @@ export const CATEGORY_LABELS: Record<string, string> = {
   adres: "Adres",
   imie_nazwisko: "Imię i nazwisko",
   data_urodzenia: "Data urodzenia",
+  miejsce_urodzenia: "Miejsce urodzenia",
   podpis: "Podpis",
+  ksiega_wieczysta: "Księga wieczysta",
+  dzialka: "Numer działki",
+  rejestracja: "Nr rejestracyjny",
+  wizerunek: "Wizerunek",
+  stan_cywilny: "Stan cywilny",
+  zdrowie: "Zdrowie",
+  majatek: "Majątek",
+  pomoc_spoleczna: "Pomoc społeczna",
+  poglady: "Poglądy i religia",
+  przynaleznosc: "Przynależność",
+  pochodzenie: "Pochodzenie",
+  orientacja: "Orientacja",
+  karalnosc: "Karalność",
   inne: "Inne",
 };
 
@@ -33,7 +47,21 @@ export const CATEGORY_ORDER: string[] = [
   "adres",
   "imie_nazwisko",
   "data_urodzenia",
+  "miejsce_urodzenia",
   "podpis",
+  "ksiega_wieczysta",
+  "dzialka",
+  "rejestracja",
+  "wizerunek",
+  "stan_cywilny",
+  "zdrowie",
+  "majatek",
+  "pomoc_spoleczna",
+  "poglady",
+  "przynaleznosc",
+  "pochodzenie",
+  "orientacja",
+  "karalnosc",
   "inne",
 ];
 
@@ -103,6 +131,68 @@ export const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   podpis: {
     mark: "bg-pink-400/40",
     badge: "border-pink-500/40 bg-pink-500/10 text-pink-700 dark:text-pink-300",
+  },
+  ksiega_wieczysta: {
+    mark: "bg-stone-400/40",
+    badge: "border-stone-500/40 bg-stone-500/10 text-stone-700 dark:text-stone-300",
+  },
+  dzialka: {
+    mark: "bg-zinc-400/40",
+    badge: "border-zinc-500/40 bg-zinc-500/10 text-zinc-700 dark:text-zinc-300",
+  },
+  rejestracja: {
+    mark: "bg-neutral-400/40",
+    badge:
+      "border-neutral-500/40 bg-neutral-500/10 text-neutral-700 dark:text-neutral-300",
+  },
+  miejsce_urodzenia: {
+    mark: "bg-fuchsia-400/30",
+    badge:
+      "border-fuchsia-500/30 bg-fuchsia-500/10 text-fuchsia-700 dark:text-fuchsia-300",
+  },
+  wizerunek: {
+    mark: "bg-purple-400/40",
+    badge:
+      "border-purple-500/40 bg-purple-500/10 text-purple-700 dark:text-purple-300",
+  },
+  stan_cywilny: {
+    mark: "bg-rose-400/30",
+    badge: "border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300",
+  },
+  zdrowie: {
+    mark: "bg-red-400/40",
+    badge: "border-red-500/40 bg-red-500/10 text-red-700 dark:text-red-300",
+  },
+  majatek: {
+    mark: "bg-amber-400/30",
+    badge: "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  },
+  pomoc_spoleczna: {
+    mark: "bg-orange-400/30",
+    badge:
+      "border-orange-500/30 bg-orange-500/10 text-orange-700 dark:text-orange-300",
+  },
+  poglady: {
+    mark: "bg-yellow-400/40",
+    badge:
+      "border-yellow-500/40 bg-yellow-500/10 text-yellow-700 dark:text-yellow-300",
+  },
+  przynaleznosc: {
+    mark: "bg-lime-400/30",
+    badge: "border-lime-500/30 bg-lime-500/10 text-lime-700 dark:text-lime-300",
+  },
+  pochodzenie: {
+    mark: "bg-emerald-400/30",
+    badge:
+      "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300",
+  },
+  orientacja: {
+    mark: "bg-teal-400/30",
+    badge: "border-teal-500/30 bg-teal-500/10 text-teal-700 dark:text-teal-300",
+  },
+  karalnosc: {
+    mark: "bg-slate-400/40",
+    badge: "border-slate-500/40 bg-slate-500/10 text-slate-700 dark:text-slate-300",
   },
   inne: FALLBACK_STYLE,
 };

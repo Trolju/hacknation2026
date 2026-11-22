@@ -62,7 +62,7 @@ MODULES = (
 )
 
 APPLICATION = "wniosek-01-wynagrodzenia.pdf"
-CASE_NUMBER = "UDIP.1435.11.2026"
+CASE_NUMBER = "BKS.IV.1431.11.2026"
 CASE_SUBJECT = "Wynagrodzenia pracowników Urzędu Miasta w 2025 r."
 INFLOW_DATE = "2026-02-20"
 DEADLINE = "2026-03-06"  # inflow_date + 14 dni z polityki terminów
@@ -227,7 +227,7 @@ def test_pelna_sciezka_urzednika_w_trybie_real(real_client: TestClient) -> None:
     assert all(0.0 <= score <= 1.0 for score in scores)
     # Najbliższa sprawa archiwalna to zeszłoroczne wynagrodzenia.
     assert similar[0]["archive_id"] == "a0001"
-    assert similar[0]["case_number"].startswith("UDIP.")
+    assert similar[0]["case_number"].startswith("BKS.IV.1431.")
 
     # ── Krok 4. Sugestia komórek organizacyjnych ─────────────────────────────
     suggestions = client.post(
@@ -311,7 +311,7 @@ def test_pelna_sciezka_urzednika_w_trybie_real(real_client: TestClient) -> None:
     assert "Kowalski" not in anonymized["text"]
     assert "85041212345" not in anonymized["text"]  # PESEL z fixtures
     # Numery spraw nie mogą być brane za NIP/REGON — zostają w treści.
-    assert "UDIP." in anonymized["text"]
+    assert "BKS.IV.1431." in anonymized["text"]
 
     # ── Krok 10. Przejście stanu sprawy ──────────────────────────────────────
     # `kwerenda` jest opcjonalna, więc idziemy prosto do przygotowanej odpowiedzi.

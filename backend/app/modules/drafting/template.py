@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 
-from app.contracts import CaseDetail
+from app.contracts import ApplicantType, CaseDetail
 
 from .sources import Source
 from .text import format_date_pl, split_sentences
@@ -77,10 +77,11 @@ _LEGAL_SENTENCES: dict[str, str] = {
         "osoby fizycznej, przy czym ograniczenie nie dotyczy informacji o osobach "
         "pełniących funkcje publiczne"
     ),
-    "zarzadzenie-412-2023#§ 4.": (
-        "Zgodnie z § 4 zarządzenia nr 412/2023 Prezydenta Miasta Bydgoszczy komórka "
-        "organizacyjna przygotowuje projekt odpowiedzi w terminie 7 dni roboczych od "
-        "otrzymania wniosku"
+    "zarzadzenie-536-2024#§ 11.": (
+        "Zgodnie z § 11 ust. 1 zarządzenia nr 536/2024 Prezydenta Miasta Bydgoszczy "
+        "Wydziały przygotowują projekt odpowiedzi na wniosek w części odpowiadającej "
+        "ich zakresowi działania i przekazują go Administratorowi Informacji Publicznej "
+        "w terminie przez niego określonym"
     ),
 }
 
@@ -93,7 +94,7 @@ _LEGAL_ORDER: tuple[str, ...] = (
     "udip#Art. 13.",
     "udip#Art. 10.",
     "udip#Art. 5.",
-    "zarzadzenie-412-2023#§ 4.",
+    "zarzadzenie-536-2024#§ 11.",
 )
 
 
@@ -244,6 +245,47 @@ def _document_paragraphs(sources: Sequence[Source]) -> list[str]:
     ]
 
 
+#: Żeńskie imiona kończą się na „-a”; wyjątki, które wyglądają jak żeńskie,
+#: a nimi nie są, trzymamy osobno, żeby nie mylić zwrotu w piśmie.
+_MALE_EXCEPTIONS = frozenset({"Barnaba", "Bonawentura", "Kuba", "Arek"})
+
+#: Stopka pisma — dokłada ją eksporter (DOCX/PDF), nie treść merytoryczna.
+#: Trzymamy ją poza `build_template`, bo adres e-mail i telefon urzędu byłyby
+#: wykrywane przez anonimizator jako dane osobowe wnioskodawcy.
+_LETTER_FOOTER: tuple[str, ...] = (
+    "85-102 Bydgoszcz, ul. Jezuicka 1",
+    "tel.: (52) 58-58-365, fax.: (52) 58-58-623",
+    "e-mail: bks@um.bydgoszcz.pl, www.bydgoszcz.pl",
+)
+
+_CLOSING_FORMULA = "Łączę wyrazy szacunku,"
+
+
+def salutation(case: CaseDetail) -> str:
+    """Zwrot grzecznościowy dopasowany do wnioskodawcy.
+
+    Organizacja i media dostają formę zbiorową — pismo idzie do podmiotu, nie
+    do osoby. Przy osobie fizycznej rozstrzyga imię, a gdy go brak, końcówka
+    nazwiska (`-ska`/`-cka` żeńska, `-ski`/`-cki` męska).
+    """
+    if case.applicant_type in (ApplicantType.ORGANIZACJA, ApplicantType.MEDIA):
+        return "Szanowni Państwo,"
+    name = case.applicant.strip()
+    if not name:
+        return "Szanowni Państwo,"
+    first = name.split()[0]
+    if first in _MALE_EXCEPTIONS:
+        return "Szanowny Panie,"
+    if first.endswith("a"):
+        return "Szanowna Pani,"
+    lowered = name.lower()
+    if lowered.endswith(("ska", "cka", "dzka")):
+        return "Szanowna Pani,"
+    if lowered.endswith(("ski", "cki", "dzki")):
+        return "Szanowny Panie,"
+    return "Szanowny Panie,"
+
+
 def build_template(case: CaseDetail, sources: Sequence[Source]) -> str:
     """Buduje treść projektu z szablonu — deterministycznie, bez modelu."""
     parts: list[str] = [
@@ -255,6 +297,8 @@ def build_template(case: CaseDetail, sources: Sequence[Source]) -> str:
 
     parts += [
         "## Odpowiedź",
+        "",
+        salutation(case),
         "",
         "W odpowiedzi na wniosek o udostępnienie informacji publicznej z dnia "
         f"{format_date_pl(case.inflow_date)} r. dotyczący: {case.subject}, uprzejmie "
@@ -275,6 +319,16 @@ def build_template(case: CaseDetail, sources: Sequence[Source]) -> str:
         parts += ["## Dokumenty w aktach sprawy", "", *documents, ""]
 
     parts += ["## Pouczenie", "", _closing_paragraph(sources), ""]
+
+    parts += [
+        "## Podpis",
+        "",
+        _CLOSING_FORMULA,
+        "",
+        "Biuro Komunikacji Społecznej",
+        "Urząd Miasta Bydgoszczy",
+        "",
+    ]
 
     if case.handler_initials:
         parts += [

@@ -247,7 +247,7 @@ def test_get_returns_full_archive_case(search: VectorArchiveSearch) -> None:
     case = search.get("a0001")
 
     assert case.archive_id == "a0001"
-    assert case.case_number == "UDIP.1435.87.2025"
+    assert case.case_number == "BKS.IV.1431.87.2025"
     assert case.year == 2025
     assert case.request_text
     assert case.response_text

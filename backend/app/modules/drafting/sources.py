@@ -99,9 +99,9 @@ _PROVISIONS: tuple[_Provision, ...] = (
         label="art. 16 ustawy o dostępie do informacji publicznej",
     ),
     _Provision(
-        statute="zarzadzenie-412-2023",
-        article="§ 4.",
-        label="§ 4 zarządzenia nr 412/2023 Prezydenta Miasta Bydgoszczy",
+        statute="zarzadzenie-536-2024",
+        article="§ 11.",
+        label="§ 11 ust. 1 zarządzenia nr 536/2024 Prezydenta Miasta Bydgoszczy",
     ),
 )
 

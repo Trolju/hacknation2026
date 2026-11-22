@@ -33,7 +33,7 @@ MIN_PRECISION = 0.90
 MIN_RECALL = 0.85
 
 # Numery wniosków i sygnatury postępowań — nie są danymi osobowymi.
-CASE_NUMBER = re.compile(r"\bUDIP\.[0-9A-Za-z.]+|\bZP\.[0-9A-Za-z.]+")
+CASE_NUMBER = re.compile(r"\bBKS\.IV\.1431\.[0-9A-Za-z.]+|\bZP\.[0-9A-Za-z.]+")
 
 NUMERIC_CATEGORIES = {
     SpanCategory.NIP,
@@ -102,12 +102,12 @@ def test_heldout_path_points_into_module() -> None:
 
 # ──────────────────── zakaz fałszywych trafień na numerach ─────────────
 CASE_NUMBER_TEXTS = [
-    "Wniosek nr UDIP.1435.12.2026 wpłynął do urzędu.",
-    "Sprawa UDIP.1435.123456789.2026 jest w toku.",
+    "Wniosek nr BKS.IV.1431.12.2026 wpłynął do urzędu.",
+    "Sprawa BKS.IV.1431.123456789.2026 jest w toku.",
     "Postępowanie ZP.271.42.2026 rozstrzygnięto.",
     "Sygnatura ZP.1435.7.2026 dotyczy dostawy sprzętu.",
-    "Znak sprawy: UDIP.1435.101.2026 oraz ZP.271.15.2026.",
-    "Wniosek UDIP.1435.88.2026 złożył Sebastian Nowicki, PESEL 92071456789.",
+    "Znak sprawy: BKS.IV.1431.101.2026 oraz ZP.271.15.2026.",
+    "Wniosek BKS.IV.1431.88.2026 złożył Sebastian Nowicki, PESEL 92071456789.",
 ]
 
 
@@ -125,7 +125,7 @@ def test_no_false_positives_on_case_numbers(anonymizer: NerAnonymizer, text: str
 
 
 def test_case_numbers_are_not_numeric_categories(anonymizer: NerAnonymizer) -> None:
-    text = "UDIP.1435.12345678901.2026 i ZP.271.123456789.2026"
+    text = "BKS.IV.1431.12345678901.2026 i ZP.271.123456789.2026"
     spans = anonymizer.detect(DetectRequest(text=text))
     assert all(span.category not in NUMERIC_CATEGORIES for span in spans)
 

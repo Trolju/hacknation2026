@@ -84,7 +84,7 @@ def test_create_with_too_long_subject_returns_422(real_client: TestClient) -> No
     response = real_client.post(
         "/api/cases",
         json={
-            "case_number": "UDIP.1435.95.2026",
+            "case_number": "BKS.IV.1431.95.2026",
             "subject": "x" * 201,
             "inflow_date": "2026-03-16",
         },
@@ -97,7 +97,7 @@ def test_duplicate_case_number_returns_409(real_client: TestClient) -> None:
     response = real_client.post(
         "/api/cases",
         json={
-            "case_number": "UDIP.1435.1.2026",
+            "case_number": "BKS.IV.1431.1.2026",
             "subject": "Duplikat numeru",
             "inflow_date": "2026-03-16",
         },

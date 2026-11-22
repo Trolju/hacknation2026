@@ -52,7 +52,7 @@ class FakeDrafting:
         akt musi być widoczny także w trybie demo — inaczej urzędnik wgrywa
         ustawę i nic się nie dzieje. Bierzemy wyłącznie źródła pochodzące
         z dokumentów: ich `source_id` zaczyna się od UUID dokumentu, a przepisy
-        z `fixtures/` od sługu aktu (`udip`, `kpa`, `zarzadzenie-412-2023`).
+        z `fixtures/` od sługu aktu (`udip`, `kpa`, `zarzadzenie-536-2024`).
         """
         from app.core import container
         from app.modules.drafting.sources import statute_sources

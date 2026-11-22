@@ -96,6 +96,9 @@ class Case(Base):
     case_number: str
     ordinal: int
     subject: str
+    #: Wnioskodawca w postaci z pisma — nazwisko, nazwa organizacji albo e-mail.
+    #: Puste, gdy pismo nie pozwala go ustalić.
+    applicant: str = ""
     inflow_date: date
     deadline: date
     response_date: date | None = None
@@ -122,6 +125,7 @@ class CaseDetail(Case):
 class CaseCreate(Base):
     case_number: str
     subject: str
+    applicant: str = ""
     inflow_date: date
     deadline: date | None = None
     handler_initials: str = ""
@@ -131,6 +135,7 @@ class CaseCreate(Base):
 
 class CasePatch(Base):
     subject: str | None = None
+    applicant: str | None = None
     deadline: date | None = None
     response_date: date | None = None
     handler_initials: str | None = None
@@ -313,6 +318,14 @@ class DraftPatch(Base):
 
 # ────────────────────────────── anonymize ──────────────────────────────
 class SpanCategory(StrEnum):
+    """Kategorie danych podlegających anonimizacji.
+
+    Lista odwzorowuje „Dane podlegające anonimizacji” Urzędu Miasta Bydgoszczy.
+    Pierwsza grupa to identyfikatory rozpoznawalne regułowo, druga — dane
+    semantyczne, które oznacza dopiero model językowy lub urzędnik ręcznie.
+    """
+
+    # identyfikatory — reguły wystarczają
     PESEL = "pesel"
     NIP = "nip"
     REGON = "regon"
@@ -324,8 +337,40 @@ class SpanCategory(StrEnum):
     ADRES = "adres"
     IMIE_NAZWISKO = "imie_nazwisko"
     DATA_URODZENIA = "data_urodzenia"
+    MIEJSCE_URODZENIA = "miejsce_urodzenia"
     PODPIS = "podpis"
+    KSIEGA_WIECZYSTA = "ksiega_wieczysta"
+    DZIALKA = "dzialka"
+    REJESTRACJA = "rejestracja"
+    # dane semantyczne — wymagają modelu albo decyzji urzędnika
+    WIZERUNEK = "wizerunek"
+    STAN_CYWILNY = "stan_cywilny"
+    ZDROWIE = "zdrowie"
+    MAJATEK = "majatek"
+    POMOC_SPOLECZNA = "pomoc_spoleczna"
+    POGLADY = "poglady"
+    PRZYNALEZNOSC = "przynaleznosc"
+    POCHODZENIE = "pochodzenie"
+    ORIENTACJA = "orientacja"
+    KARALNOSC = "karalnosc"
     INNE = "inne"
+
+
+class ExclusionGround(StrEnum):
+    """Przesłanki wyłączenia jawności — nie anonimizacja, lecz podstawa odmowy.
+
+    Zarządzenie Prezydenta Miasta Bydgoszczy Nr 536/2024 §11 ust. 9 nakazuje
+    w takich sprawach przygotować projekt decyzji administracyjnej o odmowie
+    udostępnienia informacji publicznej.
+    """
+
+    TAJEMNICA_PRZEDSIEBIORSTWA = "tajemnica_przedsiebiorstwa"
+    TAJEMNICA_SKARBOWA = "tajemnica_skarbowa"
+    TAJEMNICA_BANKOWA = "tajemnica_bankowa"
+    TAJEMNICA_ZAWODOWA = "tajemnica_zawodowa"
+    INFORMACJE_NIEJAWNE = "informacje_niejawne"
+    OCHRONA_DANYCH_OSOBOWYCH = "ochrona_danych_osobowych"
+    INFORMACJA_PRZETWORZONA = "informacja_przetworzona"
 
 
 class Span(Base):

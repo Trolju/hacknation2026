@@ -49,7 +49,7 @@ def test_generuje_projekt_z_modelem_atrapowym(drafting: LlmDrafting) -> None:
     draft = drafting.draft(DraftRequest(case_id=CASE_ID))
 
     assert draft.case_id == CASE_ID
-    assert draft.title.startswith("Projekt odpowiedzi na wniosek UDIP.1435.1.2026")
+    assert draft.title.startswith("Projekt odpowiedzi na wniosek BKS.IV.1431.1.2026")
     assert "## Podstawa prawna" in draft.body
     assert "## Pouczenie" in draft.body
     assert draft.citations
@@ -82,7 +82,7 @@ def test_prompt_zawiera_zrodla_i_sprawe(make_drafting) -> None:
     drafting.draft(DraftRequest(case_id=CASE_ID))
 
     prompt = llm.prompts[0]
-    assert "UDIP.1435.1.2026" in prompt
+    assert "BKS.IV.1431.1.2026" in prompt
     assert "[1] (przepis) art. 13" in prompt
     assert "## Podstawa prawna" in prompt
 
@@ -279,9 +279,11 @@ def test_eksport_docx(drafting: LlmDrafting) -> None:
     assert blob[:2] == b"PK"
     assert filename.endswith(".docx")
     text = docx_text(blob)
-    assert "Projekt odpowiedzi na wniosek UDIP.1435.1.2026" in text
+    assert "Projekt odpowiedzi na wniosek BKS.IV.1431.1.2026" in text
     assert "Podstawa prawna" in text
-    assert "Znak sprawy: UDIP.1435.1.2026" in text
+    assert "URZĄD MIASTA BYDGOSZCZY" in text
+    assert "Biuro Komunikacji Społecznej" in text
+    assert "BKS.IV.1431.1.2026" in text
     assert "Cytowania" in text
     assert "art. 13 ust. 1 i 2 ustawy o dostępie do informacji publicznej" in text
 
@@ -335,7 +337,7 @@ def test_nazwa_pliku_eksportu_to_numer_sprawy(drafting: LlmDrafting) -> None:
 
     _, filename = drafting.export(draft.id, fmt="docx", anonymized=False)
 
-    assert filename == "odpowiedz-UDIP.1435.1.2026-projekt.docx"
+    assert filename == "odpowiedz-BKS.IV.1431.1.2026-projekt.docx"
 
 
 def test_nazwa_pliku_anonimizowanego_tez_ma_numer_sprawy(
@@ -345,7 +347,7 @@ def test_nazwa_pliku_anonimizowanego_tez_ma_numer_sprawy(
 
     _, filename = drafting.export(draft.id, fmt="pdf", anonymized=True)
 
-    assert filename == "odpowiedz-UDIP.1435.1.2026-anon.pdf"
+    assert filename == "odpowiedz-BKS.IV.1431.1.2026-anon.pdf"
 
 
 def test_eksport_anonimizowany_ukrywa_dane(drafting: LlmDrafting) -> None:

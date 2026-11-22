@@ -59,6 +59,7 @@ def _to_case(row: CaseRow) -> Case:
         case_number=row.case_number,
         ordinal=row.ordinal,
         subject=row.subject,
+        applicant=row.applicant,
         inflow_date=row.inflow_date,
         deadline=row.deadline,
         response_date=row.response_date,
@@ -151,6 +152,13 @@ class SqlCaseRepository:
                 if existing and "kwerenda_days" not in existing:
                     conn.execute(
                         sql_text("ALTER TABLE cases ADD COLUMN kwerenda_days INTEGER")
+                    )
+                if existing and "applicant" not in existing:
+                    conn.execute(
+                        sql_text(
+                            "ALTER TABLE cases ADD COLUMN applicant VARCHAR(200) "
+                            "NOT NULL DEFAULT ''"
+                        )
                     )
         except Exception:  # nie-SQLite albo baza tylko do odczytu
             pass
@@ -294,6 +302,7 @@ class SqlCaseRepository:
                 case_number=data.case_number,
                 ordinal=int(last_ordinal or 0) + 1,
                 subject=data.subject,
+                applicant=data.applicant,
                 inflow_date=data.inflow_date,
                 deadline=deadline,
                 response_date=None,
@@ -389,6 +398,7 @@ def _row_from_fixture(raw: dict[str, Any]) -> CaseRow:
         case_number=raw["case_number"],
         ordinal=int(raw["ordinal"]),
         subject=raw["subject"],
+        applicant=raw.get("applicant", ""),
         inflow_date=inflow,
         deadline=date.fromisoformat(raw["deadline"]),
         response_date=date.fromisoformat(raw["response_date"])
