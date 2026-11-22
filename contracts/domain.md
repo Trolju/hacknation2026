@@ -11,11 +11,13 @@ Rekord kalendarza. Pola odpowiadają wymaganiu W3 z zadania.
 | Pole | Typ | Wymaganie | Uwagi |
 |---|---|---|---|
 | `id` | uuid | — | klucz |
-| `case_number` | string | W3 „nr wniosku" | format `UDIP.<komórka>.<nr>.<rok>` |
+| `case_number` | string | W3 „nr wniosku" | format `BKS.<komórka>.<nr>.<lp>.<rok>` |
 | `ordinal` | int | W3 „liczba porządkowa" | nadawana sekwencyjnie w obrębie roku |
 | `subject` | string | W3 „okienko na skrócony opis tematu" | ≤ 200 znaków |
+| `applicant` | string | — | wnioskodawca w postaci z pisma; puste = nieustalony |
 | `inflow_date` | date | W3 „data wpływu" | |
 | `deadline` | date | W3 „termin odpowiedzi" | wyliczany lub nadpisany ręcznie |
+| `deadline_note` | string | — | termin opisowy z rejestru UMB, np. `19.08.2026/18.09.2026 - doprecyzowanie wniosku`; ≤ 200 znaków, nie wpływa na `days_remaining` |
 | `response_date` | date \| null | W3 „data udzielenia odpowiedzi" | |
 | `handler_initials` | string | W3 „inicjały osoby obsługującej" | 2–4 znaki |
 | `status` | enum | W12 | patrz §2 |
@@ -135,7 +137,46 @@ Reguły scalania przy nakładaniu:
 
 **Kategorie krytyczne** (jury testuje w punkcie 3): `pesel`, `nip`, `telefon`, `email`, `imie_nazwisko`, `adres`.
 
-**Zakaz fałszywych trafień:** numery wniosków (`BKS.IV.1431.12.2026`) i sygnatury akt nie mogą być klasyfikowane jako `nip` ani `regon`. To najczęstszy błąd detektorów numerycznych — regex musi mieć negatywny lookbehind na `UDIP.` i kropki.
+### 6.1. Mapowanie na listę UMB
+
+„Dane podlegające anonimizacji” Urzędu Miasta Bydgoszczy ma 28 pozycji. Dwie z nich rozbijamy na dwie kategorie, bo w praktyce wykrywa je inna reguła:
+
+| Pozycja listy UMB | Kategoria |
+|---|---|
+| Imię i nazwisko osoby fizycznej | `imie_nazwisko` |
+| Numer PESEL | `pesel` |
+| Dowód osobisty lub inny dokument tożsamości | `dowod`, `paszport` |
+| Numer NIP osoby fizycznej | `nip` |
+| Data i miejsce urodzenia | `data_urodzenia`, `miejsce_urodzenia` |
+| Adres zamieszkania, zameldowania lub korespondencyjny | `adres` |
+| Prywatny numer telefonu | `telefon` |
+| Prywatny adres e-mail | `email` |
+| Numer rachunku bankowego | `iban` |
+| Własnoręczny podpis (parafka) | `podpis` |
+| Wizerunek | `wizerunek` |
+| Stan cywilny i sytuacja rodzinna | `stan_cywilny` |
+| Stan zdrowia, niepełnosprawność, nałogi | `zdrowie` |
+| Sytuacja majątkowa, dochody, zadłużenie | `majatek` |
+| Korzystanie ze świadczeń pomocy społecznej | `pomoc_spoleczna` |
+| Poglądy polityczne, przekonania religijne | `poglady` |
+| Przynależność związkowa lub partyjna | `przynaleznosc` |
+| Pochodzenie rasowe lub etniczne | `pochodzenie` |
+| Orientacja seksualna | `orientacja` |
+| Karalność, wyroki, naruszenia prawa | `karalnosc` |
+| Numer księgi wieczystej | `ksiega_wieczysta` |
+| Numer działki ewidencyjnej | `dzialka` |
+| Numer rejestracyjny pojazdu | `rejestracja` |
+| Tajemnica przedsiębiorstwa | `tajemnica_przedsiebiorstwa` |
+| Tajemnica skarbowa | `tajemnica_skarbowa` |
+| Tajemnica bankowa i ubezpieczeniowa | `tajemnica_bankowa` |
+| Tajemnica ustawowo chroniona (zawodowa, lekarska, adwokacka) | `tajemnica_zawodowa` |
+| Informacje niejawne (klauzule poufności) | `informacje_niejawne` |
+
+Poza listą zostają dwie kategorie: `regon` (potrzebny do identyfikacji podmiotu gospodarczego) i `inne` (przypadki spoza katalogu, np. sygnatury akt).
+
+**Co wykrywa reguła, a co model.** Regex łapie identyfikatory o stałym formacie: `pesel`, `nip`, `regon`, `dowod`, `paszport`, `telefon`, `email`, `iban`, `adres`, `data_urodzenia`, `miejsce_urodzenia`, `ksiega_wieczysta`, `dzialka`, `imie_nazwisko`. Kategorie semantyczne (`wizerunek`, `zdrowie`, `majatek`, `poglady`, `orientacja`, `karalnosc`, `przynaleznosc`, `pochodzenie`, `pomoc_spoleczna`, `stan_cywilny`, `podpis`, `rejestracja`) oraz pięć tajemnic ustawowych oznacza model językowy albo urzędnik ręcznie — rozpoznanie wymaga kontekstu sprawy, nie wzorca tekstu. Metryki w `/api/anonymize/evaluate` mierzą więc detektory regułowe; kategorie semantyczne nie mają próbek w zbiorze held-out i nie wchodzą do F1.
+
+**Zakaz fałszywych trafień:** numery wniosków (`BKS.IV.1431.12.2026`) i sygnatury akt nie mogą być klasyfikowane jako `nip` ani `regon`. To najczęstszy błąd detektorów numerycznych — regex musi mieć negatywny lookbehind na `BKS.` i kropki. Adresy w domenie `um.bydgoszcz.pl` to dane instytucji, nie osoby — nie podlegają anonimizacji.
 
 ---
 

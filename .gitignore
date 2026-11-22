@@ -16,6 +16,8 @@ dist/
 data/
 *.db
 *.sqlite3
+# …ale zbiór held-out jest częścią testów, nie danymi lokalnymi.
+!backend/app/modules/anonymize/tests/data/
 
 # Skrypty uruchomieniowe
 .run/

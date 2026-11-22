@@ -289,11 +289,47 @@ def test_address_without_street_prefix(anonymizer: NerAnonymizer) -> None:
 def test_land_register_and_court_signature(anonymizer: NerAnonymizer) -> None:
     text = "Sygn. akt II SA/Bd 456/26, księga KW BY1B/00012345/6."
     spans = anonymizer.detect(DetectRequest(text=text))
-    assert {span.category for span in spans} == {SpanCategory.INNE}
+    assert {span.category for span in spans} == {
+        SpanCategory.INNE,
+        SpanCategory.KSIEGA_WIECZYSTA,
+    }
     assert {span.text for span in spans} == {
         "Sygn. akt II SA/Bd 456/26",
         "KW BY1B/00012345/6",
     }
+
+
+def test_place_of_birth_needs_context(anonymizer: NerAnonymizer) -> None:
+    """Sama nazwa miejscowości to nie dana osobowa — dopiero kontekst urodzenia."""
+    with_context = anonymizer.detect(
+        DetectRequest(text="Jan Kowalski, ur. w Bydgoszczy, PESEL 90010112345.")
+    )
+    places = [s for s in with_context if s.category is SpanCategory.MIEJSCE_URODZENIA]
+    assert [s.text for s in places] == ["Bydgoszczy"]
+
+    without_context = anonymizer.detect(
+        DetectRequest(text="Zamieszkały w Bydgoszczy przy ul. Prostej 5.")
+    )
+    assert not [s for s in without_context if s.category is SpanCategory.MIEJSCE_URODZENIA]
+
+
+def test_place_of_birth_variants(anonymizer: NerAnonymizer) -> None:
+    for text, expected in [
+        ("Anna Nowak urodzona w Toruniu.", "Toruniu"),
+        ("Miejsce urodzenia: Gdańsk.", "Gdańsk"),
+        ("Urodzony w 1990 roku.", None),
+    ]:
+        spans = anonymizer.detect(DetectRequest(text=text))
+        places = [s.text for s in spans if s.category is SpanCategory.MIEJSCE_URODZENIA]
+        assert places == ([expected] if expected else []), text
+
+
+def test_parcel_number_needs_keyword(anonymizer: NerAnonymizer) -> None:
+    spans = anonymizer.detect(
+        DetectRequest(text="Działka nr 123/45 przy ul. Nakielskiej.")
+    )
+    parcels = [s.text for s in spans if s.category is SpanCategory.DZIALKA]
+    assert parcels == ["Działka nr 123/45"]
 
 
 def test_institution_names_are_not_personal_data(anonymizer: NerAnonymizer) -> None:

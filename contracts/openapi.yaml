@@ -683,8 +683,12 @@ components:
         case_number: { type: string, examples: ['BKS.IV.1431.12.2026'] }
         ordinal: { type: integer, description: Liczba porządkowa }
         subject: { type: string, description: Skrócony opis tematu wniosku }
+        applicant: { type: string, description: 'Wnioskodawca w postaci z pisma; puste = nieustalony' }
         inflow_date: { type: string, format: date }
         deadline: { type: string, format: date }
+        deadline_note:
+          type: string
+          description: 'Termin w postaci z rejestru UMB, gdy nie mieści się w jednej dacie, np. „19.08.2026/18.09.2026 - doprecyzowanie wniosku”. Nie wpływa na days_remaining.'
         response_date: { type: [string, 'null'], format: date }
         handler_initials: { type: string, examples: ['JK'] }
         status: { $ref: '#/components/schemas/CaseStatus' }
@@ -718,8 +722,10 @@ components:
       properties:
         case_number: { type: string }
         subject: { type: string }
+        applicant: { type: string, default: '' }
         inflow_date: { type: string, format: date }
         deadline: { type: [string, 'null'], format: date, description: 'Puste = wyliczone z polityki terminów' }
+        deadline_note: { type: string, default: '', description: 'Opis terminu z rejestru UMB; max 200 znaków' }
         handler_initials: { type: string, default: '' }
         applicant_type:
           type: string
@@ -731,7 +737,9 @@ components:
       type: object
       properties:
         subject: { type: string }
+        applicant: { type: string }
         deadline: { type: string, format: date }
+        deadline_note: { type: string, description: 'Opis terminu; pusty łańcuch czyści pole' }
         response_date: { type: [string, 'null'], format: date }
         handler_initials: { type: string }
         applicant_type:
@@ -958,7 +966,44 @@ components:
     # ── anonymize ──
     SpanCategory:
       type: string
-      enum: [pesel, nip, regon, dowod, paszport, telefon, email, iban, adres, imie_nazwisko, data_urodzenia, podpis, inne]
+      description: |
+        Kategorie z „Dane podlegające anonimizacji” UMB (28 pozycji).
+        Pozycja „data i miejsce urodzenia” to dwie kategorie, podobnie
+        „dowód osobisty lub inny dokument tożsamości”. `regon` i `inne`
+        nie mają odpowiednika w liście.
+      enum:
+        - pesel
+        - nip
+        - regon
+        - dowod
+        - paszport
+        - telefon
+        - email
+        - iban
+        - adres
+        - imie_nazwisko
+        - data_urodzenia
+        - miejsce_urodzenia
+        - podpis
+        - ksiega_wieczysta
+        - dzialka
+        - rejestracja
+        - wizerunek
+        - stan_cywilny
+        - zdrowie
+        - majatek
+        - pomoc_spoleczna
+        - poglady
+        - przynaleznosc
+        - pochodzenie
+        - orientacja
+        - karalnosc
+        - tajemnica_przedsiebiorstwa
+        - tajemnica_skarbowa
+        - tajemnica_bankowa
+        - tajemnica_zawodowa
+        - informacje_niejawne
+        - inne
 
     Span:
       type: object

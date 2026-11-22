@@ -17,6 +17,7 @@ function makeCase(overrides: Partial<Case>): Case {
     applicant: "Jan Testowy",
     inflow_date: "2026-03-02",
     deadline: "2026-03-16",
+    deadline_note: "",
     response_date: null,
     handler_initials: "JK",
     status: "nowy",

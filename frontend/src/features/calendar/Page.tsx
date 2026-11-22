@@ -121,9 +121,19 @@ export default function CalendarPage() {
         accessorKey: "deadline",
         header: t.table.deadline,
         cell: ({ row }) => (
-          <span className="whitespace-nowrap font-medium">
-            {formatShortDate(row.original.deadline)}
-          </span>
+          <div className="flex flex-col">
+            <span className="whitespace-nowrap font-medium">
+              {formatShortDate(row.original.deadline)}
+            </span>
+            {row.original.deadline_note ? (
+              <span
+                className="line-clamp-2 max-w-56 text-xs text-muted-foreground"
+                title={row.original.deadline_note}
+              >
+                {row.original.deadline_note}
+              </span>
+            ) : null}
+          </div>
         ),
       },
       {

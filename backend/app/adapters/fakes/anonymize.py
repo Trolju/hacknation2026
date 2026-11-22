@@ -160,6 +160,18 @@ PATTERNS: list[tuple[SpanCategory, re.Pattern[str], float]] = [
         0.8,
     ),
     (
+        # Miejsce urodzenia — tylko z jawnym kontekstem („ur. w …”,
+        # „urodzony w …”, „miejsce urodzenia: …”), bo sama nazwa miejscowości
+        # występuje w każdym piśmie. Grupa 1 obejmuje wartość, kontekst zostaje.
+        SpanCategory.MIEJSCE_URODZENIA,
+        re.compile(
+            r"(?:ur\.|urodzon[ya]|miejsce\s+urodzenia:?)\s+w?\s*"
+            r"([A-ZĄĆĘŁŃÓŚŹŻ][\wąćęłńóśźż-]+)",
+            re.IGNORECASE,
+        ),
+        0.75,
+    ),
+    (
         SpanCategory.IMIE_NAZWISKO,
         re.compile(
             rf"(?:{_TITLE}\s+)?(?:{_NAME_ALT})\s+[A-ZĄĆĘŁŃÓŚŹŻ][\wąćęłńóśźż-]+"
@@ -226,17 +238,21 @@ class FakeAnonymizer:
             if allowed is not None and category not in allowed:
                 continue
             for m in pattern.finditer(text):
-                if any(m.start() < pe and ps < m.end() for ps, pe in protected):
+                # Wzorce kontekstowe (np. „ur. w Bydgoszczy”) mają grupę 1
+                # obejmującą samą wartość — kontekst zostaje w tekście.
+                start, end = m.span(1) if m.lastindex else m.span(0)
+                value = m.group(1) if m.lastindex else m.group(0)
+                if any(start < pe and ps < end for ps, pe in protected):
                     continue
                 if category is SpanCategory.DATA_URODZENIA and not _DATE_MARKER.search(
-                    text[max(0, m.start() - 24) : m.start()]
+                    text[max(0, start - 24) : start]
                 ):
                     continue
                 found.append(
                     Span(
-                        start=m.start(),
-                        end=m.end(),
-                        text=m.group(0),
+                        start=start,
+                        end=end,
+                        text=value,
                         category=category,
                         confidence=confidence,
                         source="regex",

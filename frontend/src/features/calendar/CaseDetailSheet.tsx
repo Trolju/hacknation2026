@@ -195,7 +195,14 @@ export function CaseDetailSheet({ caseId, onClose }: CaseDetailSheetProps) {
                 {formatDate(data.inflow_date)}
               </Field>
               <Field label={t.detail.fields.deadline}>
-                {formatDate(data.deadline)}
+                <span className="flex flex-col">
+                  {formatDate(data.deadline)}
+                  {data.deadline_note ? (
+                    <span className="text-xs text-muted-foreground">
+                      {data.deadline_note}
+                    </span>
+                  ) : null}
+                </span>
               </Field>
               <Field label={t.detail.fields.responseDate}>
                 {formatDate(data.response_date)}

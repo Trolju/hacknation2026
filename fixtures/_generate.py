@@ -46,6 +46,7 @@ CASES = [
         "applicant": "Marta Wiśniewska",
         "inflow_date": d(-14),
         "deadline": d(0),
+        "deadline_note": "02.03.2026/16.03.2026 - kwerenda, termin przedłużony",
         "response_date": None,
         "handler_initials": "AM",
         "status": "kwerenda",
@@ -144,6 +145,7 @@ CASES = [
         "applicant": "Krzysztof Mazur",
         "inflow_date": d(-5),
         "deadline": d(9),
+        "deadline_note": "11.03.2026/25.03.2026 - termin ustawowy",
         "response_date": None,
         "handler_initials": "TW",
         "status": "nowy",
@@ -1125,12 +1127,12 @@ ANON_SAMPLES = [
     (
         "a07",
         "Zgłoszenie przyjął {{imie_nazwisko:starszy inspektor Tomasz Lewandowski}}, "
-        "tel. {{telefon:52 585 88 88}}, e-mail {{email:t.lewandowski@um.bydgoszcz.pl}}.",
+        "tel. {{telefon:52 585 88 88}}, e-mail t.lewandowski@um.bydgoszcz.pl.",
     ),
     (
         "a08",
         "Wniosek dotyczy nieruchomości położonej przy {{adres:ul. Dworcowa 12, "
-        "85-009 Bydgoszcz}}, oznaczonej jako działka nr 142/3, obręb 0042.",
+        "85-009 Bydgoszcz}}, oznaczonej jako {{dzialka:działka nr 142/3}}, obręb 0042.",
     ),
     (
         "a09",
@@ -1193,6 +1195,22 @@ ANON_SAMPLES = [
         "a20",
         "Osobą odpowiedzialną za realizację jest {{imie_nazwisko:inż. Rafał Król}}, "
         "tel. {{telefon:52 585 80 00}}, e-mail {{email:r.krol@zdmikp.bydgoszcz.pl}}.",
+    ),
+    (
+        "a21",
+        "Wnioskodawca {{imie_nazwisko:Marek Zawadzki}}, ur. w "
+        "{{miejsce_urodzenia:Bydgoszczy}}, prosi o wgląd w akta dotyczące "
+        "swojej nieruchomości.",
+    ),
+    (
+        "a22",
+        "Nieruchomość objęta wnioskiem ma urządzoną księgę wieczystą "
+        "{{ksiega_wieczysta:BY1B/00012345/7}} i stanowi własność osoby fizycznej.",
+    ),
+    (
+        "a23",
+        "{{dzialka:Działka nr 123/45}} przy ul. Nakielskiej należy do prywatnego "
+        "właściciela, który nie wyraził zgody na udostępnienie danych.",
     ),
 ]
 

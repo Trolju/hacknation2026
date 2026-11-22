@@ -32,6 +32,11 @@ export const CATEGORY_LABELS: Record<string, string> = {
   pochodzenie: "Pochodzenie",
   orientacja: "Orientacja",
   karalnosc: "Karalność",
+  tajemnica_przedsiebiorstwa: "Tajemnica przedsiębiorstwa",
+  tajemnica_skarbowa: "Tajemnica skarbowa",
+  tajemnica_bankowa: "Tajemnica bankowa",
+  tajemnica_zawodowa: "Tajemnica zawodowa",
+  informacje_niejawne: "Informacje niejawne",
   inne: "Inne",
 };
 
@@ -62,6 +67,11 @@ export const CATEGORY_ORDER: string[] = [
   "pochodzenie",
   "orientacja",
   "karalnosc",
+  "tajemnica_przedsiebiorstwa",
+  "tajemnica_skarbowa",
+  "tajemnica_bankowa",
+  "tajemnica_zawodowa",
+  "informacje_niejawne",
   "inne",
 ];
 
@@ -193,6 +203,26 @@ export const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   karalnosc: {
     mark: "bg-slate-400/40",
     badge: "border-slate-500/40 bg-slate-500/10 text-slate-700 dark:text-slate-300",
+  },
+  tajemnica_przedsiebiorstwa: {
+    mark: "bg-rose-400/30",
+    badge: "border-rose-500/30 bg-rose-500/10 text-rose-700 dark:text-rose-300",
+  },
+  tajemnica_skarbowa: {
+    mark: "bg-amber-400/30",
+    badge: "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300",
+  },
+  tajemnica_bankowa: {
+    mark: "bg-sky-400/30",
+    badge: "border-sky-500/30 bg-sky-500/10 text-sky-700 dark:text-sky-300",
+  },
+  tajemnica_zawodowa: {
+    mark: "bg-violet-400/30",
+    badge: "border-violet-500/30 bg-violet-500/10 text-violet-700 dark:text-violet-300",
+  },
+  informacje_niejawne: {
+    mark: "bg-red-500/30",
+    badge: "border-red-600/40 bg-red-600/10 text-red-700 dark:text-red-300",
   },
   inne: FALLBACK_STYLE,
 };

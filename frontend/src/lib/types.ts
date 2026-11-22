@@ -24,6 +24,11 @@ export type Case = {
   applicant: string;
   inflow_date: string;
   deadline: string;
+  /**
+   * Termin w postaci z rejestru UMB, gdy nie mieści się w jednej dacie —
+   * np. „19.08.2026/18.09.2026 - doprecyzowanie wniosku”. Puste przy zwykłej dacie.
+   */
+  deadline_note: string;
   response_date: string | null;
   handler_initials: string;
   status: CaseStatus;

@@ -17,6 +17,7 @@ from app.modules.cases.service import (
     requires_note,
     skippable_status,
     transition_allowed,
+    validate_deadline_note,
     validate_initials,
     validate_subject,
 )
@@ -179,6 +180,60 @@ def test_service_update_accepts_response_after_inflow(service: CaseService) -> N
     case = service.list()[0]
     updated = service.update(case.id, CasePatch(response_date=case.inflow_date))
     assert updated.response_date == case.inflow_date
+
+
+# ──────────────────────── termin opisowy (deadline_note) ────────────────────
+def test_validate_deadline_note_strips_and_accepts() -> None:
+    assert validate_deadline_note("  19.08.2026/18.09.2026 - doprecyzowanie  ") == (
+        "19.08.2026/18.09.2026 - doprecyzowanie"
+    )
+
+
+def test_validate_deadline_note_accepts_empty() -> None:
+    assert validate_deadline_note("   ") == ""
+
+
+def test_validate_deadline_note_rejects_too_long() -> None:
+    with pytest.raises(ValidationFailed) as excinfo:
+        validate_deadline_note("x" * 201)
+    assert excinfo.value.details["field"] == "deadline_note"
+
+
+def test_service_create_keeps_deadline_note(service: CaseService) -> None:
+    """Opis terminu z rejestru UMB trafia do sprawy obok daty, nie zamiast niej."""
+    created = service.create(
+        CaseCreate(
+            case_number="BKS.IV.1431.93.2026",
+            subject="Wniosek z terminem opisowym",
+            inflow_date=date(2026, 3, 2),
+            deadline=date(2026, 3, 16),
+            deadline_note="  19.08.2026/18.09.2026 - doprecyzowanie wniosku  ",
+        )
+    )
+    assert created.deadline == date(2026, 3, 16)
+    assert created.deadline_note == "19.08.2026/18.09.2026 - doprecyzowanie wniosku"
+
+
+def test_service_update_sets_deadline_note(service: CaseService) -> None:
+    case = service.list()[0]
+    updated = service.update(case.id, CasePatch(deadline_note="termin przedłużony"))
+    assert updated.deadline_note == "termin przedłużony"
+
+
+def test_service_update_clears_deadline_note(service: CaseService) -> None:
+    case = service.list()[0]
+    service.update(case.id, CasePatch(deadline_note="termin przedłużony"))
+    cleared = service.update(case.id, CasePatch(deadline_note=""))
+    assert cleared.deadline_note == ""
+
+
+def test_deadline_note_does_not_change_days_remaining(service: CaseService) -> None:
+    """Opis terminu jest czysto informacyjny — nie przesuwa licznika dni."""
+    case = service.list()[0]
+    before = case.days_remaining
+    updated = service.update(case.id, CasePatch(deadline_note="19.08.2026/18.09.2026"))
+    assert updated.days_remaining == before
+    assert updated.deadline == case.deadline
 
 
 def test_service_transition_requires_note_for_backward(service: CaseService) -> None:

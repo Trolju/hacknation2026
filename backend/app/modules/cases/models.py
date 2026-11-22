@@ -28,6 +28,8 @@ class CaseRow(Base):
     applicant: Mapped[str] = mapped_column(String(200), default="")
     inflow_date: Mapped[date] = mapped_column(Date, index=True)
     deadline: Mapped[date] = mapped_column(Date, index=True)
+    #: Termin w postaci z rejestru UMB, gdy nie mieści się w jednej dacie.
+    deadline_note: Mapped[str] = mapped_column(String(200), default="")
     response_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     handler_initials: Mapped[str] = mapped_column(String(8), default="")
     status: Mapped[str] = mapped_column(String(32), index=True)

@@ -29,6 +29,7 @@ if TYPE_CHECKING:
     from app.ports.cases import CaseRepositoryPort
 
 MAX_SUBJECT_LENGTH = 200
+MAX_DEADLINE_NOTE_LENGTH = 200
 MIN_INITIALS_LENGTH = 2
 MAX_INITIALS_LENGTH = 4
 
@@ -116,6 +117,21 @@ def validate_subject(subject: str) -> str:
         raise ValidationFailed(
             f"Temat wniosku może mieć najwyżej {MAX_SUBJECT_LENGTH} znaków.",
             details={"field": "subject", "max_length": MAX_SUBJECT_LENGTH},
+        )
+    return value
+
+
+def validate_deadline_note(note: str) -> str:
+    """Termin opisowy z rejestru UMB — np. „19.08.2026/18.09.2026 - doprecyzowanie”.
+
+    Pole jest niezależne od `deadline`: data w kolumnie zostaje datą, a ten
+    tekst tylko objaśnia, skąd się wzięła albo czego dotyczy.
+    """
+    value = note.strip()
+    if len(value) > MAX_DEADLINE_NOTE_LENGTH:
+        raise ValidationFailed(
+            f"Opis terminu może mieć najwyżej {MAX_DEADLINE_NOTE_LENGTH} znaków.",
+            details={"field": "deadline_note", "max_length": MAX_DEADLINE_NOTE_LENGTH},
         )
     return value
 
@@ -209,6 +225,7 @@ class CaseService:
             update={
                 "subject": validate_subject(data.subject),
                 "handler_initials": validate_initials(data.handler_initials),
+                "deadline_note": validate_deadline_note(data.deadline_note),
             }
         )
         return self._repo.create(prepared)
@@ -219,6 +236,8 @@ class CaseService:
             changes["subject"] = validate_subject(patch.subject)
         if patch.handler_initials is not None:
             changes["handler_initials"] = validate_initials(patch.handler_initials)
+        if patch.deadline_note is not None:
+            changes["deadline_note"] = validate_deadline_note(patch.deadline_note)
         if patch.deadline is not None or patch.response_date is not None:
             current = self._repo.get(case_id)
             validate_dates(

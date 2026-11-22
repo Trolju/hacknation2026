@@ -48,7 +48,11 @@ COPY --from=builder /opt/venv /opt/venv
 COPY backend/app ./app
 COPY fixtures /srv/fixtures
 
-RUN mkdir -p /srv/data && chown -R app:app /srv/data
+# `COPY` zachowuje uprawnienia źródła — przy restrykcyjnym umask w repozytorium
+# (np. 600) użytkownik `app` nie mógłby odczytać kodu. Normalizujemy jawnie.
+RUN chmod -R a+rX /srv/backend /srv/fixtures \
+    && mkdir -p /srv/data \
+    && chown -R app:app /srv/data
 
 USER app
 

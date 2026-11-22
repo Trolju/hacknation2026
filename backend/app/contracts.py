@@ -101,6 +101,10 @@ class Case(Base):
     applicant: str = ""
     inflow_date: date
     deadline: date
+    #: Termin w postaci z rejestru UMB, gdy nie da się go zapisać jedną datą —
+    #: np. „19.08.2026/18.09.2026 - doprecyzowanie wniosku”. Puste, gdy termin
+    #: jest zwykłą datą. Nie wpływa na `days_remaining` ani `urgency`.
+    deadline_note: str = ""
     response_date: date | None = None
     handler_initials: str = ""
     status: CaseStatus
@@ -128,6 +132,7 @@ class CaseCreate(Base):
     applicant: str = ""
     inflow_date: date
     deadline: date | None = None
+    deadline_note: str = ""
     handler_initials: str = ""
     applicant_type: ApplicantType = ApplicantType.INNE
     source_document_id: UUID | None = None
@@ -137,6 +142,7 @@ class CasePatch(Base):
     subject: str | None = None
     applicant: str | None = None
     deadline: date | None = None
+    deadline_note: str | None = None
     response_date: date | None = None
     handler_initials: str | None = None
     applicant_type: ApplicantType | None = None
@@ -320,9 +326,16 @@ class DraftPatch(Base):
 class SpanCategory(StrEnum):
     """Kategorie danych podlegających anonimizacji.
 
-    Lista odwzorowuje „Dane podlegające anonimizacji” Urzędu Miasta Bydgoszczy.
-    Pierwsza grupa to identyfikatory rozpoznawalne regułowo, druga — dane
-    semantyczne, które oznacza dopiero model językowy lub urzędnik ręcznie.
+    Lista odwzorowuje „Dane podlegające anonimizacji” Urzędu Miasta Bydgoszczy
+    (28 pozycji). Pierwsza grupa to identyfikatory rozpoznawalne regułowo,
+    druga — dane semantyczne oznaczane przez model językowy lub urzędnika,
+    trzecia — tajemnice ustawowe, przy których rozstrzyga kontekst sprawy.
+
+    Pozycje listy UMB rozbite na dwie kategorie: „data i miejsce urodzenia”
+    (`data_urodzenia` + `miejsce_urodzenia`) oraz „dowód osobisty lub inny
+    dokument tożsamości” (`dowod` + `paszport`). `regon` i `inne` nie mają
+    odpowiednika w liście — REGON bywa potrzebny do identyfikacji podmiotu,
+    a `inne` zbiera przypadki spoza katalogu.
     """
 
     # identyfikatory — reguły wystarczają
@@ -353,6 +366,13 @@ class SpanCategory(StrEnum):
     POCHODZENIE = "pochodzenie"
     ORIENTACJA = "orientacja"
     KARALNOSC = "karalnosc"
+    # tajemnice ustawowe — pozycje 24–28 listy UMB; oznaczane ręcznie,
+    # bo rozpoznanie wymaga znajomości kontekstu sprawy, nie wzorca tekstu
+    TAJEMNICA_PRZEDSIEBIORSTWA = "tajemnica_przedsiebiorstwa"
+    TAJEMNICA_SKARBOWA = "tajemnica_skarbowa"
+    TAJEMNICA_BANKOWA = "tajemnica_bankowa"
+    TAJEMNICA_ZAWODOWA = "tajemnica_zawodowa"
+    INFORMACJE_NIEJAWNE = "informacje_niejawne"
     INNE = "inne"
 
 

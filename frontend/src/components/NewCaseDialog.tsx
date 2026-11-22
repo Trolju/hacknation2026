@@ -67,6 +67,10 @@ const schema = z.object({
     ),
   applicant_type: z.enum(["osoba_fizyczna", "organizacja", "media", "inne"]),
   deadline: z.string(),
+  deadline_note: z
+    .string()
+    .trim()
+    .max(200, "Opis terminu może mieć najwyżej 200 znaków."),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -87,6 +91,7 @@ function emptyValues(): FormValues {
     handler_initials: "",
     applicant_type: "inne",
     deadline: "",
+    deadline_note: "",
   };
 }
 
@@ -124,6 +129,7 @@ export function NewCaseDialog({ open, onOpenChange }: NewCaseDialogProps) {
         handler_initials: values.handler_initials,
         applicant_type: values.applicant_type,
         deadline: values.deadline || null,
+        deadline_note: values.deadline_note,
       }),
     onSuccess: (created) => {
       void queryClient.invalidateQueries({ queryKey: ["cases"] });
@@ -237,6 +243,20 @@ export function NewCaseDialog({ open, onOpenChange }: NewCaseDialogProps) {
               />
               <p className="text-xs text-muted-foreground">
                 Puste pole oznacza termin wyliczony z 14 dni.
+              </p>
+            </div>
+
+            <div className="space-y-1.5 sm:col-span-2">
+              <Label htmlFor="new-case-deadline-note">Opis terminu (opcjonalnie)</Label>
+              <Input
+                id="new-case-deadline-note"
+                placeholder="19.08.2026/18.09.2026 - doprecyzowanie wniosku"
+                maxLength={200}
+                {...form.register("deadline_note")}
+              />
+              <p className="text-xs text-muted-foreground">
+                Dla terminów, których nie da się zapisać jedną datą — trafia do
+                kalendarza pod datą.
               </p>
             </div>
           </div>

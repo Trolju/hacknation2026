@@ -62,6 +62,7 @@ def _to_case(row: CaseRow) -> Case:
         applicant=row.applicant,
         inflow_date=row.inflow_date,
         deadline=row.deadline,
+        deadline_note=row.deadline_note or "",
         response_date=row.response_date,
         handler_initials=row.handler_initials,
         status=status,
@@ -157,6 +158,13 @@ class SqlCaseRepository:
                     conn.execute(
                         sql_text(
                             "ALTER TABLE cases ADD COLUMN applicant VARCHAR(200) "
+                            "NOT NULL DEFAULT ''"
+                        )
+                    )
+                if existing and "deadline_note" not in existing:
+                    conn.execute(
+                        sql_text(
+                            "ALTER TABLE cases ADD COLUMN deadline_note VARCHAR(200) "
                             "NOT NULL DEFAULT ''"
                         )
                     )
@@ -305,6 +313,7 @@ class SqlCaseRepository:
                 applicant=data.applicant,
                 inflow_date=data.inflow_date,
                 deadline=deadline,
+                deadline_note=data.deadline_note,
                 response_date=None,
                 handler_initials=data.handler_initials,
                 status=CaseStatus.NOWY.value,
@@ -401,6 +410,7 @@ def _row_from_fixture(raw: dict[str, Any]) -> CaseRow:
         applicant=raw.get("applicant", ""),
         inflow_date=inflow,
         deadline=date.fromisoformat(raw["deadline"]),
+        deadline_note=raw.get("deadline_note", ""),
         response_date=date.fromisoformat(raw["response_date"])
         if raw.get("response_date")
         else None,
