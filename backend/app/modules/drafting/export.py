@@ -70,10 +70,19 @@ def parse_blocks(markdown: str) -> list[Block]:
     return blocks
 
 
+def markers_to_plain(text: str) -> str:
+    """`[^n]` → `[n]` — forma czytelna w wydruku i w Markdownie.
+
+    Znacznik `[^n]` to zapis źródłowy projektu. W gotowym piśmie odnośnik
+    stoi w nawiasie kwadratowym, tak samo we wszystkich trzech formatach
+    eksportu — bez tego Markdown zostawiał caret, którego DOCX i PDF nie mają.
+    """
+    return _MARKER.sub(lambda match: f"[{match.group(1)}]", text)
+
+
 def plain_text(text: str) -> str:
     """Treść bez znaczników Markdownu — do PDF i podglądu."""
-    without_bold = text.replace("**", "")
-    return _MARKER.sub(lambda match: f"[{match.group(1)}]", without_bold)
+    return markers_to_plain(text.replace("**", ""))
 
 
 def _citation_line(citation: Citation) -> str:
@@ -194,8 +203,12 @@ def render_pdf(
 def render_markdown(
     *, title: str, body: str, citations: Sequence[Citation]
 ) -> bytes:
-    """Projekt odpowiedzi jako Markdown — wersja robocza do wklejenia dalej."""
-    parts = [f"# {title}", "", body.strip()]
+    """Projekt odpowiedzi jako Markdown — wersja robocza do wklejenia dalej.
+
+    Odnośniki idą w formie `[n]`, tak jak w DOCX i PDF. Nagłówki i pogrubienia
+    zostają Markdownem, bo to plik do dalszej pracy, nie do druku.
+    """
+    parts = [f"# {title}", "", markers_to_plain(body.strip())]
     if citations:
         parts += ["", "## Cytowania", ""]
         parts += [f"- {_citation_line(citation)}" for citation in citations]

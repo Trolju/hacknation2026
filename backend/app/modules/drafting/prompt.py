@@ -168,20 +168,34 @@ def normalize_model_output(raw: str) -> str:
     return "\n".join(lines)
 
 
+def _collapse_segment(refs: list[int]) -> str:
+    """Kolejne numery zwęża do zakresu, krótsze zostawia wypisane."""
+    if len(refs) >= 3:
+        return f"[^{refs[0]}]–[^{refs[-1]}]"
+    return "".join(f"[^{ref}]" for ref in refs)
+
+
 def collapse_ref_runs(body: str) -> str:
     """Zwęża przebiegi trzech i więcej kolejnych odnośników do zakresu.
 
     Model powołuje się jednym zdaniem na wszystkie artykuły wgranej ustawy.
-    Trzynaście cyfr w indeksie górnym przy jednym zdaniu jest nieczytelne
-    w wydruku, więc `[^2][^3][^4][^5]` staje się `[^2]–[^5]`. Przebieg
-    nieciągły (`[^2][^5][^9]`) zostaje bez zmian — zakres kłamałby o treści.
+    Dwanaście cyfr w indeksie górnym przy jednym zdaniu jest nieczytelne
+    w wydruku, więc `[^2][^3][^4][^5]` staje się `[^2]–[^5]`.
+
+    Przebieg bywa nieściśle kolejny — `[^2]…[^12][^16]` — więc zwężamy każdy
+    jego ciągły fragment osobno. Numer, który wypada z kolejności, zostaje
+    wypisany, bo zakres obejmujący lukę kłamałby o treści.
     """
 
     def _replace(match: re.Match[str]) -> str:
         refs = [int(found.group(1)) for found in _MARKER.finditer(match.group(0))]
-        if refs != list(range(refs[0], refs[0] + len(refs))):
-            return match.group(0)
-        return f"[^{refs[0]}]–[^{refs[-1]}]"
+        parts: list[str] = []
+        start = 0
+        for index in range(1, len(refs) + 1):
+            if index == len(refs) or refs[index] != refs[index - 1] + 1:
+                parts.append(_collapse_segment(refs[start:index]))
+                start = index
+        return "".join(parts)
 
     return _REF_RUN.sub(_replace, body)
 

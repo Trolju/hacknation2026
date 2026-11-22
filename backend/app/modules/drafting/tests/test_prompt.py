@@ -177,6 +177,14 @@ class TestCollapseRefRuns:
         """Zakres kłamałby o treści — 2, 5 i 9 to nie 2–9."""
         assert collapse_ref_runs("A [^2][^5][^9] B") == "A [^2][^5][^9] B"
 
+    def test_zwęża_ciagly_fragment_nieciaglego_przebiegu(self) -> None:
+        """Model dopisał na końcu odległy numer — reszta ciągu wciąż się zwęża."""
+        run = "".join(f"[^{ref}]" for ref in [*range(2, 13), 16])
+        assert collapse_ref_runs(f"Podstawa {run}.") == "Podstawa [^2]–[^12][^16]."
+
+    def test_dwa_krotkie_fragmenty_zostaja(self) -> None:
+        assert collapse_ref_runs("A [^2][^3][^5][^6] B") == "A [^2][^3][^5][^6] B"
+
     def test_zakres_rozwija_sie_w_cytowaniach(self) -> None:
         collapsed = collapse_ref_runs("A [^2][^3][^4][^5] B")
         assert extract_refs(collapsed) == [2, 3, 4, 5]

@@ -315,6 +315,20 @@ def test_eksport_markdown(drafting: LlmDrafting) -> None:
     assert "## Cytowania" in blob.decode("utf-8")
 
 
+def test_eksport_markdown_bez_caretow(drafting: LlmDrafting) -> None:
+    """P16 — Markdown podaje odnośniki jak DOCX i PDF: `[n]`, nie `[^n]`."""
+    draft = drafting.draft(DraftRequest(case_id=CASE_ID))
+    drafting.update(
+        draft.id, DraftPatch(body="## Odpowiedź\n\nZdanie z odnośnikiem [^1].")
+    )
+
+    blob, _ = drafting.export(draft.id, fmt="md", anonymized=False)
+    text = blob.decode("utf-8")
+
+    assert "[^" not in text
+    assert "Zdanie z odnośnikiem [1]." in text
+
+
 def test_nazwa_pliku_eksportu_to_numer_sprawy(drafting: LlmDrafting) -> None:
     """P12 — urzędnik zapisuje plik z numerem sprawy, nie fragmentem UUID."""
     draft = drafting.draft(DraftRequest(case_id=CASE_ID))
