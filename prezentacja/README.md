@@ -18,6 +18,9 @@ python3 prezentacja/build.py
 w `build.py`. `LD_LIBRARY_PATH=` jest konieczne, bo domyślne środowisko psuje
 binarne pakiety systemowe. Skrypt: stdlib only, bez zależności Pythona.
 
+`prezentacja.html` i `prezentacja.pdf` to artefakty budowane: są zignorowane
+w git, więc po świeżym klonie powstają dopiero po uruchomieniu `build.py`.
+
 ## Stan przed wysyłką
 
 - [x] **Nazwa i zespół** — tytuł slajdu 1 i stopka markują `Capricorn`, zespół

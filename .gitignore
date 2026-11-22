@@ -31,3 +31,7 @@ data/
 
 # Generator filmu (Revideo) — lokalne narzędzie, nie część zgłoszenia
 video/
+
+# Prezentacja — artefakty budowane przez prezentacja/build.py
+prezentacja/prezentacja.html
+prezentacja/prezentacja.pdf
