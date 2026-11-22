@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-export const APP_NAME = "Inteligentny asystent urzędnika";
+export const APP_NAME = "Capricorn";
 
 export function documentTitleFor(label?: string | null): string {
   const trimmed = label?.trim();

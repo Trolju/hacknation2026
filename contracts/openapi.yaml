@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Inteligentny asystent urzędnika — API
+  title: Capricorn — API
   version: 1.0.0
   description: |
     Kontrakt API prototypu. **ZAMROŻONY po Fali 0.**

@@ -77,7 +77,7 @@ stop_one() {
     info "$name: zatrzymany (PID $pid)"
 }
 
-printf 'Inteligentny asystent urzędnika — zatrzymanie\n'
+printf 'Capricorn — zatrzymanie\n'
 
 if [[ "$STOP_BACKEND" == "1" ]]; then
     step "Backend"

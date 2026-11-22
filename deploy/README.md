@@ -1,4 +1,4 @@
-# Wdrożenie — Inteligentny asystent urzędnika
+# Wdrożenie — Capricorn
 
 Instrukcja dla osoby, która widzi to repozytorium pierwszy raz. Po jej
 przejściu aplikacja działa lokalnie (bez dockera) albo w dockerze.
@@ -156,8 +156,8 @@ docker compose -f deploy/docker-compose.yml down -v     # stop + usunięcie dany
 
 | Element | Opis |
 | --- | --- |
-| `asystent-urzednika-backend` | FastAPI + uvicorn, użytkownik `app` (uid 10001), nie-root |
-| `asystent-urzednika-frontend` | nginx z buildem Vite, proxy `/api` do backendu |
+| `capricorn-backend` | FastAPI + uvicorn, użytkownik `app` (uid 10001), nie-root |
+| `capricorn-frontend` | nginx z buildem Vite, proxy `/api` do backendu |
 | wolumen `app-data` | `/srv/data` — baza SQLite i wgrane pliki |
 
 Backend ma `HEALTHCHECK` na `/api/health`; frontend startuje dopiero, gdy
@@ -168,8 +168,8 @@ backend jest zdrowy (`depends_on: condition: service_healthy`).
 Wszystko, co trzeba zachować, leży w wolumenie `app-data`:
 
 ```bash
-docker run --rm -v asystent-urzednika_app-data:/data -v "$PWD":/backup alpine \
-    tar czf /backup/asystent-dane-$(date +%F).tar.gz -C /data .
+docker run --rm -v capricorn_app-data:/data -v "$PWD":/backup alpine \
+    tar czf /backup/capricorn-dane-$(date +%F).tar.gz -C /data .
 ```
 
 Odtworzenie: podmiana wolumenu w ten sam sposób (`tar xzf`).

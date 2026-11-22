@@ -11,10 +11,10 @@ export function Sidebar({ onOpenPalette }: { onOpenPalette: () => void }) {
     <aside className="hidden w-64 shrink-0 border-r bg-muted/30 md:flex md:flex-col">
       <div className="flex h-14 items-center gap-2 border-b px-4">
         <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-sm font-bold text-primary-foreground">
-          AU
+          C
         </div>
         <div className="leading-tight">
-          <p className="text-sm font-semibold">Asystent urzędnika</p>
+          <p className="text-sm font-semibold">Capricorn</p>
           <p className="text-xs text-muted-foreground">Miasto Bydgoszcz</p>
         </div>
       </div>

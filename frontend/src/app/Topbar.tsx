@@ -60,7 +60,7 @@ export function Topbar({ onOpenPalette, onOpenHelp }: TopbarProps) {
         </SheetTrigger>
         <SheetContent side="left" className="w-64 p-0">
           <SheetHeader className="border-b p-4">
-            <SheetTitle>Asystent urzędnika</SheetTitle>
+            <SheetTitle>Capricorn</SheetTitle>
             <SheetDescription className="text-xs">
               Miasto Bydgoszcz
             </SheetDescription>

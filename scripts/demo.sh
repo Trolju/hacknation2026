@@ -67,7 +67,7 @@ done
 
 [[ -x "$PYTHON" ]] || fail "brak $PYTHON — uruchom najpierw: make install-backend"
 
-printf 'Inteligentny asystent urzędnika — środowisko demonstracyjne\n'
+printf 'Capricorn — środowisko demonstracyjne\n'
 printf 'katalog projektu: %s\n' "$ROOT_DIR"
 
 # ── 1. zatrzymanie poprzedniego uruchomienia ────────────────────────────────

@@ -167,7 +167,7 @@ start_frontend() {
 # ── main ─────────────────────────────────────────────────────────────────
 mkdir -p "$RUN_DIR"
 
-printf 'Inteligentny asystent urzędnika — uruchomienie lokalne\n'
+printf 'Capricorn — uruchomienie lokalne\n'
 printf 'katalog projektu: %s\n' "$ROOT_DIR"
 
 if [[ "$START_BACKEND" == "1" ]]; then

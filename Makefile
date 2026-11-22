@@ -1,4 +1,4 @@
-# Inteligentny asystent urzędnika — zadania deweloperskie.
+# Capricorn — zadania deweloperskie.
 # Node wymaga czystego LD_LIBRARY_PATH w tym środowisku.
 
 SHELL := /bin/bash

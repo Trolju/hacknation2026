@@ -2,7 +2,7 @@
 # Frontend: build Vite, serwowanie statyków przez nginx z proxy /api do backendu.
 #
 # Budowanie z katalogu głównego repozytorium:
-#   docker build -f deploy/Dockerfile.frontend -t asystent-frontend .
+#   docker build -f deploy/Dockerfile.frontend -t capricorn-frontend .
 
 # ── etap 1: build ─────────────────────────────────────────────────────────
 FROM node:20-alpine AS build

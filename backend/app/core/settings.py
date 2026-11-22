@@ -65,7 +65,7 @@ class Settings(BaseSettings):
         env_file=ENV_FILE, env_file_encoding="utf-8", extra="ignore"
     )
 
-    app_name: str = "Inteligentny asystent urzędnika"
+    app_name: str = "Capricorn"
     version: str = "0.1.0"
 
     # ── dane ──

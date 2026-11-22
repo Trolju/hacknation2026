@@ -7,14 +7,14 @@
 # Zatrzymanie:  docker compose -f deploy/docker-compose.yml down
 # Z danymi:     docker compose -f deploy/docker-compose.yml down -v
 
-name: asystent-urzednika
+name: capricorn
 
 services:
   backend:
     build:
       context: ..
       dockerfile: deploy/Dockerfile.backend
-    image: asystent-urzednika-backend:latest
+    image: capricorn-backend:latest
     # Plik musi istnieć — patrz krok `cp deploy/.env.example deploy/.env` w README.
     env_file:
       - .env
@@ -45,7 +45,7 @@ services:
     build:
       context: ..
       dockerfile: deploy/Dockerfile.frontend
-    image: asystent-urzednika-frontend:latest
+    image: capricorn-frontend:latest
     ports:
       - "${APP_PORT:-8080}:80"
     depends_on:

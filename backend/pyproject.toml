@@ -1,7 +1,7 @@
 [project]
-name = "asystent-backend"
+name = "capricorn-backend"
 version = "0.1.0"
-description = "Inteligentny asystent urzędnika — backend"
+description = "Capricorn — inteligentny asystent urzędnika, backend (zespół sLaRpNaTiOn)"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",

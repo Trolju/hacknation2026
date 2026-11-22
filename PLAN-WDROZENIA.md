@@ -1,6 +1,6 @@
-# Plan wdrożenia — Inteligentny asystent urzędnika
+# Plan wdrożenia — Capricorn
 
-**HackNation 2026 · Miasto Bydgoszcz**
+**HackNation 2026 · Miasto Bydgoszcz · zespół sLaRpNaTiOn**
 
 Dokument opisuje architekturę, podział pracy i kolejność wdrożenia prototypu.
 Zakres merytoryczny: [ZADANIE-KONKURSOWE.md](./ZADANIE-KONKURSOWE.md).

@@ -1,7 +1,10 @@
-# Inteligentny asystent urzędnika
+# Capricorn
 
-Generator odpowiedzi na wnioski o udostępnienie informacji publicznej (UDIP)
-z kalendarzem terminów, dla Miasta Bydgoszczy. Projekt konkursowy HackNation 2026.
+**Inteligentny asystent urzędnika** — generator odpowiedzi na wnioski
+o udostępnienie informacji publicznej (UDIP) z kalendarzem terminów, dla Miasta
+Bydgoszczy.
+
+Projekt konkursowy **HackNation 2026**. Zespół **sLaRpNaTiOn**.
 
 ## Co robi aplikacja
 
@@ -147,3 +150,8 @@ cd backend && .venv/bin/python -m pytest tests/test_e2e_flow.py -q
 - `AGENTS.md` — zasady pracy równoległej i strefy własności
 - `contracts/domain.md` — słownik pól, maszyna stanów, reguły scalania
 - `contracts/openapi.yaml` — powierzchnia API
+
+## Zespół
+
+**Capricorn** — zespół **sLaRpNaTiOn**, HackNation 2026, dla Miasta Bydgoszczy.
+

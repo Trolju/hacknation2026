@@ -2,7 +2,7 @@
 # Backend: FastAPI + uvicorn na Pythonie 3.12 slim.
 #
 # Budowanie z katalogu głównego repozytorium (tam jest `pyproject.toml` i `fixtures/`):
-#   docker build -f deploy/Dockerfile.backend -t asystent-backend .
+#   docker build -f deploy/Dockerfile.backend -t capricorn-backend .
 #
 # Obraz nie zawiera sekretów ani plików `.env` — konfiguracja wchodzi przez
 # zmienne środowiskowe (patrz deploy/docker-compose.yml i deploy/.env.example).
