@@ -5,8 +5,12 @@ Film o *Inteligentnym asystencie urzędnika* zbudowany w
 Remotion. Ten sam model pracy: scena to generator w TypeScripcie, animacje to
 tweeny, render idzie przez przeglądarkę i ffmpeg.
 
-Gotowy plik: [`../docs/asystent-urzednika.mp4`](../docs/asystent-urzednika.mp4)
-(1920×1080, 30 fps, 1:46).
+Gotowe pliki (1920×1080, 30 fps, 1:46):
+
+- [`../docs/asystent-urzednika-bez-dzwieku.mp4`](../docs/asystent-urzednika-bez-dzwieku.mp4)
+  — tylko obraz, bez strumienia audio. Do przeglądu i do podłożenia lektora.
+- [`../docs/asystent-urzednika.mp4`](../docs/asystent-urzednika.mp4) — to samo
+  plus cicha ścieżka AAC, którą dokleja Revideo.
 
 Wersja 2 stawia na tempo: 16 scen, prawdziwe nagrania działającej aplikacji z
 przejazdem kamery po interfejsie i typografią kinetyczną zamiast statycznych
