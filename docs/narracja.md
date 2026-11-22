@@ -11,13 +11,13 @@ Poniższe teksty to dokładnie to, co poszło do syntezy.
 ## Blok do skopiowania w całości
 
 ```
-Capricorn. Inteligentny asystent urzędnika. HackNation 2026. Zespół LARP Nation.
+Capricorn, inteligentny asystent urzędnika. HackNation 2026. Zespół LARP Nation.
 
 Jedno pismo, kilka dni pracy. Dziesiątki wniosków dziennie, setki godzin na archiwach. Skracamy to do kilku minut.
 
 Osiem modułów. Jeden dzień pracy.
 
-Pulpit. Wszystkie wnioski, terminy i ryzyka na jednym ekranie. Cztery kategorie pilności.
+Pulpit aplikacji. Wszystkie wnioski, terminy i ryzyka na jednym ekranie. Cztery kategorie pilności.
 
 Kalendarz wniosków. Terminy ustawowe i statusy. Dziś i jutro podświetlone.
 
@@ -41,17 +41,17 @@ Dane osobowe nie trafiają do modelu. Dziś Mistral Small przez API, docelowo Bi
 
 Dla urzędników od wniosków UDIP. Dziś prototyp, jutro wdrożenie. Asystent, nie zamiennik decyzji.
 
-Capricorn. Inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy.
+Capricorn, inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy.
 ```
 
 ## Bloki z timingami
 
 | Start | Koniec | Plik | Okno | Mowa | Tempo | Tekst |
 | --- | --- | --- | --- | --- | --- | --- |
-| 0:00,0 | 0:06,3 | `01` | 6,3 s | 7,11 s | x1,20 | Capricorn. Inteligentny asystent urzędnika. HackNation 2026. Zespół LARP Nation. |
+| 0:00,0 | 0:06,3 | `01` | 6,3 s | 6,79 s | x1,15 | Capricorn, inteligentny asystent urzędnika. HackNation 2026. Zespół LARP Nation. |
 | 0:06,3 | 0:15,7 | `02` | 9,4 s | 11,18 s | x1,24 | Jedno pismo, kilka dni pracy. Dziesiątki wniosków dziennie, setki godzin na archiwach. Skracamy to do kilku minut. |
 | 0:15,7 | 0:19,0 | `03` | 3,3 s | 2,72 s | bez zmian | Osiem modułów. Jeden dzień pracy. |
-| 0:19,0 | 0:25,3 | `04a` | 6,3 s | 6,30 s | x1,06 | Pulpit. Wszystkie wnioski, terminy i ryzyka na jednym ekranie. Cztery kategorie pilności. |
+| 0:19,0 | 0:25,3 | `04a` | 6,3 s | 6,64 s | x1,12 | Pulpit aplikacji. Wszystkie wnioski, terminy i ryzyka na jednym ekranie. Cztery kategorie pilności. |
 | 0:25,3 | 0:31,1 | `04b` | 5,8 s | 5,43 s | bez zmian | Kalendarz wniosków. Terminy ustawowe i statusy. Dziś i jutro podświetlone. |
 | 0:31,1 | 0:37,8 | `04c` | 6,7 s | 6,45 s | x1,02 | Baza wiedzy. Wrzucasz PDF albo Worda. Tekst jest rozpoznany, pocięty na fragmenty i zindeksowany. |
 | 0:37,8 | 0:45,8 | `04d` | 8,0 s | 6,87 s | bez zmian | Przeszukiwanie archiwum. Opisujesz sprawę zamiast wpisywać słowa kluczowe. Najlepsze trafienie: zero przecinek dziewięćdziesiąt. |
@@ -63,7 +63,7 @@ Capricorn. Inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach
 | 1:21,6 | 1:27,5 | `06` | 5,9 s | 4,47 s | bez zmian | Otwarty stos, bez licencji. Całość wstaje jedną komendą. |
 | 1:27,5 | 1:33,5 | `07` | 6,0 s | 5,98 s | x1,06 | Dane osobowe nie trafiają do modelu. Dziś Mistral Small przez API, docelowo Bielik w urzędzie. |
 | 1:33,5 | 1:39,4 | `08` | 5,9 s | 7,18 s | x1,30 | Dla urzędników od wniosków UDIP. Dziś prototyp, jutro wdrożenie. Asystent, nie zamiennik decyzji. |
-| 1:39,4 | 1:46,0 | `09` | 6,6 s | 6,64 s | x1,07 | Capricorn. Inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy. |
+| 1:39,4 | 1:46,0 | `09` | 6,6 s | 5,67 s | bez zmian | Capricorn, inteligentny asystent urzędnika. Odpowiedź w minutach, nie w dniach. Dziękujemy. |
 
 Tempo to współczynnik `atempo` — blok dłuższy niż okno jest ściskany, krótszy
 zostaje bez zmian. Powyżej x1,35 lepiej skrócić tekst niż przyspieszać.
@@ -97,12 +97,21 @@ do −16 LUFS.
 - `UDIP` → „u-dip”.
 - `Mistral Small` → „mistral smol”.
 - `Q4_K_M` → w narracji pominięte; jest tylko na karcie modelu w obrazie.
+- `pulpit` → w syntezie **„Pulpit aplikacji”**, nie samo „Pulpit”. Samotne
+  „Pulpit.” model czytał po angielsku (`[ˈpʊlpɪt]`, luźne `/ʊ/` i `/ɪ/`); polski
+  wyraz stojący zaraz po nim wymusza polską fonologię (`[ˈpul.pit]`).
+- `inteligentny` → po **przecinku** („Capricorn, inteligentny…”), nie po kropce.
+  Po kropce model przenosi angielskie `/dʒ/` na `g`; po przecinku zostaje
+  twarde `/ɡ/`.
 
 ## Weryfikacja
 
-Każdy blok sprawdzony transkrypcją zwrotną (`voxtral-mini-transcribe-3`):
-odsłuch segmentów 0 s, 19 s, 61 s i 99 s zwraca dokładnie tekst z tabeli.
-Głośność całości: średnia −19,8 dB, szczyt −1,5 dB.
+Każdy blok sprawdzony transkrypcją zwrotną (`voxtral-mini-transcribe-3`,
+`language=pl`): odsłuch segmentów 0 s, 19 s, 61 s i 99 s zwraca dokładnie tekst
+z tabeli. Po korekcie wymowy przegenerowane bloki `01`, `04a` i `09` przechodzą
+ten sam test — transkrypcja zwraca „inteligentny asystent urzędnika” oraz
+„Pulpit aplikacji” jako poprawne polskie wyrazy, nie zbitki angielskie.
+Głośność całości: −15,9 LUFS, szczyt −1,5 dBFS.
 
 ## Podłożenie od zera
 
