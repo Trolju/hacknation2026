@@ -28,3 +28,6 @@ data/
 .vscode/
 .idea/
 .DS_Store
+
+# Generator filmu (Revideo) — lokalne narzędzie, nie część zgłoszenia
+video/
