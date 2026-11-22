@@ -34,6 +34,13 @@ data/
 # Generator filmu (Revideo) — lokalne narzędzie, nie część zgłoszenia
 video/
 
+# Nagrania i klipy — duże pliki binarne, trzymamy poza historią.
+# Film jest artefaktem zgłoszenia, ale nie musi jechać w gicie: 100 MB
+# w historii spowalnia klonowanie każdemu, kto chce tylko przejrzeć kod.
+*.mp4
+*.mov
+*.webm
+
 # Prezentacja — artefakty budowane przez prezentacja/build.py
 prezentacja/prezentacja.html
 prezentacja/prezentacja.pdf
