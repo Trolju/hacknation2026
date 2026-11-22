@@ -4,7 +4,8 @@
 # Co robi:
 #   1. zatrzymuje poprzednio uruchomioną aplikację,
 #   2. czyści `backend/data/` (baza i uploady), żeby demo było powtarzalne,
-#   3. ustawia `MODULE_MODE_DEFAULT=fake` i `DEMO_TODAY=2026-03-16`,
+#   3. ustawia `DEMO_TODAY=2026-03-16`; tryb modułów bierze z `backend/.env`,
+#      chyba że podasz `--fake`,
 #   4. uruchamia backend i frontend przez `scripts/start-local.sh`,
 #   5. wypisuje adresy i listę „co pokazać”.
 #
@@ -13,6 +14,7 @@
 #   scripts/demo.sh --backend-only   # tylko API (frontend uruchom osobno)
 #   scripts/demo.sh --frontend-only  # tylko interfejs
 #   scripts/demo.sh --no-reset       # nie czyść danych (kontynuacja demo)
+#   scripts/demo.sh --fake           # wymuś atrapy (demo bez bazy i bez modeli)
 #   scripts/demo.sh --help
 #
 # Zatrzymanie: scripts/stop-local.sh
@@ -37,6 +39,7 @@ FRONTEND_PORT="${FRONTEND_PORT:-5173}"
 DEMO_TODAY="${DEMO_TODAY:-2026-03-16}"
 
 RESET=1
+FAKE=0
 START_ARGS=()
 
 info() { printf '  %s\n' "$*"; }
@@ -47,13 +50,14 @@ fail() {
 }
 
 usage() {
-    sed -n '2,19p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
     exit 0
 }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --no-reset) RESET=0 ;;
+        --fake) FAKE=1 ;;
         --backend-only | --frontend-only) START_ARGS+=("$1") ;;
         -h | --help) usage ;;
         *) fail "nieznany argument: $1 (użyj --help)" ;;
@@ -84,18 +88,23 @@ fi
 
 # ── 3. tryb pracy ───────────────────────────────────────────────────────────
 step "Tryb pracy"
-# Demo działa bez modeli i bez sieci: wszystkie moduły na atrapach z fixtures/.
-# Zmienne MODULE_MODE_<NAZWA> z powłoki mogłyby to popsuć, więc je zdejmujemy.
-for module in CASES INGEST ARCHIVE ROUTING DRAFTING ANONYMIZE INFERENCE AUDIT; do
-    unset "MODULE_MODE_$module"
-done
-export MODULE_MODE_DEFAULT=fake
+# Domyślnie tryb modułów bierze z `backend/.env` — tam stoi `MODULE_MODE_DEFAULT=real`,
+# bo wszystkie osiem modułów ma pełny adapter realny. `--fake` wymusza atrapy:
+# demo działa wtedy bez bazy i bez modeli, w całości na fixtures/.
+if [[ "$FAKE" == "1" ]]; then
+    for module in CASES INGEST INGEST_PARSER ARCHIVE ROUTING DRAFTING ANONYMIZE INFERENCE AUDIT; do
+        unset "MODULE_MODE_$module"
+    done
+    export MODULE_MODE_DEFAULT=fake
+    info "MODULE_MODE_DEFAULT=fake (wszystkie moduły na danych z fixtures/)"
+else
+    info "tryb modułów z backend/.env (domyślnie real)"
+fi
 export DEMO_TODAY
 export OFFLINE=false
 # Adresy i porty muszą przejść do `start-local.sh`, inaczej uruchomi się na
 # domyślnych 8000/5173, a podsumowanie pokaże inne numery.
 export BACKEND_HOST BACKEND_PORT FRONTEND_HOST FRONTEND_PORT
-info "MODULE_MODE_DEFAULT=fake (wszystkie moduły na danych z fixtures/)"
 info "DEMO_TODAY=$DEMO_TODAY"
 
 # ── 4. uruchomienie ─────────────────────────────────────────────────────────

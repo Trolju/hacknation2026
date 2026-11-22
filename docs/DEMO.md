@@ -13,8 +13,10 @@ scripts/demo.sh
 ```
 
 Skrypt zatrzymuje poprzednie uruchomienie, czyści `backend/data/` (baza i uploady),
-ustawia `MODULE_MODE_DEFAULT=fake` oraz `DEMO_TODAY=2026-03-16`, uruchamia backend
-i frontend, a na końcu wypisuje adresy i listę „co pokazać”.
+ustawia `DEMO_TODAY=2026-03-16` i uruchamia backend oraz frontend, a na końcu
+wypisuje adresy i listę „co pokazać”. Tryb modułów bierze z `backend/.env`
+(domyślnie wszystkie osiem na `real`); `scripts/demo.sh --fake` wymusza atrapy,
+gdy demo ma działać bez bazy i bez modeli.
 
 | Co | Adres |
 | --- | --- |
@@ -327,7 +329,12 @@ w całości — tak działa aktualizacja ustawy.
 
 - Wszystkie moduły mają dwie implementacje: `fake` (deterministyczna atrapa z `fixtures/`)
   i `real` (SQLite, PDF/DOCX, wyszukiwanie hybrydowe, reguły anonimizacji).
-- Przełączenie: `MODULE_MODE_DEFAULT=real` albo pojedynczo, np. `MODULE_MODE_ARCHIVE=real`.
+- Domyślnie działa `real` — `MODULE_MODE_DEFAULT=real` w `backend/.env`. Pojedynczy
+  moduł cofniesz do atrapy, np. `MODULE_MODE_ARCHIVE=fake`; całość wymusi
+  `scripts/demo.sh --fake`.
+- Wyjątek: `MODULE_MODE_INFERENCE_EMBEDDING=fake`, bo `LocalEmbedding` mówi
+  protokołem `/embeddings`, a Mistral nie serwuje modelu `BAAI/bge-m3`. Archiwum
+  działa bez wektorów — zostaje BM25 i pokrycie leksykalne.
 - Dowód, że ścieżka działa w trybie realnym: `backend/tests/test_e2e_flow.py` —
   jeden test przechodzi 11 kroków przez HTTP na wszystkich modułach `real`
   (wgranie PDF → kalendarz → archiwum → routing → zapytanie → projekt → zapis →

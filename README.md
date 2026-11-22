@@ -103,12 +103,18 @@ deploy/             uruchomienie produkcyjne
 ## Tryby modułów
 
 Osiem modułów (`cases`, `ingest`, `archive`, `routing`, `drafting`, `anonymize`,
-`inference`, `audit`) działa niezależnie w trybie `fake` albo `real`:
+`inference`, `audit`) działa niezależnie w trybie `fake` albo `real`. Każdy ma
+pełny adapter realny, więc domyślnie gramy na realnych:
 
 ```bash
-MODULE_MODE_DEFAULT=fake          # wszystko na atrapach
-MODULE_MODE_ARCHIVE=real          # tylko archiwum na implementacji realnej
+MODULE_MODE_DEFAULT=real          # wszystkie osiem na implementacji realnej
+MODULE_MODE_CASES=fake            # pojedynczy moduł można cofnąć do atrapy
 ```
+
+Wyjątkiem są embeddingi: `MODULE_MODE_INFERENCE_EMBEDDING=fake`, bo
+`LocalEmbedding` mówi protokołem `/embeddings`, a Mistral nie serwuje modelu
+`BAAI/bge-m3`. Archiwum działa bez nich — sygnał wektorowy schodzi, zostaje
+BM25 i pokrycie leksykalne.
 
 Brakujący adapter realny nie wywala aplikacji — kontener loguje ostrzeżenie
 i wraca do atrapy. Aktualny tryb każdego modułu widać w „Ustawieniach”
