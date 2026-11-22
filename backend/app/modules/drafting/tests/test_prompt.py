@@ -11,6 +11,8 @@ Dwa defekty z raportu z testów na żywym Mistralu:
 from __future__ import annotations
 
 from app.modules.drafting.prompt import (
+    collapse_ref_runs,
+    extract_refs,
     find_unsupported,
     is_usable,
     normalize_model_output,
@@ -127,3 +129,84 @@ class TestCombined:
         body = normalize_model_output(MODEL_OUTPUT)
         unsupported = find_unsupported(body, {1})
         assert any("Wynagrodzenia pracowników" in sentence for sentence in unsupported)
+
+
+#: Zdanie z podstawy prawnej, które po naprawie P2 zaczęło pękać na „(Dz." (P11).
+LEGAL_BASIS = (
+    "Niniejsza odpowiedź została przygotowana na podstawie przepisów ustawy "
+    "z dnia 6 września 2001 r. o dostępie do informacji publicznej "
+    "(Dz. U. z 2023 r. poz. 1479) [^1]."
+)
+
+
+class TestAbbreviations:
+    """P11 — skrót „Dz. U." nie może tworzyć fałszywego twierdzenia bez źródła."""
+
+    def test_zdanie_z_dz_u_jest_pokryte(self) -> None:
+        assert find_unsupported(LEGAL_BASIS, {1}) == []
+
+    def test_zdanie_nie_jest_rozbijane(self) -> None:
+        """Bez naprawy pierwszy fragment kończył się na „(Dz." i nie miał odnośnika."""
+        unsupported = find_unsupported(LEGAL_BASIS, {1})
+        assert not any(sentence.endswith("(Dz.") for sentence in unsupported)
+
+    def test_zdanie_bez_odnosnika_nadal_jest_wykrywane(self) -> None:
+        """Naprawa nie może wyciszyć prawdziwego ostrzeżenia."""
+        text = (
+            "Ustawa weszła w życie w 2023 r. Wynagrodzenia pracowników "
+            "samorządowych są jawne."
+        )
+        unsupported = find_unsupported(text, {1})
+        assert any("Wynagrodzenia pracowników" in sentence for sentence in unsupported)
+
+
+class TestCollapseRefRuns:
+    """P14 — ciąg odnośników pod rząd zwężamy do zakresu."""
+
+    def test_zwęża_przebieg_trzech(self) -> None:
+        assert collapse_ref_runs("A [^2][^3][^4] B") == "A [^2]–[^4] B"
+
+    def test_zwęża_dlugi_przebieg(self) -> None:
+        run = "".join(f"[^{ref}]" for ref in range(2, 14))
+        assert collapse_ref_runs(f"Podstawa {run}.") == "Podstawa [^2]–[^13]."
+
+    def test_dwa_odnosniki_zostaja_bez_zmian(self) -> None:
+        assert collapse_ref_runs("A [^2][^3] B") == "A [^2][^3] B"
+
+    def test_przebieg_nieciagly_zostaje_bez_zmian(self) -> None:
+        """Zakres kłamałby o treści — 2, 5 i 9 to nie 2–9."""
+        assert collapse_ref_runs("A [^2][^5][^9] B") == "A [^2][^5][^9] B"
+
+    def test_zakres_rozwija_sie_w_cytowaniach(self) -> None:
+        collapsed = collapse_ref_runs("A [^2][^3][^4][^5] B")
+        assert extract_refs(collapsed) == [2, 3, 4, 5]
+
+    def test_kolejnosc_pierwszego_wystapienia(self) -> None:
+        body = "A [^7] B [^2][^3][^4] C [^1]"
+        assert extract_refs(collapse_ref_runs(body)) == [7, 2, 3, 4, 1]
+
+    def test_zdanie_z_zakresem_jest_pokryte(self) -> None:
+        body = collapse_ref_runs("Podstawa prawna [^2][^3][^4].")
+        assert find_unsupported(body, {2, 3, 4}) == []
+
+
+class TestIsoDates:
+    """P15 — pismo urzędowe nie zawiera daty w formacie ISO."""
+
+    def test_data_iso_na_zapis_urzedowy(self) -> None:
+        assert normalize_model_output("Termin upływa 2026-03-02.") == (
+            "Termin upływa 2 marca 2026 r."
+        )
+
+    def test_dwie_daty_w_zdaniu(self) -> None:
+        body = normalize_model_output("Wpływ 2026-02-20, termin 2026-03-06.")
+        assert body == "Wpływ 20 lutego 2026 r., termin 6 marca 2026 r."
+
+    def test_nie_dubluje_skrotu_r(self) -> None:
+        assert normalize_model_output("Data 2026-03-16 r.") == "Data 16 marca 2026 r."
+
+    def test_nieczytelna_data_zostaje(self) -> None:
+        assert normalize_model_output("Data 2026-13-45.") == "Data 2026-13-45."
+
+    def test_data_bez_zer_wiodacych(self) -> None:
+        assert normalize_model_output("2026-01-05") == "5 stycznia 2026 r."

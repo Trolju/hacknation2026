@@ -17,6 +17,7 @@ Urzędnik zawsze dostaje pismo, nigdy pusty ekran.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Sequence
 from typing import Final
 from uuid import UUID, uuid4
@@ -41,6 +42,7 @@ from app.modules.drafting import export as exporter
 from app.modules.drafting.prompt import (
     SYSTEM_PROMPT,
     build_prompt,
+    collapse_ref_runs,
     extract_refs,
     find_unsupported,
     is_usable,
@@ -49,7 +51,8 @@ from app.modules.drafting.prompt import (
 )
 from app.modules.drafting.repository import DraftRepository, DraftVersion
 from app.modules.drafting.sources import Source, collect_sources
-from app.modules.drafting.template import build_template, format_date_pl
+from app.modules.drafting.template import build_template
+from app.modules.drafting.text import format_date_pl
 from app.ports.anonymize import AnonymizerPort
 from app.ports.archive import ArchiveSearchPort
 from app.ports.cases import CaseRepositoryPort
@@ -79,6 +82,37 @@ def _citations_for(body: str, sources: Sequence[Source]) -> list[Citation]:
     """Cytowania tylko dla źródeł faktycznie przywołanych w treści."""
     used = set(extract_refs(body))
     return [source.citation() for source in sources if source.ref in used]
+
+
+def _finalize(body: str, sources: Sequence[Source]) -> str:
+    """Usuwa odnośniki do nieistniejących źródeł i zwęża ich przebiegi.
+
+    Kolejność jest istotna: najpierw odsiewamy odnośniki do źródeł spoza
+    listy, dopiero potem zwężamy przebiegi — inaczej nieistniejące źródło
+    schowałoby się w środku zakresu i zostałoby w treści.
+    """
+    valid = {source.ref for source in sources}
+    return collapse_ref_runs(strip_invalid_refs(body, valid))
+
+
+#: Znaki, których nie przyjmie nazwa pliku w systemie plików urzędnika.
+_UNSAFE_FILENAME = re.compile(r"[^0-9A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż._-]+")
+
+
+def _safe_filename(text: str) -> str:
+    """Numer sprawy w formie bezpiecznej dla nazwy pliku."""
+    cleaned = _UNSAFE_FILENAME.sub("-", text).strip("-._")
+    return cleaned or "sprawa"
+
+
+def _header_lines(case: CaseDetail | None) -> list[str]:
+    """Nagłówek pisma urzędowego: miejsce, data i znak sprawy."""
+    if case is None:
+        return []
+    return [
+        f"Bydgoszcz, dnia {format_date_pl(today())}",
+        f"Znak sprawy: {case.case_number}",
+    ]
 
 
 def _change_note(before: Draft, after: Draft) -> str:
@@ -170,7 +204,7 @@ class LlmDrafting:
             log.info("drafting_degraded", case_id=str(case.id), reason="unusable_output")
             return self._degraded(case, sources, UNUSABLE_NOTE)
 
-        cleaned = strip_invalid_refs(body, {source.ref for source in sources})
+        cleaned = _finalize(body, sources)
         citations = _citations_for(cleaned, sources)
         unsupported = find_unsupported(cleaned, {citation.ref for citation in citations})
         log.info(
@@ -194,7 +228,7 @@ class LlmDrafting:
         Notatka o degradacji idzie do `degraded_reason`, nie do `unsupported`:
         to komunikat systemowy, a nie twierdzenie merytoryczne do uzupełnienia.
         """
-        body = build_template(case, sources)
+        body = _finalize(build_template(case, sources), sources)
         citations = _citations_for(body, sources)
         unsupported = find_unsupported(body, {c.ref for c in citations})
         return self._persist(
@@ -286,9 +320,11 @@ class LlmDrafting:
                 )
             citations = cleaned
 
-        header = self._header_lines(draft)
+        case = self._case(draft)
+        header = _header_lines(case)
         suffix = "anon" if anonymized else "projekt"
-        stem = f"odpowiedz-{draft.case_id.hex[:8]}-{suffix}"
+        number = _safe_filename(case.case_number) if case else draft.case_id.hex[:8]
+        stem = f"odpowiedz-{number}-{suffix}"
 
         if fmt == "docx":
             blob = exporter.render_docx(
@@ -316,16 +352,12 @@ class LlmDrafting:
             total += self._anonymize(citation.excerpt)[1]
         return total
 
-    def _header_lines(self, draft: Draft) -> list[str]:
-        """Nagłówek pisma urzędowego: miejsce, data i znak sprawy."""
+    def _case(self, draft: Draft) -> CaseDetail | None:
+        """Sprawa projektu — `None`, gdy sprawa została w międzyczasie usunięta."""
         try:
-            case = self._cases_port.get(draft.case_id)
+            return self._cases_port.get(draft.case_id)
         except AppError:
-            return []
-        return [
-            f"Bydgoszcz, dnia {format_date_pl(today())}",
-            f"Znak sprawy: {case.case_number}",
-        ]
+            return None
 
     def _anonymize(self, text: str) -> tuple[str, int]:
         """Przepuszcza tekst przez anonimizator; zwraca (tekst, liczba trafień)."""

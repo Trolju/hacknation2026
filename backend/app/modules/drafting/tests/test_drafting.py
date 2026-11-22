@@ -315,6 +315,25 @@ def test_eksport_markdown(drafting: LlmDrafting) -> None:
     assert "## Cytowania" in blob.decode("utf-8")
 
 
+def test_nazwa_pliku_eksportu_to_numer_sprawy(drafting: LlmDrafting) -> None:
+    """P12 — urzędnik zapisuje plik z numerem sprawy, nie fragmentem UUID."""
+    draft = drafting.draft(DraftRequest(case_id=CASE_ID))
+
+    _, filename = drafting.export(draft.id, fmt="docx", anonymized=False)
+
+    assert filename == "odpowiedz-UDIP.1435.1.2026-projekt.docx"
+
+
+def test_nazwa_pliku_anonimizowanego_tez_ma_numer_sprawy(
+    drafting: LlmDrafting,
+) -> None:
+    draft = drafting.draft(DraftRequest(case_id=CASE_ID))
+
+    _, filename = drafting.export(draft.id, fmt="pdf", anonymized=True)
+
+    assert filename == "odpowiedz-UDIP.1435.1.2026-anon.pdf"
+
+
 def test_eksport_anonimizowany_ukrywa_dane(drafting: LlmDrafting) -> None:
     """Dane osobowe pochodzą z `fixtures/anonymization/labeled.jsonl`."""
     draft = drafting.draft(DraftRequest(case_id=CASE_ID))

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   citationRefs,
   htmlToMarkdown,
+  markerRangeFor,
   markdownToHtml,
   sectionForClaim,
   splitSections,
@@ -120,5 +121,25 @@ describe("citationRefs", () => {
 
   it("zwraca pustą listę, gdy nie ma odnośników", () => {
     expect(citationRefs("Treść bez źródeł.")).toEqual([]);
+  });
+});
+
+describe("markerRangeFor", () => {
+  it("znajduje zakres obejmujący numer ze środka", () => {
+    expect(markerRangeFor("Podstawa [^2]–[^13].", 5)).toBe("[^2]–[^13]");
+  });
+
+  it("zwraca null, gdy numer leży poza zakresem", () => {
+    expect(markerRangeFor("Podstawa [^2]–[^13].", 14)).toBeNull();
+  });
+
+  it("zwraca null, gdy w treści nie ma zakresów", () => {
+    expect(markerRangeFor("Podstawa [^1][^2].", 1)).toBeNull();
+  });
+
+  it("obsługuje kilka zakresów w jednej treści", () => {
+    const body = "A [^1]–[^3] B [^7]–[^9]";
+    expect(markerRangeFor(body, 8)).toBe("[^7]–[^9]");
+    expect(markerRangeFor(body, 2)).toBe("[^1]–[^3]");
   });
 });

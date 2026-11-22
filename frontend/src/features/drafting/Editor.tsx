@@ -23,7 +23,11 @@ import { forwardRef, useEffect, useImperativeHandle, useReducer, useRef } from "
 
 import { Button } from "@/components/ui/button";
 import { TEXT } from "@/features/drafting/i18n";
-import { htmlToMarkdown, markdownToHtml } from "@/features/drafting/markdown";
+import {
+  htmlToMarkdown,
+  markerRangeFor,
+  markdownToHtml,
+} from "@/features/drafting/markdown";
 
 export type DraftEditorHandle = {
   /** Ustawia kursor na odnośniku `[^n]`; `false`, gdy odnośnika nie ma w treści. */
@@ -122,8 +126,16 @@ export const DraftEditor = forwardRef<DraftEditorHandle, DraftEditorProps>(
           if (!editor) return false;
           const needle = `[^${refNumber}]`;
           const position = findTextPosition(editor, needle);
-          if (position === null) return false;
-          selectRange(editor, position, needle.length);
+          if (position !== null) {
+            selectRange(editor, position, needle.length);
+            return true;
+          }
+          // Odnośnik ze środka zwężonego zakresu nie ma własnego znacznika.
+          const range = markerRangeFor(editor.getText(), refNumber);
+          if (range === null) return false;
+          const rangePosition = findTextPosition(editor, range);
+          if (rangePosition === null) return false;
+          selectRange(editor, rangePosition, range.length);
           return true;
         },
         scrollToText: (text: string) => {

@@ -10,28 +10,12 @@ from __future__ import annotations
 
 import re
 from collections.abc import Sequence
-from datetime import date
 
 from app.contracts import CaseDetail
 
 from .sources import Source
+from .text import format_date_pl, split_sentences
 
-_MONTHS = (
-    "stycznia",
-    "lutego",
-    "marca",
-    "kwietnia",
-    "maja",
-    "czerwca",
-    "lipca",
-    "sierpnia",
-    "września",
-    "października",
-    "listopada",
-    "grudnia",
-)
-
-_SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-ZĄĆĘŁŃÓŚŹŻ])")
 _WHITESPACE = re.compile(r"\s+")
 _ARTICLE_PREFIX = re.compile(
     r"^(?:Art\.\s*\d+[a-z]?\.|§\s*\d+\.)\s*(?:\d+[a-z]?[.)]\s*)?"
@@ -113,15 +97,10 @@ _LEGAL_ORDER: tuple[str, ...] = (
 )
 
 
-def format_date_pl(value: date) -> str:
-    """Data w formie urzędowej: „20 lutego 2026”."""
-    return f"{value.day} {_MONTHS[value.month - 1]} {value.year}"
-
-
 def _as_single_sentence(text: str, limit: int = _QUOTE_LIMIT) -> str:
     """Skleja cytat w jedno zdanie, żeby odnośnik pokrywał całość wypowiedzi."""
     cleaned = _WHITESPACE.sub(" ", text).strip()
-    parts = [part.strip() for part in _SENTENCE_END.split(cleaned) if part.strip()]
+    parts = split_sentences(cleaned)
     joined = "; ".join(part.rstrip(".") for part in parts)
     if len(joined) > limit:
         joined = joined[:limit].rsplit(" ", 1)[0] + "…"

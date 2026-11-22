@@ -267,3 +267,18 @@ export function citationRefs(markdown: string): number[] {
   }
   return refs;
 }
+
+/**
+ * Zakres odnośników obejmujący numer — `[^2]–[^13]` zawiera także 5.
+ *
+ * Generator zwęża przebiegi trzech i więcej odnośników do zakresu, więc
+ * kliknięcie cytowania ze środka zakresu nie znajdzie własnego `[^n]`.
+ */
+export function markerRangeFor(markdown: string, ref: number): string | null {
+  for (const match of markdown.matchAll(/\[\^(\d+)\]–\[\^(\d+)\]/g)) {
+    const start = Number(match[1]);
+    const end = Number(match[2]);
+    if (ref >= start && ref <= end) return match[0];
+  }
+  return null;
+}
