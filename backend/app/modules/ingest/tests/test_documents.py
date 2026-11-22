@@ -386,10 +386,43 @@ def test_reupload_statute_replaces_entry(store: SqlDocumentStore) -> None:
     assert len(store.chunks(second.id)) == second.chunk_count
 
 
-def test_reupload_application_keeps_both_entries(store: SqlDocumentStore) -> None:
+def test_reupload_same_application_does_not_duplicate(store: SqlDocumentStore) -> None:
+    """Ten sam plik wgrany drugi raz to ten sam dokument, nie duplikat.
+
+    Wcześniej każde wgranie tworzyło nowy wpis — w bazie wiedzy zostawały
+    duplikaty, które trzeba było usuwać ręcznie.
+    """
     blob = (DOCUMENTS / "wniosek-01-wynagrodzenia.pdf").read_bytes()
-    store.create(blob=blob, filename="wniosek.pdf", kind=DocumentKind.WNIOSEK)
-    store.create(blob=blob, filename="wniosek.pdf", kind=DocumentKind.WNIOSEK)
+    first = store.create(blob=blob, filename="wniosek.pdf", kind=DocumentKind.WNIOSEK)
+    second = store.create(blob=blob, filename="wniosek.pdf", kind=DocumentKind.WNIOSEK)
+    assert first.id == second.id
+    assert len(store.list()) == 1
+
+
+def test_reupload_under_new_name_does_not_duplicate(store: SqlDocumentStore) -> None:
+    """Zmiana nazwy pliku nie tworzy drugiego wpisu — liczy się treść."""
+    blob = (DOCUMENTS / "wniosek-01-wynagrodzenia.pdf").read_bytes()
+    first = store.create(blob=blob, filename="wniosek.pdf", kind=DocumentKind.WNIOSEK)
+    second = store.create(
+        blob=blob, filename="wniosek-kopia.pdf", kind=DocumentKind.WNIOSEK
+    )
+    assert first.id == second.id
+    assert len(store.list()) == 1
+
+
+def test_reupload_changed_content_creates_new_entry(store: SqlDocumentStore) -> None:
+    """Poprawiona treść pod tą samą nazwą to nowy dokument."""
+    first = store.create(
+        blob=b"Wniosek o udostepnienie informacji publicznej.",
+        filename="wniosek.txt",
+        kind=DocumentKind.WNIOSEK,
+    )
+    second = store.create(
+        blob=b"Wniosek o udostepnienie informacji publicznej, wersja poprawiona.",
+        filename="wniosek.txt",
+        kind=DocumentKind.WNIOSEK,
+    )
+    assert first.id != second.id
     assert len(store.list()) == 2
 
 

@@ -8,7 +8,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { ApiError, api, queryString, type ApiErrorBody } from "@/lib/api";
+import { ApiError, api, authHeaders, queryString, type ApiErrorBody } from "@/lib/api";
 import type { Document } from "@/lib/types";
 
 import { apiErrorMessage } from "@/components/errorMessages";
@@ -88,6 +88,8 @@ function uploadDocument(input: UploadInput): Promise<Document> {
 
     const request = new XMLHttpRequest();
     request.open("POST", `${BASE}/documents`);
+    // XHR omija wspólny klient z `lib/api.ts`, więc nagłówki bierzemy z `authHeaders`.
+    for (const [name, value] of authHeaders()) request.setRequestHeader(name, value);
     request.upload.onprogress = (event) => {
       if (event.lengthComputable && event.total > 0) {
         input.onProgress?.(Math.round((event.loaded / event.total) * 100));

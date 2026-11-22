@@ -27,6 +27,7 @@ from app.modules.drafting.sources import (
     Source,
     statute_sources,
 )
+from app.modules.drafting.template import MAX_UPLOADED_QUOTES
 from app.modules.drafting.tests.conftest import CASE_ID, MODEL_BODY, StubLLM
 
 USTAWA_TEKST = (
@@ -332,3 +333,77 @@ def test_wgrana_ustawa_nie_duplikuje_sie_w_aktach_sprawy(
     assert any(
         identyfikator.startswith(f"{document.id}#") for identyfikator in identyfikatory
     )
+
+
+# ────────────────── P2: cały akt to nie jest podstawa prawna ───────────────
+#: Akt z dwunastoma artykułami, z których tylko dwa dotyczą wynagrodzeń —
+#: czyli przedmiotu sprawy `CASE_ID`. Reszta to wypełniacz o organizacji.
+DUZA_USTAWA = (
+    "USTAWA o organizacji urzędu\n\n"
+    + "\n\n".join(
+        f"Art. {numer}. Przepis ustrojowy numer {numer} o wewnętrznej organizacji "
+        "urzędu, bez związku z przedmiotem wniosku."
+        for numer in range(1, 11)
+    )
+    + "\n\nArt. 11. Wynagrodzenia pracowników urzędu ustala się w regulaminie "
+    "wynagradzania obowiązującym w urzędzie.\n\n"
+    "Art. 12. Wynagrodzenia pracowników samorządowych są jawne w zakresie osób "
+    "zajmujących kierownicze stanowiska.\n"
+)
+
+
+def test_caly_akt_nie_zalewa_podstawy_prawnej(
+    drafting: LlmDrafting, documents: FakeDocumentStore
+) -> None:
+    """P2: dwanaście artykułów dawało dwanaście zdań w podstawie prawnej."""
+    documents.create(
+        blob=DUZA_USTAWA.encode(),
+        filename="ustawa-organizacja.txt",
+        kind=DocumentKind.USTAWA,
+        title="Ustawa o organizacji urzędu",
+    )
+
+    draft = drafting.draft(DraftRequest(case_id=CASE_ID))
+    podstawa = draft.body.split("## Odpowiedź")[0]
+
+    assert podstawa.count("Podstawę prawną stanowi") <= MAX_UPLOADED_QUOTES
+
+
+def test_do_podstawy_trafiaja_przepisy_trafne_w_przedmiot(
+    drafting: LlmDrafting, documents: FakeDocumentStore
+) -> None:
+    """Z całego aktu wybieramy artykuły o wynagrodzeniach, nie pierwsze z brzegu."""
+    documents.create(
+        blob=DUZA_USTAWA.encode(),
+        filename="ustawa-organizacja.txt",
+        kind=DocumentKind.USTAWA,
+        title="Ustawa o organizacji urzędu",
+    )
+
+    draft = drafting.draft(DraftRequest(case_id=CASE_ID))
+    podstawa = draft.body.split("## Odpowiedź")[0]
+
+    assert "Wynagrodzenia pracowników" in podstawa
+    assert "Przepis ustrojowy numer 1" not in podstawa
+
+
+def test_akt_bez_trafnego_przepisu_jest_wymieniony_bez_cytatu(
+    drafting: LlmDrafting, documents: FakeDocumentStore
+) -> None:
+    """Gdy żaden przepis nie dotyczy wniosku, wymieniamy sam akt — bez cytatu."""
+    documents.create(
+        blob=(
+            "USTAWA o organizacji urzędu\n\n"
+            "Art. 1. Przepis ustrojowy o wewnętrznej organizacji urzędu.\n\n"
+            "Art. 2. Kolejny przepis ustrojowy o organizacji urzędu.\n"
+        ).encode(),
+        filename="ustawa-organizacja.txt",
+        kind=DocumentKind.USTAWA,
+        title="Ustawa o organizacji urzędu",
+    )
+
+    draft = drafting.draft(DraftRequest(case_id=CASE_ID))
+    podstawa = draft.body.split("## Odpowiedź")[0]
+
+    assert "Podstawę prawną stanowi dodatkowo Ustawa o organizacji urzędu" in podstawa
+    assert "Przepis ustrojowy" not in podstawa

@@ -53,7 +53,9 @@ def test_generuje_projekt_z_modelem_atrapowym(drafting: LlmDrafting) -> None:
     assert "## Podstawa prawna" in draft.body
     assert "## Pouczenie" in draft.body
     assert draft.citations
-    assert draft.unsupported == [UNUSABLE_NOTE]
+    assert draft.degraded is True
+    assert draft.degraded_reason == UNUSABLE_NOTE
+    assert draft.unsupported == []
     assert draft.updated_at is None
 
 
@@ -66,6 +68,8 @@ def test_uzywa_tresci_modelu(make_drafting) -> None:
 
     assert "Wynagrodzenia pracowników samorządowych" in draft.body
     assert draft.unsupported == []
+    assert draft.degraded is False
+    assert draft.degraded_reason is None
     assert [citation.ref for citation in draft.citations] == [1, 4, 6]
     assert llm.prompts and "TWARDE WYMAGANIE" in llm.prompts[0]
     assert llm.systems and "asystentem urzędnika" in (llm.systems[0] or "")
@@ -91,7 +95,9 @@ def test_degraduje_przy_offline(make_drafting) -> None:
 
     assert "## Podstawa prawna" in draft.body
     assert draft.citations
-    assert draft.unsupported == [OFFLINE_NOTE]
+    assert draft.degraded is True
+    assert draft.degraded_reason == OFFLINE_NOTE
+    assert draft.unsupported == []
 
 
 def test_degraduje_przy_bledzie_modelu(make_drafting) -> None:
@@ -100,7 +106,9 @@ def test_degraduje_przy_bledzie_modelu(make_drafting) -> None:
     draft = drafting.draft(DraftRequest(case_id=CASE_ID))
 
     assert "## Odpowiedź" in draft.body
-    assert draft.unsupported == [MODEL_ERROR_NOTE]
+    assert draft.degraded is True
+    assert draft.degraded_reason == MODEL_ERROR_NOTE
+    assert draft.unsupported == []
 
 
 def test_degraduje_przy_niepelnej_tresci_modelu(make_drafting) -> None:
@@ -110,7 +118,9 @@ def test_degraduje_przy_niepelnej_tresci_modelu(make_drafting) -> None:
     draft = drafting.draft(DraftRequest(case_id=CASE_ID))
 
     assert "## Podstawa prawna" in draft.body
-    assert draft.unsupported == [UNUSABLE_NOTE]
+    assert draft.degraded is True
+    assert draft.degraded_reason == UNUSABLE_NOTE
+    assert draft.unsupported == []
 
 
 def test_bez_przepisow_i_archiwum(drafting: LlmDrafting) -> None:
@@ -120,7 +130,9 @@ def test_bez_przepisow_i_archiwum(drafting: LlmDrafting) -> None:
 
     assert "Podstawa prawna zostanie uzupełniona." in draft.body
     assert draft.citations == []
-    assert draft.unsupported == [UNUSABLE_NOTE]
+    assert draft.degraded is True
+    assert draft.degraded_reason == UNUSABLE_NOTE
+    assert draft.unsupported == []
 
 
 # ───────────────────────────────── cytowania ───────────────────────────────

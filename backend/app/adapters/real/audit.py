@@ -18,6 +18,7 @@ from sqlalchemy import Engine, Table, select, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.contracts import AuditEntry
+from app.core.clock import now as clock_now
 from app.modules.audit.models import TABLE_NAME, AuditEntryModel
 
 DEFAULT_LIMIT = 100
@@ -104,7 +105,9 @@ class SqlAuditLog:
     ) -> None:
         entry = AuditEntryModel(
             id=str(uuid4()),
-            at=datetime.now(UTC),
+            # Zegar aplikacji, nie `datetime.now` — w demo data jest zakotwiczona
+            # na `DEMO_TODAY`, inaczej wpis ze sprawy marcowej nosił datę listopada.
+            at=clock_now(),
             actor=actor,
             action=action,
             entity_type=entity_type,

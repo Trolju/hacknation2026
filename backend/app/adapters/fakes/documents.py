@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import builtins
 import io
-from datetime import UTC, datetime
 from pathlib import Path
 from uuid import UUID, uuid4
 
@@ -15,6 +14,7 @@ from app.contracts import (
     DocumentKind,
     DocumentStatus,
 )
+from app.core.clock import now as clock_now
 from app.core.errors import NotFound, UnsupportedMedia
 
 _PDF = "application/pdf"
@@ -142,7 +142,7 @@ class FakeDocumentStore:
             error=error,
             case_id=case_id,
             chunk_count=len(chunks),
-            created_at=datetime.now(UTC),
+            created_at=clock_now(),
             text=text,
             page_count=page_count,
         )

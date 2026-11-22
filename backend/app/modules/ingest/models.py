@@ -32,6 +32,11 @@ class DocumentRow(Base):
     page_count: Mapped[int] = mapped_column(Integer, default=0)
     text: Mapped[str] = mapped_column(Text, default="")
     storage_path: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    #: SHA-256 treści pliku. Ten sam plik wgrany drugi raz nie tworzy nowego
+    #: wpisu — bez tego baza wiedzy zapełniała się duplikatami.
+    content_hash: Mapped[str | None] = mapped_column(
+        String(64), index=True, nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     updated_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True

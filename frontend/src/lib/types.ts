@@ -95,6 +95,10 @@ export type Draft = {
   body: string;
   citations: Citation[];
   unsupported: string[];
+  /** Projekt z szablonu, bo model nie dał użytecznej treści. */
+  degraded: boolean;
+  /** Dlaczego powstał szablon — komunikat systemowy, nie twierdzenie. */
+  degraded_reason: string | null;
   created_at: string;
   updated_at: string | null;
 };

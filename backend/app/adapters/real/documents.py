@@ -13,6 +13,7 @@ którego `chunk()` widzi wyłącznie tekst.
 
 from __future__ import annotations
 
+import hashlib
 import io
 import os
 import re
@@ -22,6 +23,7 @@ from uuid import UUID, uuid4
 
 import structlog
 from sqlalchemy import delete, func, select
+from sqlalchemy import text as sql_text
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -33,6 +35,7 @@ from app.contracts import (
     DocumentStatus,
 )
 from app.core import db
+from app.core.clock import now as clock_now
 from app.core.db import Base
 from app.core.errors import Conflict, NotFound, UnsupportedMedia
 from app.modules.ingest.models import DocumentChunkRow, DocumentRow
@@ -325,6 +328,29 @@ class SqlDocumentStore:
             bind=self._engine,
             tables=[DocumentRow.__table__, DocumentChunkRow.__table__],  # type: ignore[list-item]
         )
+        self._ensure_columns()
+
+    def _ensure_columns(self) -> None:
+        """Dokłada kolumny dodane po pierwszym uruchomieniu.
+
+        `create_all` tworzy tylko brakujące tabele — istniejącej bazy nie
+        zmienia. Bez tego baza z poprzedniej wersji kończyłaby się błędem
+        „no such column: documents.content_hash”.
+        """
+        try:
+            with self._engine.begin() as conn:
+                existing = {
+                    row[1]
+                    for row in conn.execute(
+                        sql_text("PRAGMA table_info(documents)")
+                    ).all()
+                }
+                if existing and "content_hash" not in existing:
+                    conn.execute(
+                        sql_text("ALTER TABLE documents ADD COLUMN content_hash VARCHAR(64)")
+                    )
+        except Exception:  # nie-SQLite albo baza tylko do odczytu
+            pass
 
     @property
     def upload_dir(self) -> Path:
@@ -372,10 +398,24 @@ class SqlDocumentStore:
     ) -> Document:
         safe_name = Path(filename).name or "plik"
         mime = detect_mime(safe_name, blob)
-        now = datetime.now(UTC)
+        content_hash = hashlib.sha256(blob).hexdigest()
+        # Zegar aplikacji — w demo data jest zakotwiczona na `DEMO_TODAY`.
+        now = clock_now()
 
         with self._session_factory() as session:
             row = self._find_replaceable(session, kind, safe_name, case_id)
+            if row is None:
+                # Ten sam plik wgrany drugi raz nie tworzy nowego wpisu.
+                # Wcześniej baza wiedzy zapełniała się duplikatami, które
+                # trzeba było usuwać ręcznie.
+                duplicate = self._find_duplicate(session, kind, content_hash, case_id)
+                if duplicate is not None:
+                    log.info(
+                        "document_duplicate_skipped",
+                        document_id=duplicate.id,
+                        filename=safe_name,
+                    )
+                    return _to_document(duplicate)
             document_id = UUID(row.id) if row is not None else uuid4()
             stored_path = self._write_file(document_id, safe_name, blob)
             if row is not None and row.storage_path and row.storage_path != str(stored_path):
@@ -397,6 +437,7 @@ class SqlDocumentStore:
                 "page_count": page_count,
                 "text": text,
                 "storage_path": str(stored_path),
+                "content_hash": content_hash,
             }
             if row is None:
                 row = DocumentRow(id=str(document_id), created_at=now, **values)
@@ -455,7 +496,7 @@ class SqlDocumentStore:
             row.status = status.value
             row.error = error
             row.chunk_count = len(chunks)
-            row.updated_at = datetime.now(UTC)
+            row.updated_at = clock_now()
             session.execute(
                 delete(DocumentChunkRow).where(DocumentChunkRow.document_id == row.id)
             )
@@ -498,6 +539,25 @@ class SqlDocumentStore:
         stmt = select(DocumentRow).where(
             DocumentRow.kind == kind.value,
             func.lower(DocumentRow.filename) == filename.lower(),
+        )
+        return session.scalars(stmt).first()
+
+    def _find_duplicate(
+        self,
+        session: Session,
+        kind: DocumentKind,
+        content_hash: str,
+        case_id: UUID | None,
+    ) -> DocumentRow | None:
+        """Wpis o tej samej treści — ten sam plik wgrany ponownie.
+
+        Porównujemy skrót treści, nie nazwę: zmiana nazwy pliku nie tworzy
+        drugiego wpisu, a poprawiona treść pod tą samą nazwą tworzy nowy.
+        """
+        stmt = select(DocumentRow).where(
+            DocumentRow.kind == kind.value,
+            DocumentRow.content_hash == content_hash,
+            DocumentRow.case_id == (str(case_id) if case_id is not None else None),
         )
         return session.scalars(stmt).first()
 

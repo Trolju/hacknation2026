@@ -36,6 +36,16 @@ _SENTENCE_END = re.compile(r"(?<=[.!?])\s+(?=[A-ZĄĆĘŁŃÓŚŹŻ])")
 _LIST_PREFIX = re.compile(r"^(?:[-*+]|\d+[.)])\s+")
 _FENCE = re.compile(r"^```[a-zA-Z]*\s*|\s*```$")
 
+#: Model pisze odnośniki jako `[1]`, a nie `[^1]`. Bez normalizacji `is_usable`
+#: nie znajduje ani jednego odnośnika i odrzuca poprawną, kompletną treść —
+#: w pomiarach 4 z 20 generacji (20%) schodziło przez to do szablonu.
+#: Wyjątki: `[^1]` (już poprawny) i `[1](url)` (link markdown).
+_PLAIN_REF = re.compile(r"(?<!\^)\[(\d{1,2})\](?!\()")
+
+#: Definicje przypisów (`[^1]: art. 13 …`) to warsztat modelu, nie treść pisma.
+#: Zostawione na końcu trafiały do eksportu DOCX i PDF jako zwykły akapit.
+_FOOTNOTE_DEF = re.compile(r"^[ \t]*\[\^\d+\]:.*$", re.MULTILINE)
+
 # Zdania czysto formalne — nie są twierdzeniami merytorycznymi, więc nie muszą
 # mieć odnośnika. Wszystko inne bez odnośnika trafia do `unsupported`.
 _FORMULAIC_PREFIXES: tuple[str, ...] = (
@@ -121,8 +131,14 @@ def build_prompt(case: CaseDetail, sources: Sequence[Source], req: DraftRequest)
 
 # ──────────────────────────── kontrola twierdzeń ───────────────────────────
 def normalize_model_output(raw: str) -> str:
-    """Czyści odpowiedź modelu: bloki kodu, zbędne spacje, puste linie."""
+    """Czyści odpowiedź modelu: bloki kodu, format odnośników, definicje przypisów.
+
+    Kolejność ma znaczenie: najpierw ujednolicamy odnośniki, żeby definicje
+    zapisane jako `[1]: …` też stały się `[^1]: …` i zostały usunięte.
+    """
     text = _FENCE.sub("", raw.strip())
+    text = _PLAIN_REF.sub(r"[^\1]", text)
+    text = _FOOTNOTE_DEF.sub("", text)
     lines = [line.rstrip() for line in text.splitlines()]
     while lines and not lines[0].strip():
         lines.pop(0)

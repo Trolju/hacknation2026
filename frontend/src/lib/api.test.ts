@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getToken, setToken } from "./api";
+import { authHeaders, getToken, setToken } from "./api";
 
 /** `localStorage` nie istnieje w środowisku `node` — podstawiamy magazyn w pamięci. */
 function memoryStorage(): Storage {
@@ -45,5 +45,37 @@ describe("token sesji", () => {
     vi.stubGlobal("localStorage", undefined);
     expect(() => setToken("abc")).not.toThrow();
     expect(getToken()).toBeNull();
+  });
+});
+
+describe("nagłówki z tokenem", () => {
+  beforeEach(() => {
+    vi.stubGlobal("localStorage", memoryStorage());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("dokleja Bearer, gdy sesja istnieje", () => {
+    setToken("abc.def.ghi");
+    expect(authHeaders().get("Authorization")).toBe("Bearer abc.def.ghi");
+  });
+
+  it("bez sesji nie ustawia nagłówka", () => {
+    expect(authHeaders().has("Authorization")).toBe(false);
+  });
+
+  it("nie nadpisuje nagłówka podanego jawnie", () => {
+    setToken("abc.def.ghi");
+    const headers = authHeaders({ Authorization: "Bearer inny" });
+    expect(headers.get("Authorization")).toBe("Bearer inny");
+  });
+
+  it("zachowuje nagłówki wejściowe", () => {
+    setToken("abc.def.ghi");
+    const headers = authHeaders({ "X-Test": "1" });
+    expect(headers.get("X-Test")).toBe("1");
+    expect(headers.get("Authorization")).toBe("Bearer abc.def.ghi");
   });
 });

@@ -47,14 +47,26 @@ export function setToken(token: string | null): void {
   }
 }
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const headers = new Headers(init?.headers);
-  if (!(init?.body instanceof FormData) && !headers.has("Content-Type")) {
-    headers.set("Content-Type", "application/json");
-  }
+/**
+ * Nagłówki z tokenem sesji.
+ *
+ * Dla wywołań, które omijają `request`: wgranie pliku idzie przez `XMLHttpRequest`
+ * (tylko tak pokażemy postęp), a eksport zwraca plik, nie JSON. Bez tego przy
+ * `AUTH_ENABLED=true` oba kończą się 401.
+ */
+export function authHeaders(extra?: HeadersInit): Headers {
+  const headers = new Headers(extra);
   const token = getToken();
   if (token && !headers.has("Authorization")) {
     headers.set("Authorization", `Bearer ${token}`);
+  }
+  return headers;
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = authHeaders(init?.headers);
+  if (!(init?.body instanceof FormData) && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
   }
   const response = await fetch(`${BASE}${path}`, { ...init, headers });
 

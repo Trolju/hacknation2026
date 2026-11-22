@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import io
-from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from app.contracts import Citation, Draft, DraftPatch, DraftRequest
+from app.core.clock import now as clock_now
 from app.core.errors import NotFound
 
 if TYPE_CHECKING:
@@ -129,7 +129,7 @@ class FakeDrafting:
 
         body_parts += ["", "## Pouczenie", "", _CLOSING]
 
-        stamp = datetime.now(UTC)
+        stamp = clock_now()
         draft = Draft(
             id=uuid4(),
             case_id=req.case_id,
@@ -158,7 +158,7 @@ class FakeDrafting:
             update={
                 "body": patch.body,
                 "title": patch.title or draft.title,
-                "updated_at": datetime.now(UTC),
+                "updated_at": clock_now(),
             }
         )
         self._drafts[draft_id] = updated

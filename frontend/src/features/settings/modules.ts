@@ -37,7 +37,7 @@ export const MODULE_DESCRIPTIONS: Record<string, ModuleDescription> = {
   routing: {
     label: "Kierowanie do wydziałów",
     fake: "Komórka wskazywana po słowach kluczowych z listy komórek urzędu.",
-    real: "Komórkę wskazuje model na podstawie treści wniosku.",
+    real: "Komórka wskazywana po słowach kluczowych z rdzeniowaniem polskiej odmiany, frazach i wagach IDF — bez udziału modelu językowego.",
   },
   drafting: {
     label: "Generator odpowiedzi",
@@ -47,12 +47,12 @@ export const MODULE_DESCRIPTIONS: Record<string, ModuleDescription> = {
   anonymize: {
     label: "Anonimizacja",
     fake: "Dane osobowe wykrywane regułami: PESEL, NIP, telefon, e-mail.",
-    real: "Reguły plus model rozpoznający nazwiska i adresy.",
+    real: "Detektory regułowe: nazwiska po wzorcach i końcówkach, adresy, kody pocztowe, numery ksiąg wieczystych. Model spaCy jest opcjonalny — bez niego zostają reguły.",
   },
   inference: {
     label: "Warstwa modeli",
     fake: "Model nie jest wywoływany; odpowiedzi są zawsze takie same.",
-    real: "Zapytania idą do modelu: llama.cpp, Ollama albo OpenAI.",
+    real: "Zapytania idą do modelu: Mistral, llama.cpp, Ollama albo OpenAI.",
   },
   audit: {
     label: "Dziennik audytu",

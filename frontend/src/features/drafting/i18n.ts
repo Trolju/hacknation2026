@@ -63,6 +63,9 @@ export const TEXT = {
     "Te zdania nie mają pokrycia w źródłach. Uzupełnij je albo usuń przed wysłaniem.",
   unsupportedGoTo: "Przejdź do sekcji",
   unsupportedNoSection: "Nie znaleziono sekcji w treści.",
+  degradedTitle: "Projekt z szablonu",
+  degradedFallback:
+    "Model językowy nie dostarczył treści do projektu — pismo powstało z szablonu.",
   exportTitle: "Eksport",
   exportDocx: "DOCX",
   exportPdf: "PDF",

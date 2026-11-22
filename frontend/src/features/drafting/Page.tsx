@@ -1,4 +1,4 @@
-import { Download, FileText, Loader2, RefreshCw, Sparkles } from "lucide-react";
+import { Download, FileText, Info, Loader2, RefreshCw, Sparkles } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -361,6 +361,22 @@ export default function DraftingPage() {
           </div>
 
           <aside className="space-y-3">
+            {draft.data?.degraded ? (
+              <Card className="border-sky-200">
+                <CardHeader className="pb-2">
+                  <CardTitle className="flex items-center gap-2 text-sm">
+                    <Info className="h-4 w-4 text-sky-600" />
+                    {TEXT.degradedTitle}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm leading-snug text-sky-950">
+                    {draft.data.degraded_reason ?? TEXT.degradedFallback}
+                  </p>
+                </CardContent>
+              </Card>
+            ) : null}
+
             {unsupported.length > 0 ? (
               <Card className="border-amber-200">
                 <CardHeader className="pb-2">

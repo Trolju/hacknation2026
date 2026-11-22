@@ -170,10 +170,40 @@ class SqlCaseRepository:
     def _seed_if_empty(self) -> None:
         """Pierwsze uruchomienie w trybie `real` startuje z danymi demo."""
         with self._session() as session:
-            if session.scalar(select(func.count()).select_from(CaseRow)):
-                return
-            for raw in _fixture_rows():
-                session.add(_row_from_fixture(raw))
+            if not session.scalar(select(func.count()).select_from(CaseRow)):
+                for raw in _fixture_rows():
+                    session.add(_row_from_fixture(raw))
+                session.flush()
+            self._backfill_creation_entries(session)
+
+    def _backfill_creation_entries(self, session: Session) -> None:
+        """Dopisuje wpis o utworzeniu sprawom, które go jeszcze nie mają.
+
+        Fixture'y opisują sprawy już zarejestrowane w urzędzie, więc panel
+        historii nie może być pusty przed pierwszą zmianą. Uzupełniamy też
+        bazy z poprzedniej wersji — inaczej po aktualizacji historia zostałaby
+        pusta dla wszystkich istniejących spraw.
+        """
+        logged = set(
+            session.scalars(
+                select(CaseHistoryRow.case_id).where(CaseHistoryRow.action == "created")
+            ).all()
+        )
+        for row in session.scalars(select(CaseRow)).all():
+            if row.id in logged:
+                continue
+            session.add(
+                CaseHistoryRow(
+                    id=str(uuid4()),
+                    case_id=row.id,
+                    at=datetime.combine(row.inflow_date, time(8, 0), tzinfo=UTC),
+                    actor=DEFAULT_ACTOR,
+                    action="created",
+                    from_value=None,
+                    to_value=None,
+                    note="wniosek zarejestrowany w urzędzie",
+                )
+            )
 
     def _require(self, session: Session, case_id: UUID) -> CaseRow:
         row = session.get(CaseRow, str(case_id))

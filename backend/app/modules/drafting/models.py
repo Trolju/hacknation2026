@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.db import Base
@@ -30,6 +30,10 @@ class DraftRow(Base):
     body: Mapped[str] = mapped_column(Text, default="")
     citations: Mapped[str] = mapped_column(Text, default="[]")
     unsupported: Mapped[str] = mapped_column(Text, default="[]")
+    #: Projekt z szablonu, bo model nie dał użytecznej treści. Osobno od
+    #: `unsupported`, żeby komunikat systemowy nie udawał twierdzenia pisma.
+    degraded: Mapped[bool] = mapped_column(Boolean, default=False)
+    degraded_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
     version: Mapped[int] = mapped_column(Integer, default=1)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     updated_at: Mapped[datetime | None] = mapped_column(

@@ -7,7 +7,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { ApiError, api, queryString, type ApiErrorBody } from "@/lib/api";
+import { ApiError, api, authHeaders, queryString, type ApiErrorBody } from "@/lib/api";
 import type { Draft } from "@/lib/types";
 
 import { apiErrorMessage } from "@/components/errorMessages";
@@ -82,7 +82,10 @@ export function parseRedactions(header: string | null): number {
 
 async function fetchExport(input: ExportInput): Promise<ExportResult> {
   const query = queryString({ fmt: input.format, anonymized: input.anonymized });
-  const response = await fetch(`${BASE}/drafting/${input.draftId}/export${query}`);
+  // Eksport zwraca plik, nie JSON, więc idziemy poza `api` — nagłówki z `authHeaders`.
+  const response = await fetch(`${BASE}/drafting/${input.draftId}/export${query}`, {
+    headers: authHeaders(),
+  });
   if (!response.ok) {
     let body: ApiErrorBody = { code: "http_error", message: `Błąd ${response.status}` };
     try {

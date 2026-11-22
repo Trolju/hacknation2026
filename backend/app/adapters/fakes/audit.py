@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Any
 from uuid import UUID, uuid4
 
 from app.contracts import AuditEntry
+from app.core.clock import now as clock_now
 
 
 class FakeAuditLog:
@@ -26,7 +26,7 @@ class FakeAuditLog:
         self._entries.append(
             AuditEntry(
                 id=uuid4(),
-                at=datetime.now(UTC),
+                at=clock_now(),
                 actor=actor,
                 action=action,
                 entity_type=entity_type,

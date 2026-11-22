@@ -913,7 +913,7 @@ components:
 
     Draft:
       type: object
-      required: [id, case_id, title, body, citations, unsupported, created_at]
+      required: [id, case_id, title, body, citations, unsupported, degraded, created_at]
       properties:
         id: { type: string, format: uuid }
         case_id: { type: string, format: uuid }
@@ -926,6 +926,15 @@ components:
           type: array
           description: Zdania bez pokrycia w źródłach
           items: { type: string }
+        degraded:
+          type: boolean
+          description: >-
+            Projekt powstał z szablonu, bo model nie dostarczył użytecznej treści.
+            Komunikat systemowy — nie mylić z `unsupported`, które dotyczy
+            twierdzeń merytorycznych do uzupełnienia przez urzędnika.
+        degraded_reason:
+          type: [string, 'null']
+          description: Dlaczego powstał szablon (offline, błąd modelu, treść nieużyteczna).
         created_at: { type: string, format: date-time }
         updated_at: { type: [string, 'null'], format: date-time }
 

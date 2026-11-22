@@ -215,8 +215,8 @@ def test_history_records_transitions_in_order(repo: CaseRepositoryPort) -> None:
         case_id, CaseStatus.NOWY, actor="kierownik", note="Cofnięcie po pomyłce"
     )
     history = repo.history(case_id)
-    # Atrapa dokłada wpis o utworzeniu sprawy (fixture'y są już zarejestrowane),
-    # repozytorium realne zaczyna od pustej historii — porównujemy zmiany stanu.
+    # Oba adaptery dokładają wpis o utworzeniu sprawy (fixture'y są już
+    # zarejestrowane), więc porównujemy wyłącznie zmiany stanu.
     changes = [entry for entry in history if entry.action == "status_change"]
     assert len(changes) == 2
     assert changes[0].from_value == CaseStatus.NOWY.value
@@ -228,3 +228,18 @@ def test_history_records_transitions_in_order(repo: CaseRepositoryPort) -> None:
 
 def test_history_is_empty_for_unknown_case(repo: CaseRepositoryPort) -> None:
     assert repo.history(uuid4()) == []
+
+
+def test_history_starts_with_creation_entry(repo: CaseRepositoryPort) -> None:
+    """Nietknięta sprawa ma w historii wpis o utworzeniu, nie pustkę.
+
+    Wcześniej tylko atrapa dokładała ten wpis — w trybie realnym panel
+    historii był pusty, dopóki ktoś nie zmienił stanu sprawy.
+    """
+    case = repo.list()[0]
+    entries = repo.history(case.id)
+
+    assert entries
+    assert entries[0].action == "created"
+    assert entries[0].at.date() == case.inflow_date
+    assert entries[0].note == "wniosek zarejestrowany w urzędzie"

@@ -16,6 +16,7 @@ from typing import Any
 from uuid import UUID, uuid4
 
 from sqlalchemy import Engine, select
+from sqlalchemy import text as sql_text
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.contracts import Citation, Draft
@@ -73,6 +74,8 @@ def _to_draft(row: DraftRow) -> Draft:
         body=row.body,
         citations=_load_citations(row.citations),
         unsupported=_load_list(row.unsupported),
+        degraded=bool(row.degraded),
+        degraded_reason=row.degraded_reason,
         created_at=_as_utc(row.created_at),
         updated_at=_as_utc(row.updated_at) if row.updated_at else None,
     )
@@ -106,6 +109,35 @@ class DraftRepository:
             bind=self._engine, autoflush=False, expire_on_commit=False
         )
         Base.metadata.create_all(bind=self._engine, tables=_draft_tables())
+        self._ensure_columns()
+
+    def _ensure_columns(self) -> None:
+        """Dokłada kolumny dodane po pierwszym uruchomieniu.
+
+        `create_all` tworzy tylko brakujące tabele — istniejącej bazy nie
+        zmienia. Bez tego baza z poprzedniej wersji kończyłaby się błędem
+        „no such column: drafts.degraded”.
+        """
+        try:
+            with self._engine.begin() as conn:
+                existing = {
+                    row[1]
+                    for row in conn.execute(sql_text("PRAGMA table_info(drafts)")).all()
+                }
+                if not existing:
+                    return
+                if "degraded" not in existing:
+                    conn.execute(
+                        sql_text(
+                            "ALTER TABLE drafts ADD COLUMN degraded BOOLEAN DEFAULT 0"
+                        )
+                    )
+                if "degraded_reason" not in existing:
+                    conn.execute(
+                        sql_text("ALTER TABLE drafts ADD COLUMN degraded_reason TEXT")
+                    )
+        except Exception:  # nie-SQLite albo baza tylko do odczytu
+            pass
 
     @contextmanager
     def _session(self) -> Iterator[Session]:
@@ -161,6 +193,8 @@ class DraftRepository:
                     body=draft.body,
                     citations=_dump_citations(draft.citations),
                     unsupported=_dump_list(draft.unsupported),
+                    degraded=draft.degraded,
+                    degraded_reason=draft.degraded_reason,
                     version=1,
                     created_at=draft.created_at,
                     updated_at=draft.updated_at,
@@ -171,6 +205,8 @@ class DraftRepository:
                 row.body = draft.body
                 row.citations = _dump_citations(draft.citations)
                 row.unsupported = _dump_list(draft.unsupported)
+                row.degraded = draft.degraded
+                row.degraded_reason = draft.degraded_reason
                 row.version += 1
                 row.updated_at = draft.updated_at or now()
             session.add(

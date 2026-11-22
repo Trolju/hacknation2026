@@ -296,6 +296,12 @@ class Draft(Base):
     body: str
     citations: list[Citation] = Field(default_factory=list)
     unsupported: list[str] = Field(default_factory=list)
+    #: Projekt powstał z szablonu, bo model nie dostarczył użytecznej treści.
+    #: Osobne pole, bo to komunikat systemowy, a nie twierdzenie merytoryczne —
+    #: w `unsupported` urzędnik dostawał polecenie uzupełnienia czegoś, czego
+    #: uzupełnić nie może.
+    degraded: bool = False
+    degraded_reason: str | None = None
     created_at: datetime
     updated_at: datetime | None = None
 

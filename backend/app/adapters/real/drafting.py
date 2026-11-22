@@ -189,10 +189,14 @@ class LlmDrafting:
         )
 
     def _degraded(self, case: CaseDetail, sources: Sequence[Source], note: str) -> Draft:
-        """Projekt z szablonu — gdy model nie dostarczył użytecznej treści."""
+        """Projekt z szablonu — gdy model nie dostarczył użytecznej treści.
+
+        Notatka o degradacji idzie do `degraded_reason`, nie do `unsupported`:
+        to komunikat systemowy, a nie twierdzenie merytoryczne do uzupełnienia.
+        """
         body = build_template(case, sources)
         citations = _citations_for(body, sources)
-        unsupported = [note, *find_unsupported(body, {c.ref for c in citations})]
+        unsupported = find_unsupported(body, {c.ref for c in citations})
         return self._persist(
             case,
             body,
@@ -200,6 +204,8 @@ class LlmDrafting:
             unsupported,
             action="generated",
             note="projekt z szablonu",
+            degraded=True,
+            degraded_reason=note,
         )
 
     def _persist(
@@ -211,6 +217,8 @@ class LlmDrafting:
         *,
         action: str,
         note: str,
+        degraded: bool = False,
+        degraded_reason: str | None = None,
     ) -> Draft:
         existing = self._repo.get_by_case(case.id)
         stamp = now()
@@ -221,6 +229,8 @@ class LlmDrafting:
             body=body,
             citations=citations,
             unsupported=unsupported,
+            degraded=degraded,
+            degraded_reason=degraded_reason,
             created_at=existing.created_at if existing else stamp,
             updated_at=stamp if existing else None,
         )
