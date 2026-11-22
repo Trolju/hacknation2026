@@ -84,11 +84,19 @@ pochodzą z `fixtures/`, a odpowiedzi są deterministyczne — demo zawsze wygl�
 Najlepsze trafienie dla wniosku o wynagrodzenia: **`a0001`, BKS.IV.1431.87.2025,
 „Wynagrodzenia pracowników Urzędu Miasta w 2024 r.”** (ocena ok. 0,63).
 
-### Anonimizacja — `fixtures/anonymization/labeled.jsonl` (20 rekordów)
+### Anonimizacja — `fixtures/anonymization/labeled.jsonl` (23 rekordy)
 
 Tekst z przycisku „Wstaw przykład” zawiera: Jan Kowalski, PESEL 85041212345,
 adres `ul. Gdańska 42/7, 85-005 Bydgoszcz`, telefon `+48 601 234 567`,
 e-mail `jan.kowalski@example.com`, Anna Nowak.
+
+Katalog kategorii pokrywa wszystkie 28 pozycji listy UMB. Pięć tajemnic
+ustawowych (przedsiębiorstwa, skarbowa, bankowa, zawodowa, informacje niejawne)
+oraz dane semantyczne — wizerunek, zdrowie, majątek, poglądy, orientacja,
+karalność — oznacza się ręcznie albo modelem, bo rozpoznanie wymaga kontekstu
+sprawy, nie wzorca tekstu. Detektory regułowe obsługują identyfikatory
+o stałym formacie, w tym `miejsce_urodzenia` (tylko z kontekstem „ur. w …”),
+`ksiega_wieczysta` i `dzialka`.
 
 ---
 
@@ -124,8 +132,14 @@ ustawowego — 14 dni od wpływu wniosku.”
 
 **Co powinno być widać:**
 
-- tabela 10 wniosków posortowana terminem rosnąco, kolumny: Numer sprawy, Przedmiot
-  wniosku, Wpływ, Termin, Dni, Pilność, Stan, Prowadzący;
+- tabela 10 wniosków posortowana terminem rosnąco, kolumny: Lp., Numer sprawy,
+  Wnioskodawca, Przedmiot wniosku, Wpływ, Termin, Data odpowiedzi, Dni, Pilność,
+  Stan, Prowadzący;
+- pod datą terminu widać opis, gdy rejestr UMB nie mieści się w jednej dacie —
+  np. **BKS.IV.1431.2.2026** ma „02.03.2026/16.03.2026 - kwerenda, termin
+  przedłużony”, a **BKS.IV.1431.9.2026** „11.03.2026/25.03.2026 - termin
+  ustawowy”. Opis jest czysto informacyjny: nie przesuwa licznika dni ani
+  pilności, bo te liczą się z daty w kolumnie Termin;
 - panel „Szczegóły wniosku”: plakietki „Zapytania wysłane” i „Po terminie”,
   podpis „10 dni temu”, pola: liczba porządkowa 1, rok 2026, wpływ 20 lutego 2026,
   termin 6 marca 2026, dni do terminu **−10**, prowadzący **JK**, wnioskodawca **Media**;

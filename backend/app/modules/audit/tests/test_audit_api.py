@@ -51,7 +51,7 @@ def test_api_returns_entries_from_sqlite(real_audit: SqlAuditLog) -> None:
         entity_type="case",
         entity_id=str(case_id),
         case_id=case_id,
-        payload={"case_number": "UDIP.WAIU.1.2026"},
+        payload={"case_number": "BKS.IV.1431.1.2026"},
     )
 
     response = TestClient(app).get("/api/audit")
@@ -61,7 +61,7 @@ def test_api_returns_entries_from_sqlite(real_audit: SqlAuditLog) -> None:
     assert len(body) == 1
     assert body[0]["action"] == "case.created"
     assert body[0]["case_id"] == str(case_id)
-    assert body[0]["payload"] == {"case_number": "UDIP.WAIU.1.2026"}
+    assert body[0]["payload"] == {"case_number": "BKS.IV.1431.1.2026"}
     assert body[0]["at"].endswith("Z") or "+00:00" in body[0]["at"]
 
 

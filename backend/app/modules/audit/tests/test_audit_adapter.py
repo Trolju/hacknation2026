@@ -33,7 +33,7 @@ def test_record_then_list_returns_entry(audit: SqlAuditLog) -> None:
         entity_type="case",
         entity_id=str(case_id),
         case_id=case_id,
-        payload={"case_number": "UDIP.WAIU.1.2026"},
+        payload={"case_number": "BKS.IV.1431.1.2026"},
     )
 
     entries = audit.list()
@@ -46,7 +46,7 @@ def test_record_then_list_returns_entry(audit: SqlAuditLog) -> None:
     assert entry.entity_type == "case"
     assert entry.entity_id == str(case_id)
     assert entry.case_id == case_id
-    assert entry.payload == {"case_number": "UDIP.WAIU.1.2026"}
+    assert entry.payload == {"case_number": "BKS.IV.1431.1.2026"}
     assert entry.at.tzinfo is not None
 
 

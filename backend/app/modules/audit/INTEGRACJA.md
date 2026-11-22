@@ -221,7 +221,7 @@ Po podłączeniu w module:
 ```bash
 MODULE_MODE_AUDIT=real scripts/start-local.sh --backend-only
 curl -s -X POST http://127.0.0.1:8000/api/cases -H 'Content-Type: application/json' \
-  -d '{"case_number":"UDIP.WAIU.99.2026","subject":"Test","inflow_date":"2026-03-16"}'
+  -d '{"case_number":"BKS.IV.1431.99.2026","subject":"Test","inflow_date":"2026-03-16"}'
 curl -s http://127.0.0.1:8000/api/audit | python3 -m json.tool
 ```
 

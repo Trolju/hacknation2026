@@ -31,7 +31,7 @@ def test_record_writes_through_port() -> None:
         entity_type=AuditEntity.CASE,
         entity_id=case_id,
         case_id=case_id,
-        payload={"case_number": "UDIP.WAIU.1.2026"},
+        payload={"case_number": "BKS.IV.1431.1.2026"},
         actor="jan.kowalski",
     )
 
@@ -41,7 +41,7 @@ def test_record_writes_through_port() -> None:
     assert entry.entity_id == str(case_id)
     assert entry.case_id == case_id
     assert entry.actor == "jan.kowalski"
-    assert entry.payload == {"case_number": "UDIP.WAIU.1.2026"}
+    assert entry.payload == {"case_number": "BKS.IV.1431.1.2026"}
 
 
 def test_record_uses_default_actor() -> None:
