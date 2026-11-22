@@ -144,6 +144,9 @@ cd backend && .venv/bin/python -m pytest tests/test_e2e_flow.py -q
 
 ## Dokumentacja
 
+- `docs/SZYBKI_START.md` — od zera do działającej aplikacji w trzech komendach
+- `docs/ENV.md` — wszystkie zmienne środowiskowe i gotowa templatka `.env`
+- `docs/NARZEDZIA.md` — spis bibliotek, modeli i narzędzi
 - `docs/DEMO.md` — scenariusz demo krok po kroku
 - `ZADANIE-KONKURSOWE.md` — treść zadania w ujednoliconej formie
 - `PLAN-WDROZENIA.md` — architektura, podział pracy, fale

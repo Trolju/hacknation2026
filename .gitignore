@@ -31,9 +31,6 @@ data/
 .idea/
 .DS_Store
 
-# Generator filmu (Revideo) — lokalne narzędzie, nie część zgłoszenia
-video/
-
 # Nagrania i klipy — duże pliki binarne, trzymamy poza historią.
 # Film jest artefaktem zgłoszenia, ale nie musi jechać w gicie: 100 MB
 # w historii spowalnia klonowanie każdemu, kto chce tylko przejrzeć kod.
@@ -41,6 +38,10 @@ video/
 *.mov
 *.webm
 
-# Prezentacja — artefakty budowane przez prezentacja/build.py
-prezentacja/prezentacja.html
-prezentacja/prezentacja.pdf
+# Generator filmu (Revideo) — lokalne narzędzie, nie część zgłoszenia.
+# 400 MB z node_modules; film buduje się z niego na żądanie.
+video/
+
+# Prezentacja — lokalne narzędzie i artefakty budowane przez build.py.
+# Zostaje na dysku, ale nie w historii: zrzuty ekranu ważą więcej niż kod.
+prezentacja/
